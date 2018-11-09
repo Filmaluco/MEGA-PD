@@ -11,6 +11,12 @@ MEGA-PD takes inspiration in the popular MEGA.NZ software, and is an attempt to 
 
 MEGA-PD is free to use and licensed under the MIT License
 
+
+Planned Features
+=======
+Milestone (dd-11-2018)
+* [example here](link to issue)
+
 Changes
 =======
 
