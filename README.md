@@ -2,6 +2,7 @@
 =======
 
 [![Wiki-%20-blue.svg](https://img.shields.io/badge/Wiki-%20-blue.svg)](https://github.com/Filmaluco/MEGA-PD/wiki)
+[![jconnector.svg](https://img.shields.io/badge/ConnectorJ-8.0.13-orange.svg)](https://dev.mysql.com/downloads/connector/j/8.0.html)
 [![JDK-8u191-orange.svg](https://img.shields.io/badge/JDK-8u191-orange.svg)](https://www.oracle.com/technetwork/java/javase/8u191-relnotes-5032181.html)
 [![License-MIT%20-brightgreen.svg](https://img.shields.io/badge/License-MIT%20-brightgreen.svg)](https://github.com/Filmaluco/MEGA-PD/blob/master/LICENSE)
 
