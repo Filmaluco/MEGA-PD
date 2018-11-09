@@ -15,4 +15,6 @@ Version 0.0 (09-11-2018)
 * Added Issue Templates
 * Added base structure
 
+=======
+[More-Info](https://github.com/Filmaluco/MEGA-PD/wiki)
  
