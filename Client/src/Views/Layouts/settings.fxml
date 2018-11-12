@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.scene.text.Font?>
+<?import com.jfoenix.controls.JFXTextField?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.View.SettingsController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <Label contentDisplay="CENTER" layoutX="182.0" layoutY="79.0" text="Display Name" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <JFXTextField focusColor="#ff7e29" layoutX="352.0" layoutY="80.0" prefHeight="27.0" prefWidth="300.0" />
+        <Label contentDisplay="CENTER" layoutX="202.0" layoutY="143.0" text="Username" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label contentDisplay="CENTER" layoutX="204.0" layoutY="212.0" text="Password" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <PasswordField layoutX="352.0" layoutY="213.0" opacity="0.1" prefHeight="27.0" prefWidth="300.0" />
+        <JFXTextField focusColor="#ff7e29" layoutX="352.0" layoutY="144.0" prefHeight="27.0" prefWidth="300.0" />
+        <Label contentDisplay="CENTER" layoutX="209.0" layoutY="283.0" text="TCP Port" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <Label contentDisplay="CENTER" layoutX="207.0" layoutY="358.0" text="UDP Port" textFill="WHITE">
+            <font>
+                <Font size="24.0" />
+            </font>
+        </Label>
+        <JFXComboBox focusColor="#ff7e29" layoutX="352.0" layoutY="284.0" prefHeight="27.0" prefWidth="300.0" />
+        <JFXComboBox focusColor="#ff7e29" layoutX="352.0" layoutY="359.0" prefHeight="27.0" prefWidth="300.0" />
+    </children>
+</AnchorPane>

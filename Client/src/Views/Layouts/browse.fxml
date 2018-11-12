@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import javafx.scene.shape.Line?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="Controllers.View.BrowseController"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <SplitPane dividerPositions="0.25" layoutX="-3.0" layoutY="-5.0" prefHeight="450.0" prefWidth="810.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="516.0" prefWidth="296.0" style="-fx-background-color: #2B2A28;">
+                    <children>
+                        <Label graphicTextGap="5.0" layoutX="18.0" layoutY="4.0" prefHeight="44.0" prefWidth="171.0" text="Users Online" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                            <opaqueInsets>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                            </opaqueInsets>
+                        </Label>
+                        <JFXListView layoutX="-1.0" layoutY="47.0" prefHeight="407.0" prefWidth="200.0" />
+                        <Line endX="85.0" layoutX="107.0" layoutY="44.0" startX="-100.0" stroke="WHITE" />
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                    <children>
+                        <JFXTreeTableView layoutX="-7.0" layoutY="5.0" prefHeight="450.0" prefWidth="603.0" />
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+        <JFXButton layoutX="683.0" layoutY="459.0" prefHeight="33.0" prefWidth="103.0" text="Download">
+            <graphic>
+                <FontAwesomeIconView glyphName="DOWNLOAD" size="20" />
+            </graphic>
+            <opaqueInsets>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </opaqueInsets>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </JFXButton>
+    </children>
+</AnchorPane>
+

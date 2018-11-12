@@ -1,0 +1,72 @@
+.root{
+    -fx-background-color: #2B2A28;
+}
+
+/* Tab Css */
+.jfx-tab-pane .tab-header-area .control-buttons-tab .tab-down-button{
+    -fx-background-color: #FF7E29;
+}
+
+.jfx-tab-pane .tab-header-area .tab-selected-line {
+    -fx-background-color: #FF7E29;
+    -fx-pref-height: 3;
+}
+
+.jfx-tab-pane .tab-header-area .jfx-rippler{
+    -jfx-rippler-fill:#FF7E29;
+}
+
+.tab{
+    -fx-background-color: #2B2A28;
+    -fx-pref-height: 50;
+    -fx-padding: 20;
+}
+
+.tab-header-background{
+    -fx-background-color: #2B2A28;
+}
+
+/* button css */
+
+.jfx-button{
+    -fx-background-color: #FFFFFF;
+}
+
+/* List View Testar */
+
+.list-view {
+    -fx-background-color: #2B2A28;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #434343;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #434343;
+}
+
+.list-view .list-cell {
+    -fx-background-color: #232323;
+    -fx-text-fill: white;
+}
+
+.list-view .label {
+    -fx-text-fill: #FF7E29;
+}
+
+.jfx-rippler {
+    -jfx-rippler-fill: #FF7E29;
+}
+
+/* Password */
+
+.jfx-text-field, .jfx-password-field {
+    -fx-prompt-text-fill: WHITE;
+    -fx-text-fill: WHITE;
+}
+
+.text-field .input-line
+{
+    -fx-background-color: WHITE; /*Yellow - bottom bar*/
+}
