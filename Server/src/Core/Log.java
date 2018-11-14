@@ -22,7 +22,7 @@ import java.util.logging.*;
  * </pre>
  *  All the logs created by this class are stored in the directory <i>Logs</i> of the project in which the class was created. <br>
  *  @author Vascoide
- *  @version 0.0.1
+ *  @version 0.0.2
  */
 
 public final class Log {
@@ -36,12 +36,12 @@ public final class Log {
     static boolean status = true;
 
     /**
-     * Initializes the --- in order to save the file log file in the <i>MMM d, yyyy 'at' h-mm-ss a</i> format.
+     * Initializes the --- in order to save the file log file in the <i>yyy_MMMdd_HH'h'_mm_ss</i> format.
      */
     public static void initLog(){
         try{
             date = new Date();
-            dateFormat = new SimpleDateFormat("MMM d, yyyy 'at' h-mm-ss a");
+            dateFormat = new SimpleDateFormat("yyy_MMMdd_HH'h'_mm_ss");
             file = new File("src/Logs/" + dateFormat.format(date) + ".log");
             file.createNewFile();
             //consoleHandler = new ConsoleHandler();
@@ -57,6 +57,15 @@ public final class Log {
             System.out.println(e);
             status = false;
         }
+    }
+
+    /**
+     * Issues a SEVERE level message.
+     * @param s message to put on the log
+     */
+    public static void s(String s){
+        if(!status) return;
+        LOGGER.severe("{" + s + "}");
     }
 
     /**
