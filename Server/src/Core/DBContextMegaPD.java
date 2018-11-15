@@ -4,8 +4,16 @@ import java.sql.*;
 
 
 /**
+ * <p><strong>DBContextMegaPD</strong> is the class responsible for handling the connection and interaction with the DB</p>
+ * <p>In order to use this class it first needs to be initialized. To initialize it you need to:</p>
+ * <p><strong>new DBContextMegaPD()</strong>.<em>setHost(</em>host<em>)</em><br /><em>.setDB(</em>dbName<em>)</em><br /><em>.setAuth(</em>username<em>, </em>password<em>)</em><br /><em>.connect();</em></p>
+ * <p>&nbsp;</p>
+ * <p>after being initialized once, all it has to be done to access the connection is:</p>
+ * <p><strong> DBContextMegaPD</strong> var = <strong>DBContextMegaPD</strong>.<em>getDBContext();</em></p>
+ *
+ *
  * @author FilipeA
- * @version 0.0.1
+ * @version 0.1.0
  *
  */
 public final class DBContextMegaPD {
