@@ -63,13 +63,13 @@ public final class Log {
     }
 
     /**
-     * Issues a SEVERE level message.
+     * Issues a SEVERE level message and closes the program.
      * @param s message to put on the log
      */
     public static void exit(String s){
         if(!status) return;
         LOGGER.severe("{" + s + "}\r\n-------------------------------------------------");
-        System.exit(0);
+        System.exit(2);
     }
 
     /**
