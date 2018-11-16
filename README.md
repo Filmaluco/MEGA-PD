@@ -15,8 +15,10 @@ MEGA-PD is free to use and licensed under the MIT License
 
 Planned Features
 =======
-Milestone (dd-11-2018)
-* [example here](link to issue)
+Milestone (21-11-2018)
+* Connection to remote server
+* Connection to localhost
+* Login
 
 Changes
 =======
