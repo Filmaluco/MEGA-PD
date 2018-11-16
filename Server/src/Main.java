@@ -6,6 +6,7 @@ public class Main {
         System.out.println("Hello World!");
 
         Log.initLog();
-        Log.s("Oh hi Mark!");
+        Log.exit("Oh hi Mark!");
+        Log.i("Testing...");
     }
 }

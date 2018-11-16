@@ -26,6 +26,9 @@ import java.util.logging.*;
  */
 
 public final class Log {
+    static {
+        System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
+    }
     public static final Logger LOGGER = Logger.getLogger(Log.class.getName());
     static Date date = null;
     static SimpleDateFormat dateFormat = null;
@@ -63,9 +66,10 @@ public final class Log {
      * Issues a SEVERE level message.
      * @param s message to put on the log
      */
-    public static void s(String s){
+    public static void exit(String s){
         if(!status) return;
-        LOGGER.severe("{" + s + "}");
+        LOGGER.severe("{" + s + "}\r\n-------------------------------------------------");
+        System.exit(0);
     }
 
     /**
@@ -74,7 +78,7 @@ public final class Log {
      */
     public static void w(String s){
         if(!status) return;
-        LOGGER.warning("{" + s + "}");
+        LOGGER.warning("{" + s + "}\r\n-------------------------------------------------");
     }
 
     /**
@@ -83,6 +87,6 @@ public final class Log {
      */
     public static void i(String s){
         if(!status) return;
-        LOGGER.info("{" + s + "}");
+        LOGGER.info("{" + s + "}\r\n-------------------------------------------------");
     }
 }
