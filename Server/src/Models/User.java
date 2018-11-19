@@ -1,28 +1,17 @@
-package Modules;
-
-import Core.Log;
-import Models.Server;
-
-import java.io.IOException;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+package Models;
 
 /**
- * Connection Module, this class is responsible for accepting request's from the clients
+ *
+ *  User model, this class represents all the user information
  *
  * @author FilipeA
- * @version 0.2.0
+ * @version 1.0
  */
-public class Connection implements Runnable {
+public class User {
+
     //Variables
     //----------------------------------------------------------------------------------------------
     //Private Variables
-        //Control variables
-    private boolean status = true;
-        //Server control variables
-    private Server server;
-
     //Public Variables
 
 
@@ -30,34 +19,13 @@ public class Connection implements Runnable {
     //      CONSTRUCTOR'S
     //----------------------------------------------------------------------------------------------
 
-    /**
-     * Base Constructor
-     */
-    public Connection(Server server){
-      this.server = server;
-    }
-
     //----------------------------------------------------------------------------------------------
     //      GETTERS
     //----------------------------------------------------------------------------------------------
 
-
     //----------------------------------------------------------------------------------------------
     //      SETTERS
     //----------------------------------------------------------------------------------------------
-
-    //----------------------------------------------------------------------------------------------
-    //      Runnable
-    //----------------------------------------------------------------------------------------------
-
-    @Override
-    public void run() {
-        while (status){
-
-
-
-        }
-    }
 
     //----------------------------------------------------------------------------------------------
     //      Methods
@@ -65,13 +33,5 @@ public class Connection implements Runnable {
 
     // Public Methods ------------------------------------------------------------------------------
 
-    /**
-     * Stops connection module from accepting more request's
-     */
-    public void close() {
-        status = false;
-    }
-
     // Private Methods -----------------------------------------------------------------------------
-
 }
