@@ -54,7 +54,7 @@ public class Main {
         }
         Log.i("Server [Registered]");
         Log.i("Server["+server.getID()+"] info: \n Name: "+ DESIGNATION+VERSION +
-                "\n Address: " + server.getIp() +
+                "\n Address: " + server.getIP() +
                 "\n Port: " + server.getPort());
 
         Log.i("Server [Started]");

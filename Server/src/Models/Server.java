@@ -21,7 +21,7 @@ public class Server{
     //Private Variables
         //Connection variables
     private int ID;
-    private String ip;
+    private String IP;
     private int port;
 
         //TCP socket variables
@@ -47,7 +47,7 @@ public class Server{
             } catch (UnknownHostException e) {
                 Log.w("Cant reach local IP [" + e + "]");
             }
-            ip = socket.getLocalAddress().getHostAddress();
+            IP = socket.getLocalAddress().getHostAddress();
         } catch (SocketException e) {
             Log.w("Cant reach local IP [" + e + "]");
         }
@@ -60,7 +60,7 @@ public class Server{
         users = new ArrayList<>();
 
         //Register Server in the DB
-        this.ID = DBContextMegaPD.getDBContext().registerServer(name, ip, this.port);
+        this.ID = DBContextMegaPD.getDBContext().registerServer(name, IP, this.port);
     }
 
     /**
@@ -85,8 +85,8 @@ public class Server{
      *
      * @return IP
      */
-    public String getIp() {
-        return ip;
+    public String getIP() {
+        return IP;
     }
 
     /**
