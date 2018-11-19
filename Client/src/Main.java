@@ -10,12 +10,12 @@ public class Main  extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
+
+        Scene login = new Scene(root);
+
         primaryStage.setTitle("Mega PD");
-
-        Scene scene = new Scene(root, 800, 600);
-
-        primaryStage.setScene(scene);
+        primaryStage.setScene(login);
         primaryStage.setResizable(false);
         primaryStage.show();
     }

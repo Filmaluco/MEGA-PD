@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.View.LoginController">
+   <children>
+      <JFXButton id="btnLogin" fx:id="btnLogin" layoutX="365.0" layoutY="244.0" minWidth="80.0" onAction="#userLogin" text="Login">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </JFXButton>
+      <JFXButton id="btnGuestLogin" fx:id="btnGuestLogin" layoutX="265.0" layoutY="244.0" minWidth="80.0" onAction="#guestLogin" text="Guest Login">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </JFXButton>
+      <JFXTextField id="usernameField" fx:id="usernameField" focusColor="#ff7e29" layoutX="265.0" layoutY="145.0" minWidth="180.0" />
+      <JFXPasswordField id="passwordField" fx:id="passwordField" focusColor="#ff7e29" layoutX="265.0" layoutY="193.0" minWidth="180.0" />
+      <Label layoutX="155.0" layoutY="159.0" text="Username" textFill="#ff7e29">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="156.0" layoutY="205.0" text="Password" textFill="#ff7e29">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <FontAwesomeIconView fill="WHITE" glyphName="USER" layoutX="240.0" layoutY="173.0" wrappingWidth="2.4285717010498047" />
+      <FontAwesomeIconView fill="WHITE" glyphName="KEY" layoutX="238.0" layoutY="218.0" />
+      <ImageView fitHeight="94.0" fitWidth="322.0" layoutX="139.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../Resources/Images/FullLogo.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
