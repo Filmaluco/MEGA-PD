@@ -60,7 +60,7 @@ public class Server{
         users = new ArrayList<>();
 
         //Register Server in the DB
-        this.ID = DBContextMegaPD.getDBContext().registerServer(name, ip, port);
+        this.ID = DBContextMegaPD.getDBContext().registerServer(name, ip, this.port);
     }
 
     /**

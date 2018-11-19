@@ -2,6 +2,7 @@ package Modules;
 
 import Core.Log;
 import Models.Server;
+import Models.User;
 
 import java.io.IOException;
 import java.net.*;
@@ -22,6 +23,10 @@ public class Connection implements Runnable {
     private boolean status = true;
         //Server control variables
     private Server server;
+        //User Control variables
+    private List<User> users;
+        //TCP socket variables
+    private ServerSocket serverSocket;
 
     //Public Variables
 
@@ -35,6 +40,8 @@ public class Connection implements Runnable {
      */
     public Connection(Server server){
       this.server = server;
+      serverSocket = server.getServerSocket();
+      users = server.getUsers();
     }
 
     //----------------------------------------------------------------------------------------------

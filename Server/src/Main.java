@@ -17,7 +17,7 @@ public class Main {
         // Variables
         //--------------------------------------------------------------------------------------------------------------
         //Server variables
-        final double VERSION = 0.1;
+        final double VERSION = 0.2;
         final String DESIGNATION = "SERVER";
         Server server;
         //--------------------------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ public class Main {
 
         // Register the server  ----------------------------------------------------------------------------------------
         try {
-            server = new Server(DESIGNATION+VERSION);
+            server = new Server(DESIGNATION+"["+VERSION+"]");
         } catch (Exception e) {
             Log.s("Couldn't register the server [" + e + "]");
             return;
