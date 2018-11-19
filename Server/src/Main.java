@@ -20,6 +20,7 @@ public class Main {
         final double VERSION = 0.2;
         final String DESIGNATION = "SERVER";
         Server server;
+        CommandInterpreter commandInterpreter;
         //--------------------------------------------------------------------------------------------------------------
         //Connection Module
         Thread connectionModule = null;
@@ -65,6 +66,23 @@ public class Main {
         connectionModule.start();
         Log.i("ConnectionModule [Started]");
 
+
+        //--------------------------------------------------------------------------------------------------------------
+        // Main Loop
+        //--------------------------------------------------------------------------------------------------------------
+        commandInterpreter = new CommandInterpreter();
+        Commands command;
+
+        while (commandInterpreter.isAlive()){
+            System.out.print(" >");
+            command = commandInterpreter.read();
+            switch (command){
+                case EXIT:
+                    Log.i("Shutdown Request from command line");
+                    System.out.println("... shutting down");
+                    continue;
+            }
+        }
 
         //--------------------------------------------------------------------------------------------------------------
         // Closing Modules
