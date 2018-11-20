@@ -1,10 +1,16 @@
 import Core.DBContextMegaPD;
 import Core.Log;
+import Helpers.CommandInterpreter;
+import Helpers.PasswordHasher;
+import Models.Server;
 import Modules.Connection;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * @version 0.1.4
+ */
 public class Main {
 
     public static void main(String[] args) throws IOException {
@@ -12,68 +18,91 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Variables
         //--------------------------------------------------------------------------------------------------------------
-        final double VERSION = 0.1;
+        //Server variables
+        final double VERSION = 0.2;
         final String DESIGNATION = "SERVER";
-        int serverID;
+        Server server;
+        CommandInterpreter commandInterpreter;
+        final int SERVER_TIMEOUT = 9000;
         //--------------------------------------------------------------------------------------------------------------
         //Connection Module
         Thread connectionModule = null;
-        Connection connectionData = new Connection();
+        Connection connectionData;
 
 
         //--------------------------------------------------------------------------------------------------------------
-        // Main Code
+        // Starting DB and LOG
         //--------------------------------------------------------------------------------------------------------------
         Log.initLog();
-        Log.i("Server [Started]");
-
         // Starting DB context -----------------------------------------------------------------------------------------
         try {
             new DBContextMegaPD().setHost(args[0])
-                                .setDB(args[1])
-                                .setAuth(args[2], args[3])
-                                .connect();
+                    .setDB(args[1])
+                    .setAuth(args[2], args[3])
+                    .connect();
         }catch (Exception e){
-          Log.s("Couldn't create DB connection [" + e + "]");
-          return;
+            Log.exit("\"Database Connection not created [" + e + "]");
+            return;
         }
-
-        // Starting ConnectionModule -----------------------------------------------------------------------------------
-        Log.i("ConnectionModule [Started]");
-        connectionModule = new Thread(connectionData);
-        connectionModule.start();
-
+        Log.i("Database [Connected]");
+        //--------------------------------------------------------------------------------------------------------------
+        // Starting Modules
+        //--------------------------------------------------------------------------------------------------------------
 
         // Register the server  ----------------------------------------------------------------------------------------
         try {
-            serverID = DBContextMegaPD.getDBContext().registerServer(DESIGNATION+VERSION, connectionData.getIp(), connectionData.getPort());
+            server = new Server(DESIGNATION+"["+VERSION+"]");
         } catch (Exception e) {
-            Log.s("Couldn't register the server [" + e + "]");
+            Log.exit("Couldn't register the server [" + e + "]");
             return;
         }
         Log.i("Server [Registered]");
-        Log.i("Server["+serverID+"] info: \n Name: "+ DESIGNATION+VERSION +
-                                "\n Address: " + connectionData.getIp() +
-                                "\n Port: " + connectionData.getPort());
+        Log.i("\nServer["+server.getID()+"] info: \nName: "+ DESIGNATION+VERSION +
+                "\nAddress: " + server.getIP() +
+                "\nPort: " + server.getPort() + "\n");
+
+        Log.i("Server [Started]");
+
+        // Starting ConnectionModule -----------------------------------------------------------------------------------
+        connectionData = new Connection(server);
+        connectionModule = new Thread(connectionData);
+        connectionModule.start();
+        Log.i("ConnectionModule [Started]");
 
 
-        try {
-            DBContextMegaPD.getDBContext().disconnect();
-        } catch (SQLException e) {
-            Log.s("Couldn't properly disconnect the Server please contact the DB administrator");
+        //--------------------------------------------------------------------------------------------------------------
+        // Main Loop
+        //--------------------------------------------------------------------------------------------------------------
+        commandInterpreter = new CommandInterpreter();
+        CommandInterpreter.Commands command;
+
+        while (commandInterpreter.isAlive()){
+            System.out.print(" >");
+            command = commandInterpreter.read();
+            switch (command){
+                case SHUTDOWN:
+                    Log.i("Shutdown Request from command line");
+                    System.out.println("... shutting down");
+                    continue;
+            }
         }
 
         //--------------------------------------------------------------------------------------------------------------
-        // Closing threads
+        // Closing Modules
         //--------------------------------------------------------------------------------------------------------------
         try {
             connectionData.close();
-            connectionModule.join(5000);
-            connectionModule.stop();
+            connectionModule.join(SERVER_TIMEOUT);
         } catch (InterruptedException e) {
             Log.w(e.toString());
         }
         Log.i("ConnectionModule [Ended]");
+        try {
+            DBContextMegaPD.getDBContext().disconnect();
+        } catch (SQLException e) {
+            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
+        }
+        Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
     }
 }

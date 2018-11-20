@@ -1,72 +1,94 @@
 package Modules;
 
 import Core.Log;
+import Models.Server;
+import Models.User;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Connection Module, this class is responsible for accepting requests from the clients
  *
  * @author FilipeA
- * @version 0.1.0
+ * @version 0.2.0
  */
 public class Connection implements Runnable {
-
-    //Control variables
+    //Variables
+    //----------------------------------------------------------------------------------------------
+    //Private Variables
+        //Control variables
     private boolean status = true;
+        //Server control variables
+    private Server server;
+        //User Control variables
+    private List<User> users;
+        //TCP socket variables
+    private final int SERVER_TIMEOUT = 5000;
+    private ServerSocket serverSocket;
 
-    //Connection variables
-    private int port;
-    private String ip = "UNDEFINED";
-
-    //TCP socket variables
-    ServerSocket serverS;
+    //Public Variables
 
 
-    public Connection() throws IOException {
-        serverS = new ServerSocket(0);
-        port = serverS.getLocalPort();
-
-    }
-
-    /**
-     * Gets the machine main IP to remote host
-     *
-     * @return IP
-     */
-    public String getIp() {
-        try(final DatagramSocket socket = new DatagramSocket()){
-            try {
-                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            } catch (UnknownHostException e) {
-                Log.w("Cant reach local IP [" + e + "]");
-            }
-            ip = socket.getLocalAddress().getHostAddress();
-        } catch (SocketException e) {
-            Log.w("Cant reach local IP [" + e + "]");
-        }
-
-        return ip;
-    }
+    //----------------------------------------------------------------------------------------------
+    //      CONSTRUCTOR'S
+    //----------------------------------------------------------------------------------------------
 
     /**
-     * Gets the machine TCP port to remote host
-     *
-     * @return port
+     * Base Constructor
      */
-    public int getPort() {
-        return port;
+    public Connection(Server server){
+      this.server = server;
+      serverSocket = server.getServerSocket();
+      users = server.getUsers();
     }
+
+    //----------------------------------------------------------------------------------------------
+    //      GETTERS
+    //----------------------------------------------------------------------------------------------
+
+
+    //----------------------------------------------------------------------------------------------
+    //      SETTERS
+    //----------------------------------------------------------------------------------------------
+
+    //----------------------------------------------------------------------------------------------
+    //      Runnable
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public void run() {
-        while (status){
+        try {
+            serverSocket.setSoTimeout(SERVER_TIMEOUT);
+
+            while (status){
+
+               Socket userConnectionSocket;
+                try {
+                    userConnectionSocket = serverSocket.accept();
+                } catch (SocketTimeoutException e) {
+                    continue;
+                } catch (IOException e){
+                Log.w("[Connection] an attempted connection failed \n " + e);
+                continue;
+                }
 
 
 
+
+            }
+        } catch (SocketException e) {
+            Log.i("ConnectionModule [Failed] \n couldn't set serverSocket timeout");
         }
     }
+
+    //----------------------------------------------------------------------------------------------
+    //      Methods
+    //----------------------------------------------------------------------------------------------
+
+    // Public Methods ------------------------------------------------------------------------------
 
     /**
      * Stops connection module from accepting more requests
@@ -74,4 +96,7 @@ public class Connection implements Runnable {
     public void close() {
         status = false;
     }
+
+    // Private Methods -----------------------------------------------------------------------------
+
 }
