@@ -1,5 +1,7 @@
 package Models;
 
+import Helpers.PasswordHasher;
+
 import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.Socket;
@@ -19,21 +21,23 @@ public class User implements Serializable {
 
     //Variables
     //----------------------------------------------------------------------------------------------
+    //Constant variables
+    public final static String NOT_DEFINED = "notDefined";
+
     //Private Variables
     private int ID;
     private String username;
     private String hashedPassword;
+    private boolean isAuthenticated = false;
     private String directory;
         //Network related variables
         private String IP;
             //Main server (connection module)
         private int serverID;
         private transient Socket connectionSocket;
-        private int connectionPort;
             //Other servers (ping <-> broadcast module)
         private transient DatagramSocket pingSocket;
         private int pingPort;
-        private int errorCount;
             //Notifications module
         private transient Socket notificationSocket;
         private int notificationPort;
@@ -55,6 +59,95 @@ public class User implements Serializable {
     //      CONSTRUCTOR'S
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * Constructor with all modules + username and password <i>this constructor will consider the user has authenticated</i> <br>
+     * This constructor is intended to be used on the client side as it gets the local IP address
+     * @param username
+     * @param hashedPassword
+     * @param directory
+     */
+    public User(String username, String hashedPassword, String directory, int pingPort, int notificationPort, int chatPort, int fileManagerPort) {
+        this.username = username;
+        this.hashedPassword = hashedPassword;
+        this.directory = directory;
+        this.pingPort = pingPort;
+        this.notificationPort = notificationPort;
+        this.chatPort = chatPort;
+        this.fileManagerPort = fileManagerPort;
+        this.isAuthenticated = true;
+    }
+
+    /**
+     * Constructor with all modules <i>this constructor will consider the user has <b>NOT</b> authenticated</i> <br>
+     * This constructor is intended to be used on the client side as it gets the local IP address
+     *
+     */
+    public User(String directory, int pingPort, int notificationPort, int chatPort, int fileManagerPort) {
+        this.username = NOT_DEFINED;
+        this.hashedPassword = NOT_DEFINED;
+        this.directory = directory;
+        this.pingPort = pingPort;
+        this.notificationPort = notificationPort;
+        this.chatPort = chatPort;
+        this.fileManagerPort = fileManagerPort;
+        this.isAuthenticated = true;
+    }
+
+
+    /**
+     * Constructor with all modules + username and password <i>this constructor will consider the user has authenticated</i> <br>
+     * This constructor is intended to be used on the server side
+     * @param ID
+     * @param username
+     * @param hashedPassword
+     * @param directory
+     * @param connectionSocket
+     * @param pingSocket
+     * @param notificationSocket
+     * @param chatSocket
+     * @param fileManagerSocket
+     */
+    public User(int ID, String username, String hashedPassword, String directory, Socket connectionSocket, DatagramSocket pingSocket, Socket notificationSocket, Socket chatSocket, Socket fileManagerSocket) {
+        this.ID = ID;
+        this.username = username;
+        this.hashedPassword = hashedPassword;
+        this.directory = directory;
+        this.connectionSocket = connectionSocket;
+        this.pingSocket = pingSocket;
+        this.notificationSocket = notificationSocket;
+        this.chatSocket = chatSocket;
+        this.fileManagerSocket = fileManagerSocket;
+        this.isAuthenticated = true;
+        this.IP = NOT_DEFINED;
+    }
+
+    /**
+     * Constructor with all modules <i>this constructor will consider the user has <b>NOT</b> authenticated</i>
+     * This constructor is intended to be used on the server side
+     * @param ID
+     * @param directory
+     * @param connectionSocket
+     * @param pingSocket
+     * @param notificationSocket
+     * @param chatSocket
+     * @param fileManagerSocket
+     */
+    public User(int ID, String directory, Socket connectionSocket, DatagramSocket pingSocket, Socket notificationSocket, Socket chatSocket, Socket fileManagerSocket) {
+        this.ID = ID;
+        this.username = NOT_DEFINED;
+        this.hashedPassword = NOT_DEFINED;
+        this.directory = directory;
+        this.connectionSocket = connectionSocket;
+        this.pingSocket = pingSocket;
+        this.notificationSocket = notificationSocket;
+        this.chatSocket = chatSocket;
+        this.fileManagerSocket = fileManagerSocket;
+        this.isAuthenticated = false;
+        this.IP = NOT_DEFINED;
+    }
+
+
+
 
     //----------------------------------------------------------------------------------------------
     //      GETTERS
@@ -69,11 +162,43 @@ public class User implements Serializable {
     }
 
     /**
+     * Returns the ID of the main server
+     * @return server id
+     */
+    public int getServerID() {
+        return serverID;
+    }
+
+    /**
+     * Returns the user current IP address
+     * @return user ip
+     */
+    public String getIP() {
+        return IP;
+    }
+
+    /**
      * Returns the username
      * @return username
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * Returns the hashed version of user
+     * @return hashed password
+     */
+    public String getPassword() {
+        return hashedPassword;
+    }
+
+    /**
+     * Checks if the is is authenticated
+     * @return true if authenticated
+     */
+    public boolean isAuthenticated(){
+        return this.isAuthenticated;
     }
 
     /**
@@ -101,11 +226,59 @@ public class User implements Serializable {
     }
 
     /**
-     * Returns the user current IP address
-     * @return user ip
+     * Returns the <b>USER</b> local port for the ping module
+     * @return UDP ping module port
      */
-    public String getIP() {
-        return IP;
+    public int getPingPort() {
+        return pingPort;
+    }
+
+    /**
+     * Returns the TCP socket responsible for the notification system
+     * @return notificationSocket
+     */
+    public Socket getNotificationSocket() {
+        return notificationSocket;
+    }
+
+    /**
+     * Returns the <b>USER</b> local port for the notification module
+     * @return TCP notification module port
+     */
+    public int getNotificationPort() {
+        return notificationPort;
+    }
+
+    /**
+     * Returns the TCP socket responsible for the chat system
+     * @return chatSocket
+     */
+    public Socket getChatSocket() {
+        return chatSocket;
+    }
+
+    /**
+     * Returns the <b>USER</b> local port for the chat module
+     * @return TCP chat module port
+     */
+    public int getChatPort() {
+        return chatPort;
+    }
+
+    /**
+     * Returns the TCP socket responsible for the file management system
+     * @return fileManagerSocket
+     */
+    public Socket getFileManagerSocket() {
+        return fileManagerSocket;
+    }
+
+    /**
+     * Returns the <b>USER</b> local port for the notification module
+     * @return TCP notification module port
+     */
+    public int getFileManagerPort() {
+        return fileManagerPort;
     }
 
 
@@ -116,7 +289,7 @@ public class User implements Serializable {
     /**
      * sets the user ConnectionSocket (TCP) <br>
      * this socket is used to keep the connection between the user and the mainServer
-     * @param connectionSocket
+     * @param connectionSocket socket to associate to the user
      */
     public void setConnectionSocket(Socket connectionSocket) {
         this.connectionSocket = connectionSocket;
@@ -131,9 +304,11 @@ public class User implements Serializable {
         this.pingSocket = pingSocket;
     }
 
+
+
     /**
      * Sets the user IP
-     * @param IP
+     * @param IP address
      */
     public void setIP(String IP) {
         this.IP = IP;
@@ -141,10 +316,12 @@ public class User implements Serializable {
 
     /**
      * associates the user with a hashed password
-     * @see Helpers.PasswordHasher on how to hash a password
-     * @param hashedPassword to associate with the user
+     * @see Helpers.PasswordHasher
+     * @param password to associate with the user
      */
-    public void setHashedPassword(String hashedPassword){this.hashedPassword = hashedPassword; }
+    public void setPassword(String password){
+        this.hashedPassword = PasswordHasher.generateSecurePassword(password);
+    }
 
     //----------------------------------------------------------------------------------------------
     //      Methods

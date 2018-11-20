@@ -9,7 +9,7 @@ import java.util.Base64;
 
 /**
  * Original code at: http://www.appsdeveloperblog.com/encrypt-user-password-example-java/
- * 
+ *
  * @version 1.0
  *
  * <br>
