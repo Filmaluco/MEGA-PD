@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.*;
 
 /**
- * Connection Module, this class is responsible for accepting request's from the clients
+ * Connection Module, this class is responsible for accepting requests from the clients
  *
  * @author FilipeA
  * @version 0.1.0
@@ -69,7 +69,7 @@ public class Connection implements Runnable {
     }
 
     /**
-     * Stops connection module from accepting more request's
+     * Stops connection module from accepting more requests
      */
     public void close() {
         status = false;
