@@ -1,6 +1,7 @@
 import Core.DBContextMegaPD;
 import Core.Log;
 import Helpers.CommandInterpreter;
+import Helpers.PasswordHasher;
 import Models.Server;
 import Modules.Connection;
 
@@ -22,6 +23,7 @@ public class Main {
         final String DESIGNATION = "SERVER";
         Server server;
         CommandInterpreter commandInterpreter;
+        final int SERVER_TIMEOUT = 9000;
         //--------------------------------------------------------------------------------------------------------------
         //Connection Module
         Thread connectionModule = null;
@@ -42,7 +44,7 @@ public class Main {
             Log.s("\"Database Connection not created [" + e + "]");
             return;
         }
-        Log.i("Database Connection created[Success]");
+        Log.i("Database [Connected]");
         //--------------------------------------------------------------------------------------------------------------
         // Starting Modules
         //--------------------------------------------------------------------------------------------------------------
@@ -90,18 +92,17 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         try {
             connectionData.close();
-            connectionModule.join(5000);
-            connectionModule.stop();
+            connectionModule.join(SERVER_TIMEOUT);
         } catch (InterruptedException e) {
             Log.w(e.toString());
         }
         Log.i("ConnectionModule [Ended]");
-        Log.i("Server [Ended]");
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
             Log.s("Couldn't properly disconnect the Server please contact the DB administrator");
         }
         Log.i("Database [Disconnected]");
+        Log.i("Server [Ended]");
     }
 }

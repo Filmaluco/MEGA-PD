@@ -1,31 +1,51 @@
 package Models;
 
+import java.io.Serializable;
 import java.net.DatagramSocket;
 import java.net.Socket;
+import java.util.List;
 
 /**
  *
- *  User model, this class represents all the user information
+ *  User model, this class represents all the user information <br>
+ *  <i>this model needs to be synced between client and server</i>
  *
  * @author FilipeA
  * @version 1.0
  */
-public class User {
+public class User implements Serializable {
+
+    public final static long serialVersionUID = 1L;
 
     //Variables
     //----------------------------------------------------------------------------------------------
     //Private Variables
     private int ID;
     private String username;
+    private String hashedPassword;
     private String directory;
         //Network related variables
         private String IP;
-            //Main server
-        private Socket connectionSocket;
+            //Main server (connection module)
         private int serverID;
-            //Other servers
-        private DatagramSocket pingSocket;
+        private transient Socket connectionSocket;
+        private int connectionPort;
+            //Other servers (ping <-> broadcast module)
+        private transient DatagramSocket pingSocket;
+        private int pingPort;
         private int errorCount;
+            //Notifications module
+        private transient Socket notificationSocket;
+        private int notificationPort;
+            //Chat module
+        private transient Socket chatSocket;
+        private int chatPort;
+            //FileManager module
+        private transient Socket fileManagerSocket;
+        private int fileManagerPort;
+            //FileTransfer module
+        private transient List<Socket> fileTransfers;
+
 
 
     //Public Variables
@@ -119,6 +139,12 @@ public class User {
         this.IP = IP;
     }
 
+    /**
+     * associates the user with a hashed password
+     * @see Helpers.PasswordHasher on how to hash a password
+     * @param hashedPassword to associate with the user
+     */
+    public void setHashedPassword(String hashedPassword){this.hashedPassword = hashedPassword; }
 
     //----------------------------------------------------------------------------------------------
     //      Methods
