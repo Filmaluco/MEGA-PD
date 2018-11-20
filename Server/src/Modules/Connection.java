@@ -26,6 +26,7 @@ public class Connection implements Runnable {
         //User Control variables
     private List<User> users;
         //TCP socket variables
+    private final int SERVER_TIMEOUT = 5000;
     private ServerSocket serverSocket;
 
     //Public Variables
@@ -59,10 +60,27 @@ public class Connection implements Runnable {
 
     @Override
     public void run() {
-        while (status){
+        try {
+            serverSocket.setSoTimeout(SERVER_TIMEOUT);
+
+            while (status){
+
+               Socket userConnectionSocket;
+                try {
+                    userConnectionSocket = serverSocket.accept();
+                } catch (SocketTimeoutException e) {
+                    continue;
+                } catch (IOException e){
+                Log.w("[Connection] an attempted connection failed \n " + e);
+                continue;
+                }
 
 
 
+
+            }
+        } catch (SocketException e) {
+            Log.i("ConnectionModule [Failed] \n couldn't set serverSocket timeout");
         }
     }
 
