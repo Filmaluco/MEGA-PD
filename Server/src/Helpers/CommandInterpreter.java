@@ -1,3 +1,5 @@
+package Helpers;
+
 import java.util.Scanner;
 
 enum Commands{
