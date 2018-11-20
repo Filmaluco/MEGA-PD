@@ -1,10 +1,10 @@
 package Models;
 
+import Core.Log;
 import Helpers.PasswordHasher;
 
 import java.io.Serializable;
-import java.net.DatagramSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.List;
 
 /**
@@ -67,6 +67,18 @@ public class User implements Serializable {
      * @param directory
      */
     public User(String username, String hashedPassword, String directory, int pingPort, int notificationPort, int chatPort, int fileManagerPort) {
+        //Find machine real IP address
+        try(final DatagramSocket socket = new DatagramSocket()){
+            try {
+                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            } catch (UnknownHostException e) {
+                Log.w("Cant reach local IP [" + e + "]");
+            }
+            IP = socket.getLocalAddress().getHostAddress();
+        } catch (SocketException e) {
+            Log.w("Cant reach local IP [" + e + "]");
+        }
+
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.directory = directory;
@@ -83,6 +95,18 @@ public class User implements Serializable {
      *
      */
     public User(String directory, int pingPort, int notificationPort, int chatPort, int fileManagerPort) {
+        //Find machine real IP address
+        try(final DatagramSocket socket = new DatagramSocket()){
+            try {
+                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            } catch (UnknownHostException e) {
+                Log.w("Cant reach local IP [" + e + "]");
+            }
+            IP = socket.getLocalAddress().getHostAddress();
+        } catch (SocketException e) {
+            Log.w("Cant reach local IP [" + e + "]");
+        }
+
         this.username = NOT_DEFINED;
         this.hashedPassword = NOT_DEFINED;
         this.directory = directory;
