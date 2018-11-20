@@ -41,7 +41,7 @@ public class Main {
                     .setAuth(args[2], args[3])
                     .connect();
         }catch (Exception e){
-            Log.s("\"Database Connection not created [" + e + "]");
+            Log.exit("\"Database Connection not created [" + e + "]");
             return;
         }
         Log.i("Database [Connected]");
@@ -53,7 +53,7 @@ public class Main {
         try {
             server = new Server(DESIGNATION+"["+VERSION+"]");
         } catch (Exception e) {
-            Log.s("Couldn't register the server [" + e + "]");
+            Log.exit("Couldn't register the server [" + e + "]");
             return;
         }
         Log.i("Server [Registered]");
