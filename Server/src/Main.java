@@ -100,7 +100,7 @@ public class Main {
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
-            Log.s("Couldn't properly disconnect the Server please contact the DB administrator");
+            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
         }
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
