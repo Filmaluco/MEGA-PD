@@ -6,7 +6,7 @@ import java.util.Scanner;
  * This class is meant to encapsulate the server commands
  *
  * @author FilipeA
- * @version 1.0
+ * @version 1.2
  */
 public class CommandInterpreter{
 
