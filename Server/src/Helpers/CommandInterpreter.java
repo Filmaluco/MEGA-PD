@@ -2,10 +2,6 @@ package Helpers;
 
 import java.util.Scanner;
 
-enum Commands{
-    EXIT, NOT_DEFINED;
-}
-
 /**
  * This class is meant to encapsulate the server commands
  *
@@ -22,7 +18,14 @@ public class CommandInterpreter{
     Scanner scanner = new Scanner(System.in);
     String lastCommand;
 
-    private final String EXIT = "exit";
+    private final String SHUTDOWN = "shutdown";
+
+    //Public variables
+    public enum Commands{
+        SHUTDOWN, NOT_DEFINED
+    }
+
+
 
     //----------------------------------------------------------------------------------------------
     //      GETTERS
@@ -50,9 +53,9 @@ public class CommandInterpreter{
 
         lastCommand = scanner.nextLine();
 
-        if (lastCommand.equalsIgnoreCase(EXIT)){
+        if (lastCommand.equalsIgnoreCase(SHUTDOWN)){
             status = false;
-            return Commands.EXIT;
+            return Commands.SHUTDOWN;
         }
         return Commands.NOT_DEFINED;
     }

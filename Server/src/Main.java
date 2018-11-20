@@ -1,5 +1,6 @@
 import Core.DBContextMegaPD;
 import Core.Log;
+import Helpers.CommandInterpreter;
 import Models.Server;
 import Modules.Connection;
 
@@ -71,13 +72,13 @@ public class Main {
         // Main Loop
         //--------------------------------------------------------------------------------------------------------------
         commandInterpreter = new CommandInterpreter();
-        Commands command;
+        CommandInterpreter.Commands command;
 
         while (commandInterpreter.isAlive()){
             System.out.print(" >");
             command = commandInterpreter.read();
             switch (command){
-                case EXIT:
+                case SHUTDOWN:
                     Log.i("Shutdown Request from command line");
                     System.out.println("... shutting down");
                     continue;
