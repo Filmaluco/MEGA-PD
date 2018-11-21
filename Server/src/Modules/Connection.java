@@ -15,7 +15,7 @@ import java.util.List;
  * @author FilipeA
  * @version 0.2.0
  */
-public class Connection implements Runnable {
+public class Connection implements Runnable{
     //Variables
     //----------------------------------------------------------------------------------------------
     //Private Variables
