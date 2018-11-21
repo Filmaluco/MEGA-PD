@@ -1,8 +1,9 @@
 package Modules;
 
-import Core.Log;
-import Models.User;
 import Models.Server;
+import Models.Server;
+import PD.Core.Log;
+import PD.Core.User;
 import java.io.IOException;
 import java.net.*;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author FilipeA
  * @version 0.2.0
  */
-public class Connection implements Runnable {
+public class Connection implements Runnable{
     //Variables
     //----------------------------------------------------------------------------------------------
     //Private Variables
@@ -94,6 +95,7 @@ public class Connection implements Runnable {
     public void close() {
         status = false;
     }
+
 
     // Private Methods -----------------------------------------------------------------------------
 

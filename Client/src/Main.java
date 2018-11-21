@@ -5,13 +5,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main  extends Application {
+public class Main extends Application {
 
     public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));
 
 
         Scene login = new Scene(root);
@@ -20,5 +21,6 @@ public class Main  extends Application {
         primaryStage.setScene(login);
         primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 }

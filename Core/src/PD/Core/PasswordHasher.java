@@ -1,4 +1,4 @@
-package Helpers;
+package PD.Core;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -17,9 +17,9 @@ import java.util.Base64;
  *   <pre>{@code
  *         String providedPassword = "password";
  *         //Store this
- *         String securePassword = PasswordHasher.generateSecurePassword(providedPassword);
+ *         String securePassword = PD.Core.PasswordHasher.generateSecurePassword(providedPassword);
  *         //Compare with this
- *         boolean passwordMatch = PasswordHasher.verifyUserPassword(providedPassword, securePassword);
+ *         boolean passwordMatch = PD.Core.PasswordHasher.verifyUserPassword(providedPassword, securePassword);
  *  }</pre>
  */
 public final class PasswordHasher {
@@ -31,7 +31,7 @@ public final class PasswordHasher {
 
     /**
      *
-     * @return PasswordHasher salt
+     * @return PD.Core.PasswordHasher salt
      */
     private static String getSalt() {
             return SALT;
