@@ -1,18 +1,20 @@
 package Modules;
 
-import Core.Log;
-import Helpers.PasswordHasher;
+
 import Models.ServerData;
-import Models.User;
+import PD.Core.Log;
+import PD.Core.User;
+import PD.Core.Module;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Connection implements Runnable {
+public class Connection implements Runnable, Module.ConnectionModule {
 
 
     private User user;
@@ -33,6 +35,7 @@ public class Connection implements Runnable {
 
     public Connection(User user) {
         this.user = user;
+        this.servers = new ArrayList<>();
         try {
             this.chatServerSocket = new ServerSocket(0);
             } catch (IOException e) { Log.w("Chat server socket couldn't be created:/n" + e); }
@@ -43,9 +46,9 @@ public class Connection implements Runnable {
             this.fileManagerServerSocket = new ServerSocket(0);
         } catch (IOException e) { Log.w("File manager server socket couldn't be created:/n" + e); }
 
-        user.setChatPort(chatServerSocket.getLocalPort());
-        user.setNotificationPort(notificationServerSocket.getLocalPort());
-        user.setFileManagerPort(fileManagerServerSocket.getLocalPort());
+        //user.setChatPort(chatServerSocket.getLocalPort());
+        //user.setNotificationPort(notificationServerSocket.getLocalPort());
+        //user.setFileManagerPort(fileManagerServerSocket.getLocalPort());
 
     }
 
@@ -56,12 +59,21 @@ public class Connection implements Runnable {
     @Override
     public void run() {
 
-        //Socket
+        try {
+            loadServers();
+        } catch (IOException e) {
+            Log.exit("[CONNECTION] Cannot connect with database [" + e + "]");
+        }
 
-        //connectar com o servidor e enviar os dados do user
-        //receber resposta
-            //senao aceite mostrar um aviso e nao fazer nada
+        try {
+            connectionSocket = new Socket(servers.get(0).getIP(), servers.get(0).getPort());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w("Could reache server " + servers.get(0).getName());
+        }
 
+        Log.i("Connection sucess");
+/*
                 try {
                     userNotificationSocket = notificationServerSocket.accept();
                 } catch (IOException e) { Log.w("Failed to connect to the notification module:\n" + e); }
@@ -76,7 +88,7 @@ public class Connection implements Runnable {
                 user.setNotificationSocket(userNotificationSocket);
                 user.setChatSocket(userChatSocket);
                 user.setFileManagerSocket(userFileManagerSocket);
-
+*/
     }
 
     //----------------------------------------------------------------------------------------------
@@ -93,13 +105,19 @@ public class Connection implements Runnable {
         status = false;
     }
 
+    @Override
     public boolean login(User user){
         String hashedPassword = user.getPassword();
         String directory = System.getProperty("user.dir");
 
         return true;
     }
-        // check if user exists in the server
+
+    @Override
+    public void logout(User user) {
+
+    }
+    // check if user exists in the server
         // for servers[i]
         // if(
         //connect him if he does and tell him to fuck off otherwise
@@ -121,13 +139,17 @@ public class Connection implements Runnable {
                 response.append(inputLine);
             }
             JSONArray serverData = new JSONArray(response.toString());
+            //if(serverData.length()==0)
+                //TODO: Dar warning ao user que não há servidores disponiveis
             for (int i = 0; i < serverData.length(); i++) {
                 servers.add(new ServerData(serverData.getJSONObject(i).getInt("ID"),
                         serverData.getJSONObject(i).getString("Name"),
                         serverData.getJSONObject(i).getString("IP"),
                         serverData.getJSONObject(i).getInt("Port"),
-                        serverData.getJSONObject(i).getBoolean("Status")));
+                        (serverData.getJSONObject(i).getInt("Status")==1)));
             }
 
     }
+
+    //TODO:LoadServer mas só devolver um
 }
