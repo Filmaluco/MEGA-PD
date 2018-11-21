@@ -144,8 +144,9 @@ public final class DBContextMegaPD {
         }
 
         //Close connection
-        if (stmt != null) stmt.close();
-        if (connection != null) connection.close();
+        //JConnector is losing the connection after N time, the system is doing an autoReconnect there's no need to close because he loses the connection every N time
+            //if (stmt != null) stmt.close();
+            //if (connection != null) connection.close();
     }
 
     /**
