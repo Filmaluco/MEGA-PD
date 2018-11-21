@@ -1,7 +1,8 @@
 package Models;
 
 import Core.DBContextMegaPD;
-import Core.Log;
+import PD.Core.Log;
+import PD.Core.User;
 
 import java.net.*;
 import java.util.ArrayList;

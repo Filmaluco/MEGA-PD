@@ -1,9 +1,8 @@
 import Core.DBContextMegaPD;
-import Core.Log;
 import Helpers.CommandInterpreter;
-import Helpers.PasswordHasher;
 import Models.Server;
 import Modules.Connection;
+import PD.Core.Log;
 
 import java.io.IOException;
 import java.sql.SQLException;
