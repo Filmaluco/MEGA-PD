@@ -1,7 +1,4 @@
-package Models;
-
-import Core.Log;
-import Helpers.PasswordHasher;
+package PD.Core;
 
 import java.io.Serializable;
 import java.net.*;
@@ -9,7 +6,7 @@ import java.util.List;
 
 /**
  *
- *  User model, this class represents all the user information <br>
+ *  PD.Core.User model, this class represents all the user information <br>
  *  <i>this model needs to be synced between client and server</i>
  *
  * @author FilipeA
@@ -43,11 +40,12 @@ public class User implements Serializable {
         private int notificationPort;
             //Chat module
         private transient Socket chatSocket;
+        private int unreadMessagesCount;
         private int chatPort;
             //FileManager module
         private transient Socket fileManagerSocket;
         private int fileManagerPort;
-            //FileTransfer module
+            //PD.Core.FileTransfer module
         private transient List<Socket> fileTransfers;
 
 
@@ -340,7 +338,7 @@ public class User implements Serializable {
 
     /**
      * associates the user with a hashed password
-     * @see Helpers.PasswordHasher
+     * @see PasswordHasher
      * @param password to associate with the user
      */
     public void setPassword(String password){

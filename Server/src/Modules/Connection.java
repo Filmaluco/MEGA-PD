@@ -1,12 +1,10 @@
 package Modules;
 
-import Core.Log;
 import Models.Server;
-import Models.User;
-
+import PD.Core.Log;
+import PD.Core.User;
 import java.io.IOException;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,6 +94,7 @@ public class Connection implements Runnable{
     public void close() {
         status = false;
     }
+
 
     // Private Methods -----------------------------------------------------------------------------
 
