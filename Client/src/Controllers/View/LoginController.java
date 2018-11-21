@@ -3,6 +3,8 @@ package Controllers.View;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +12,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.control.Label;
 import javafx.stage.StageStyle;
+import sun.applet.Main;
 
+import java.awt.*;
+import java.awt.image.SampleModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static javafx.collections.FXCollections.observableArrayList;
 
 public class LoginController implements Initializable {
     @FXML
@@ -29,19 +37,24 @@ public class LoginController implements Initializable {
     @FXML
     private JFXButton btnGuestLogin;
 
+    @FXML
+    private Label lbWarning;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //TODO: Update visual changes
+        //setWarning();
+        ObservableList<String> list = FXCollections.observableArrayList();
     }
 
     @FXML
-    public void userLogin(ActionEvent event) {
+    private void userLogin(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
         //TODO: Implement real authentication
-        if (username.equals("MegaPD") && password.equals("PD2018")){
+
+        if (true){
             closeStage();
             loadMain();
         }
@@ -64,7 +77,11 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    public void guestLogin(ActionEvent event) {
+    private void guestLogin(ActionEvent event) {
         //TODO: Implement
+    }
+
+    public void setWarning(String warning){
+        lbWarning.setText(warning);
     }
 }

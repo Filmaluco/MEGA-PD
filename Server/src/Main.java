@@ -56,9 +56,9 @@ public class Main {
             return;
         }
         Log.i("Server [Registered]");
-        Log.i("Server["+server.getID()+"] info: \n Name: "+ DESIGNATION+VERSION +
-                "\n Address: " + server.getIP() +
-                "\n Port: " + server.getPort());
+        Log.i("\nServer["+server.getID()+"] info: \nName: "+ DESIGNATION+VERSION +
+                "\nAddress: " + server.getIP() +
+                "\nPort: " + server.getPort() + "\n");
 
         Log.i("Server [Started]");
 
@@ -99,7 +99,7 @@ public class Main {
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
-            Log.w("Couldn't properly disconnect the Server please contact the DB administrator");
+            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
         }
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");

@@ -12,6 +12,6 @@
             fx:controller="Controllers.View.TransferController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
-        <JFXTreeTableView prefHeight="450.0" prefWidth="800.0" />
+        <JFXTreeTableView fx:id="ttvTransfers" prefHeight="450.0" prefWidth="800.0" />
     </children>
 </AnchorPane>
