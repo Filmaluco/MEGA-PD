@@ -1,7 +1,6 @@
 package Modules;
 
 import Core.Log;
-import Helpers.PasswordHasher;
 import Models.ServerData;
 import Models.User;
 import org.json.JSONArray;

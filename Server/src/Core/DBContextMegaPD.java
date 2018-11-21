@@ -106,12 +106,10 @@ public final class DBContextMegaPD {
      * @throws UnableToConnectException if host/database/authentication was not set OR couldn't access the database
      */
     public void connect(){
-        if(isConnected) throw new IllegalStateException("Can't change connection while there's a connection active");
         //--------------------------------------
         if(!hasAuth || !hasDB || !hasHost){
             throw new UnableToConnectException("Connection requires host/db and credentials");
         }
-
         try {
             this.connection = DriverManager.getConnection(connectionString, username, password);
         } catch (SQLException e) {
@@ -134,9 +132,10 @@ public final class DBContextMegaPD {
      */
     public void disconnect(){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
-
+        this.connect();
         //Remove current server from active
         String sql = "UPDATE `Servers` SET `Status` = '0' WHERE `Servers`.`ID` = "+ this.serverID +";";
+        isConnected = false;
         try {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -177,7 +176,6 @@ public final class DBContextMegaPD {
      *  <br> <b>or</b> if it was already registered
      */
     public int registerServer(String name, String ip, int connPort) throws Exception {
-
         if(isRegistered) throw  new Exception();
 
         String sql = "INSERT INTO `Servers` (`ID`, `Name`, `IP`, `Port`, `Status`) " +

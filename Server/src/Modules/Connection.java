@@ -74,6 +74,8 @@ public class Connection implements Runnable{
                 continue;
                 }
 
+                Log.i("[Connection] new user attempted to connect");
+
 
 
 
