@@ -1,6 +1,7 @@
 package Modules;
 
 import Core.Log;
+import Helpers.PasswordHasher;
 import Models.ServerData;
 import Models.User;
 import org.json.JSONArray;
@@ -14,17 +15,17 @@ import java.util.List;
 public class Connection implements Runnable {
 
 
-    User user;
+    private User user;
         //Control variables
     private boolean status = true;
         //TCP socket variables
     private final int TIMEOUT = 5000;
     private ServerSocket notificationServerSocket;
-    Socket userNotificationSocket = null;
+    private Socket userNotificationSocket = null;
     private ServerSocket chatServerSocket;
-    Socket userChatSocket = null;
+    private Socket userChatSocket = null;
     private ServerSocket fileManagerServerSocket;
-    Socket userFileManagerSocket = null;
+    private Socket userFileManagerSocket = null;
     private Socket connectionSocket;
 
     //List of active servers
@@ -55,7 +56,7 @@ public class Connection implements Runnable {
     @Override
     public void run() {
 
-        Socket
+        //Socket
 
         //connectar com o servidor e enviar os dados do user
         //receber resposta
@@ -92,12 +93,16 @@ public class Connection implements Runnable {
         status = false;
     }
 
-    public void merda(User user){
+    public boolean login(User user){
+        String hashedPassword = user.getPassword();
+        String directory = System.getProperty("user.dir");
+
+        return true;
+    }
         // check if user exists in the server
         // for servers[i]
         // if(
         //connect him if he does and tell him to fuck off otherwise
-    }
 
     // Private Methods -----------------------------------------------------------------------------
 

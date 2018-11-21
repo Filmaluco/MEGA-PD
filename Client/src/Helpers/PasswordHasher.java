@@ -56,7 +56,7 @@ public final class PasswordHasher {
     }
 
     /**
-     * Hash's a given password
+     * Hashs a given password
      * @param password plain text password
      * @return hashed version of the password
      */
