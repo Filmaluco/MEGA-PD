@@ -2,6 +2,7 @@ package Models;
 
 import Core.Log;
 import Helpers.PasswordHasher;
+import Models.ServerData;
 
 import java.io.Serializable;
 import java.net.*;
@@ -49,6 +50,8 @@ public class User implements Serializable {
         private int fileManagerPort;
             //FileTransfer module
         private transient List<Socket> fileTransfers;
+            //List of active servers
+        private List<ServerData> servers;
 
 
 
@@ -367,5 +370,36 @@ public class User implements Serializable {
         throw new UnsupportedOperationException("Operation not implemented yet");
     }
 
+    /**
+     * Loads the list of active servers from the database to the list so the user can choose one to access
+     */
+    public void loadServers(){
+        try {
+            URL url = new URL("https://api.filmaluco.cloud/servers?status=active");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            int responseCode = conn.getResponseCode();
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while((inputLine = in.readLine())!= null){
+                response.append(inputLine);
+            }
+            JSONArray serverData = new JSONArray(response.toString());
+            for (int i = 0; i < serverData.length(); i++) {
+                servers.add(new ServerData(serverData.getJSONObject(i).getInt("ID"),
+                        serverData.getJSONObject(i).getString("Name"),
+                        serverData.getJSONObject(i).getString("IP"),
+                        serverData.getJSONObject(i).getInt("Port"),
+                        serverData.getJSONObject(i).getBoolean("Status")));
+            }
+        } catch (MalformedURLException e) {
+            Log.exit("Couldn't connect to the server [" + e + "]");
+        } catch (IOException e) {
+            //TODO: Handle exception
+            // Log.("I/O exception [" + e + "]");
+            e.printStackTrace();
+        }
+
+    }
     // Private Methods -----------------------------------------------------------------------------
 }
