@@ -1,11 +1,8 @@
 import Core.DBContextMegaPD;
 import Core.Log;
 import Helpers.CommandInterpreter;
-import Helpers.PasswordHasher;
 import Models.Server;
 import Modules.Connection;
-
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -13,7 +10,7 @@ import java.sql.SQLException;
  */
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
         //--------------------------------------------------------------------------------------------------------------
         // Variables
@@ -97,11 +94,7 @@ public class Main {
             Log.w(e.toString());
         }
         Log.i("ConnectionModule [Ended]");
-        try {
-            DBContextMegaPD.getDBContext().disconnect();
-        } catch (SQLException e) {
-            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
-        }
+        DBContextMegaPD.getDBContext().disconnect();
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
     }

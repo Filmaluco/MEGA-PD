@@ -132,7 +132,7 @@ public final class DBContextMegaPD {
     /**
      * Puts the servers status Offline and disconnects from the remote database
      */
-    public void disconnect() throws SQLException {
+    public void disconnect(){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
 
         //Remove current server from active
