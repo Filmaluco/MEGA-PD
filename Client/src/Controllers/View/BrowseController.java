@@ -1,9 +1,7 @@
 package Controllers.View;
 
-import Models.View.File;
+import Models.ViewModels.File;
 import com.jfoenix.controls.JFXTreeTableView;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 

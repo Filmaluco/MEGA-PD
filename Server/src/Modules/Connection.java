@@ -5,6 +5,8 @@ import Models.Server;
 import PD.Core.Log;
 import PD.Core.User;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
 import java.util.List;
 
@@ -74,8 +76,26 @@ public class Connection implements Runnable{
                 continue;
                 }
 
-                Log.i("[Connection] new user attempted to connect");
+                ObjectInputStream in;
+                ObjectOutputStream out;
 
+                try {
+                     in = new ObjectInputStream(userConnectionSocket.getInputStream());
+                     out = new ObjectOutputStream(userConnectionSocket.getOutputStream());
+
+                     User user = (User) in.readObject();
+
+                     System.out.println(user.getUsername());
+
+                } catch (IOException e) {
+                    Log.w("[Connection] Problem establishing connection");
+                    continue;
+                } catch (ClassNotFoundException e) {
+                    Log.w("[Connection] Couldn't read user data");
+                    continue;
+                }
+
+                Log.i("[Connection] new user attempted to connect");
 
 
 

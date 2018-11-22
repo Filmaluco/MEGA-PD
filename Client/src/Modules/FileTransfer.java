@@ -6,7 +6,16 @@ import PD.Core.Module;
 
 import java.util.List;
 
-public class FileTransfer implements  Runnable, Module.FileTransfer {
+public class FileTransfer implements Module.FileTransfer {
+
+    //Variables
+    //----------------------------------------------------------------------------------------------
+    //Private Variables
+
+
+    //----------------------------------------------------------------------------------------------
+    //      FileTransfer (TCP Connection)
+    //----------------------------------------------------------------------------------------------
     @Override
     public List<MegaFile> getMyFiles() {
         return null;
@@ -47,8 +56,4 @@ public class FileTransfer implements  Runnable, Module.FileTransfer {
 
     }
 
-    @Override
-    public void run() {
-
-    }
 }

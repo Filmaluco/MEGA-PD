@@ -6,7 +6,17 @@ import PD.Core.User;
 
 import java.util.List;
 
-public class Chat implements Runnable, Module.ChatModule {
+public class Chat implements Module.ChatModule {
+
+    //Variables
+    //----------------------------------------------------------------------------------------------
+    //Private Variables
+
+
+    //----------------------------------------------------------------------------------------------
+    //      ChatModule (TCP Connection)
+    //----------------------------------------------------------------------------------------------
+
     @Override
     public int[] getOnlineUsers() {
         return new int[0];
@@ -42,8 +52,4 @@ public class Chat implements Runnable, Module.ChatModule {
         return false;
     }
 
-    @Override
-    public void run() {
-
-    }
 }

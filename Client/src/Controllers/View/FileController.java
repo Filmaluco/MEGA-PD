@@ -1,6 +1,6 @@
 package Controllers.View;
 
-import Models.View.File;
+import Models.ViewModels.File;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;

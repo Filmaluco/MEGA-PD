@@ -1,4 +1,4 @@
-package Models.View;
+package Models.ViewModels;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;

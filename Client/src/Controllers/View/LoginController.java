@@ -1,8 +1,13 @@
 package Controllers.View;
 
+import Core.Context;
+import Modules.Connection;
+import PD.Core.PasswordHasher;
+import PD.Core.User;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +30,9 @@ import java.util.ResourceBundle;
 import static javafx.collections.FXCollections.observableArrayList;
 
 public class LoginController implements Initializable {
+
+    Context context;
+
     @FXML
     private JFXTextField usernameField;
 
@@ -41,22 +49,50 @@ public class LoginController implements Initializable {
     private Label lbWarning;
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //TODO: Update visual changes
-        //setWarning();
-        ObservableList<String> list = FXCollections.observableArrayList();
+    @FXML public void initialize(URL location, ResourceBundle resources) {
+        Platform.runLater(() -> {
+
+            ObservableList<String> list = FXCollections.observableArrayList();
+
+        });
     }
 
     @FXML
     private void userLogin(ActionEvent event) {
+
+        if(context.getServer() == null){
+            this.setWarning("No connection");
+            return;
+        }
+
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        //TODO: Implement real authentication
+        if(username.length() == 0 || password.length() == 0){
+            this.setWarning("Please insert a username/password");
+            return;
+        }
 
-        if (true){
+        password = PasswordHasher.generateSecurePassword(password);
+
+        context.setUser(new User(
+                username,
+                password,
+                "/",
+                context.getPingSocket().getLocalPort(),
+                context.getNotificationServerSocket().getLocalPort(),
+                context.getChatServerSocket().getLocalPort(),
+                context.getFileManagerServerSocket().getLocalPort()
+        ));
+
+        Connection conn = new Connection(context.getServer());
+
+
+        if (conn.login(context.getUser())){
             closeStage();
             loadMain();
+        }else {
+            this.setWarning("Please check your credentials");
         }
     }
 
@@ -84,4 +120,6 @@ public class LoginController implements Initializable {
     public void setWarning(String warning){
         lbWarning.setText(warning);
     }
+
+    public void setContext(Context context){ this.context = context;}
 }
