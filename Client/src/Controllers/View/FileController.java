@@ -1,6 +1,7 @@
 package Controllers.View;
 
 import Models.View.File;
+import Modules.UserFileManager;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
@@ -20,6 +21,8 @@ import java.util.ResourceBundle;
 
 public class FileController implements Initializable {
 
+    UserFileManager userFiles;
+
     @FXML
     private JFXTreeTableView<File> ttvFiles;
 
@@ -27,6 +30,9 @@ public class FileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        userFiles = new UserFileManager(files);
+        userFiles.start();
+
         ttvFiles.getStyleClass().add("noheader");
 
         //Setting up columns

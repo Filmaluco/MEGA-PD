@@ -55,4 +55,6 @@ public class File extends RecursiveTreeObject<File> {
     public StringProperty downloadDateProperty() {
         return downloadDate;
     }
+
+    public void setSize(String size) { this.size.set(size); }
 }
