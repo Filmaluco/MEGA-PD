@@ -1,4 +1,4 @@
-package MegaPD.Core.Modules;
+package Core.Modules;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

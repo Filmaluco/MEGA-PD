@@ -1,6 +1,6 @@
-package MegaPD.Core;
+package Core;
 
-import MegaPD.Core.Modules.EntityData;
+import Core.Modules.EntityData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

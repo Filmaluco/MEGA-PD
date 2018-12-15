@@ -1,4 +1,4 @@
-package MegaPD.Core.Modules;
+package Core.Modules;
 
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
