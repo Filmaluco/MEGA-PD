@@ -1,4 +1,4 @@
-package PD.Core;
+package MegaPD.Core;
 
 import java.util.Date;
 
