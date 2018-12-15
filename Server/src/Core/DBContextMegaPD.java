@@ -1,4 +1,5 @@
 package Core;
+import PD.Core.Log;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
 
@@ -140,7 +141,8 @@ public final class DBContextMegaPD {
         try {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.w("Failed to close connection on DB! concurrent status created");
+            //e.printStackTrace();
         }
 
         //Close connection
