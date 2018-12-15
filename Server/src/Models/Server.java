@@ -1,8 +1,8 @@
 package Models;
 
 import Core.DBContextMegaPD;
-import PD.Core.Log;
-import PD.Core.User;
+import Core.Log;
+import Core.UserData;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class Server{
 
         //TCP socket variables
     private ServerSocket serverS;
-    private List<User> users;
+    private List<UserData> users;
 
     //----------------------------------------------------------------------------------------------
     //      CONSTRUCTOR'S
@@ -107,7 +107,7 @@ public class Server{
         return serverS;
     }
 
-    public List<User> getUsers() {
+    public List<UserData> getUsers() {
         return users;
     }
 

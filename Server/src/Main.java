@@ -1,14 +1,18 @@
 import Core.DBContextMegaPD;
+import Core.Log;
+import Core.UserData;
 import Helpers.CommandInterpreter;
 import Models.Server;
-import Modules.Connection;
-import PD.Core.Log;
+
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
- * @version 0.1.4
+ * @version 1.0.0
  */
 public class Main {
 
@@ -17,17 +21,13 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Variables
         //--------------------------------------------------------------------------------------------------------------
-        //Server variables
         final double VERSION = 0.2;
         final String DESIGNATION = "SERVER";
         Server server;
         CommandInterpreter commandInterpreter;
         final int SERVER_TIMEOUT = 9000;
-        //--------------------------------------------------------------------------------------------------------------
-        //Connection Module
-        Thread connectionModule = null;
-        Connection connectionData;
 
+        List<UserData> users = new ArrayList<>();
 
         //--------------------------------------------------------------------------------------------------------------
         // Starting DB and LOG
@@ -47,11 +47,11 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Starting Modules
         //--------------------------------------------------------------------------------------------------------------
-
         // Register the server  ----------------------------------------------------------------------------------------
         try {
-            server = new Server(DESIGNATION+"["+VERSION+"]");
+            server = new Server(DESIGNATION+"["+VERSION+"]", 0);
         } catch (Exception e) {
+            e.printStackTrace();
             Log.exit("Couldn't register the server [" + e + "]");
             return;
         }
@@ -62,11 +62,10 @@ public class Main {
 
         Log.i("Server [Started]");
 
-        // Starting ConnectionModule -----------------------------------------------------------------------------------
-        connectionData = new Connection(server);
-        connectionModule = new Thread(connectionData);
-        connectionModule.start();
-        Log.i("ConnectionModule [Started]");
+        // Starting User Connections -----------------------------------------------------------------------------------
+
+
+        // Starting User Notifications ---------------------------------------------------------------------------------
 
 
         //--------------------------------------------------------------------------------------------------------------
@@ -89,14 +88,10 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Closing Modules
         //--------------------------------------------------------------------------------------------------------------
-        try {
-            connectionData.close();
-            connectionModule.join(SERVER_TIMEOUT);
-        } catch (InterruptedException e) {
-            Log.w(e.toString());
-        }
-        Log.i("ConnectionModule [Ended]");
+        // Closing User Connections ------------------------------------------------------------------------------------
 
+
+        // Closing User Notifications ----------------------------------------------------------------------------------a
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
