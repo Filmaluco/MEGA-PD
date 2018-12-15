@@ -32,6 +32,10 @@
     -fx-background-color: #FFFFFF;
 }
 
+.notificationOn{
+    -fx-background-color: red;
+}
+
 /* List View Testar */
 
 .list-view {

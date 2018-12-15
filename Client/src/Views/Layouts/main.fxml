@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" fx:controller="Controllers.View.MainController" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.View.MainController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -24,12 +24,12 @@
                         <Image url="@../../Resources/Images/Logo.png" />
                      </image></ImageView>
                   <Region prefHeight="35.0" prefWidth="700.0" HBox.hgrow="ALWAYS" />
-                  <JFXButton defaultButton="true" ellipsisString="" prefHeight="35.0" prefWidth="35.0">
+                  <JFXButton defaultButton="true" fx:id="btnNotifications" onAction="#showNotifications" ellipsisString="" prefHeight="35.0" prefWidth="35.0">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                      <graphic>
-                        <FontAwesomeIconView glyphName="BELL" size="20" />
+                        <FontAwesomeIconView  glyphName="BELL"  size="20" />
                      </graphic>
                      <font>
                         <Font size="1.0" />
