@@ -1,5 +1,4 @@
 package Core;
-import PD.Core.Log;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
 
@@ -107,12 +106,10 @@ public final class DBContextMegaPD {
      * @throws UnableToConnectException if host/database/authentication was not set OR couldn't access the database
      */
     public void connect(){
-        if(isConnected) throw new IllegalStateException("Can't change connection while there's a connection active");
         //--------------------------------------
         if(!hasAuth || !hasDB || !hasHost){
             throw new UnableToConnectException("Connection requires host/db and credentials");
         }
-
         try {
             this.connection = DriverManager.getConnection(connectionString, username, password);
         } catch (SQLException e) {
@@ -135,17 +132,16 @@ public final class DBContextMegaPD {
      */
     public void disconnect() throws SQLException {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
-
+        this.connect();
         //Remove current server from active
         String sql = "UPDATE `Servers` SET `Status` = '0' WHERE `Servers`.`ID` = "+ this.serverID +";";
-        try {
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            Log.w("Failed to close connection on DB! concurrent status created");
-            //e.printStackTrace();
-        }
+        isConnected = false;
+
+        stmt.executeUpdate(sql);
+
 
         //Close connection
+        //JConnector is losing the connection after N time, the system is doing an autoReconnect there's no need to close because he loses the connection every N time
         if (stmt != null) stmt.close();
         if (connection != null) connection.close();
     }
@@ -178,13 +174,12 @@ public final class DBContextMegaPD {
      *  <br> <b>or</b> if it was already registered
      */
     public int registerServer(String name, String ip, int connPort) throws Exception {
-
         if(isRegistered) throw  new Exception();
 
         String sql = "INSERT INTO `Servers` (`ID`, `Name`, `IP`, `Port`, `Status`) " +
-                     "VALUES"+"(NULL, '"+name+"', '"+ip+"', '"+connPort+"', '1');";
+                "VALUES"+"(NULL, '"+name+"', '"+ip+"', '"+connPort+"', '1');";
         try {
-             stmt.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
+            stmt.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException e) {
             System.out.println("Couldn't register the server");
             e.printStackTrace();

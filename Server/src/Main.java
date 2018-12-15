@@ -96,10 +96,12 @@ public class Main {
             Log.w(e.toString());
         }
         Log.i("ConnectionModule [Ended]");
+
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
-            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
+            Log.exit("Database [Couldn't properly disconnect the Server please contact the DB administrator]");
+            //e.printStackTrace();
         }
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
