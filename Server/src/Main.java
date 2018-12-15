@@ -12,9 +12,11 @@ import java.util.List;
 
 
 /**
- * @version 1.0.0
+ * @version 2.0.0
  */
 public class Main {
+
+    public static boolean STATUS;
 
     public static void main(String[] args) throws IOException {
 
@@ -57,16 +59,19 @@ public class Main {
         }
         Log.i("Server [Registered]");
         Log.i("\nServer["+server.getID()+"] info: \nName: "+ DESIGNATION+VERSION +
-                "\nAddress: " + server.getIP() +
-                "\nPort: " + server.getPort() + "\n");
+                 "\nAddress: " + server.getIP() +
+                 "\nPort: " + server.getPort() + "\n");
 
+        STATUS = true;
         Log.i("Server [Started]");
 
         // Starting User Connections -----------------------------------------------------------------------------------
-
+        Thread connectionListener = new Thread(new ConnectionListenerThread(users));
+        connectionListener.start();
 
         // Starting User Notifications ---------------------------------------------------------------------------------
-
+        Thread notificationNotifier = new Thread(new notificationNotifierThread(users));
+        notificationNotifier.start();
 
         //--------------------------------------------------------------------------------------------------------------
         // Main Loop
@@ -81,7 +86,8 @@ public class Main {
                 case SHUTDOWN:
                     Log.i("Shutdown Request from command line");
                     System.out.println("... shutting down");
-                    continue;
+                    STATUS = false;
+                break;
             }
         }
 
@@ -89,9 +95,22 @@ public class Main {
         // Closing Modules
         //--------------------------------------------------------------------------------------------------------------
         // Closing User Connections ------------------------------------------------------------------------------------
-
+        try {
+            connectionListener.join(SERVER_TIMEOUT);
+        } catch (InterruptedException e) {
+            Log.exit("ConnectionListener [InterruptedException]");
+            //e.printStackTrace();
+        }
 
         // Closing User Notifications ----------------------------------------------------------------------------------a
+        try {
+            notificationNotifier.join(SERVER_TIMEOUT);
+        } catch (InterruptedException e) {
+            Log.exit("NotificationNotifier [InterruptedException]");
+            //e.printStackTrace();
+        }
+
+
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
@@ -100,5 +119,9 @@ public class Main {
         }
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
+
+        //--------------------------------------------------------------------------------------------------------------
+        if(connectionListener.isAlive()) connectionListener.stop();
+        if(notificationNotifier.isAlive()) notificationNotifier.stop();
     }
 }
