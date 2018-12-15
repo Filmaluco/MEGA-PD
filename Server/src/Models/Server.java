@@ -3,6 +3,7 @@ package Models;
 import Core.DBContextMegaPD;
 import Core.Log;
 import Core.UserData;
+import Helpers.Constants;
 
 import java.net.*;
 import java.util.ArrayList;
@@ -56,6 +57,8 @@ public class Server{
         //Create Server socket
         serverS = new ServerSocket(port);
         this.port = serverS.getLocalPort();
+
+        serverS.setSoTimeout(Constants.SERVER_TIMEOUT);
 
         //Start users sockets storage
         users = new ArrayList<>();

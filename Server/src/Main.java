@@ -2,6 +2,7 @@ import Core.DBContextMegaPD;
 import Core.Log;
 import Core.UserData;
 import Helpers.CommandInterpreter;
+import Helpers.Constants;
 import Models.Server;
 
 
@@ -27,7 +28,6 @@ public class Main {
         final String DESIGNATION = "SERVER";
         Server server;
         CommandInterpreter commandInterpreter;
-        final int SERVER_TIMEOUT = 9000;
 
         List<UserData> users = new ArrayList<>();
 
@@ -65,13 +65,15 @@ public class Main {
         STATUS = true;
         Log.i("Server [Started]");
 
-        // Starting User Connections -----------------------------------------------------------------------------------
-        Thread connectionListener = new Thread(new ConnectionListenerThread(users));
-        connectionListener.start();
 
         // Starting User Notifications ---------------------------------------------------------------------------------
-        Thread notificationNotifier = new Thread(new notificationNotifierThread(users));
+        Notifier notifier = new Notifier(users);
+        Thread notificationNotifier = new Thread(notifier);
         notificationNotifier.start();
+
+        // Starting User Connections -----------------------------------------------------------------------------------
+        Thread connectionListener = new Thread(new ConnectionListenerThread(server, users, notifier));
+        connectionListener.start();
 
         //--------------------------------------------------------------------------------------------------------------
         // Main Loop
@@ -96,7 +98,7 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Closing User Connections ------------------------------------------------------------------------------------
         try {
-            connectionListener.join(SERVER_TIMEOUT);
+            connectionListener.join(Constants.SERVER_TIMEOUT);
         } catch (InterruptedException e) {
             Log.exit("ConnectionListener [InterruptedException]");
             //e.printStackTrace();
@@ -104,7 +106,7 @@ public class Main {
 
         // Closing User Notifications ----------------------------------------------------------------------------------a
         try {
-            notificationNotifier.join(SERVER_TIMEOUT);
+            notificationNotifier.join(Constants.SERVER_TIMEOUT);
         } catch (InterruptedException e) {
             Log.exit("NotificationNotifier [InterruptedException]");
             //e.printStackTrace();
