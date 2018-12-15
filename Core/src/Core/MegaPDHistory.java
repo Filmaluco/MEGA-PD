@@ -1,8 +1,8 @@
-package PD.Core;
+package MegaPD.Core;
 
 import java.util.Date;
 
-public class FileHistory {
+public class MegaPDHistory {
 
     int ID;
     String ownerNanme;
@@ -11,7 +11,7 @@ public class FileHistory {
     Date date;
     boolean status;
 
-    public FileHistory(int ID, String ownerNanme, String targetName, String fileName, Date date, boolean status) {
+    public MegaPDHistory(int ID, String ownerNanme, String targetName, String fileName, Date date, boolean status) {
         this.ID = ID;
         this.ownerNanme = ownerNanme;
         this.targetName = targetName;
@@ -43,4 +43,5 @@ public class FileHistory {
     public boolean isStatus() {
         return status;
     }
+
 }

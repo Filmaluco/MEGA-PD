@@ -1,4 +1,4 @@
-package PD.Core;
+package MegaPD.Core;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,16 +7,16 @@ import java.util.Date;
 import java.util.logging.*;
 
 /**
- * This class must be initialized once with PD.Core.Log.initLog() before being used.
+ * This class must be initialized once with PD.MegaPD.Core.Log.initLog() before being used.
  * After being initialized, in order to be used all that has to be done is include this file and call the desired method
  * <br>
  * <b>Usage Example: </b><br>
  * <pre>
- *     import [path].PD.Core.Log;
+ *     import [path].PD.MegaPD.Core.Log;
  * {@code
  *      void method(){
  *          //produce a information log
- *          PD.Core.Log.i(message);
+ *          PD.MegaPD.Core.Log.i(message);
  *      }
  * }
  * </pre>
@@ -33,7 +33,7 @@ public final class Log {
     static Date date = null;
     static SimpleDateFormat dateFormat = null;
     static File file = null;
-  //  static Handler consoleHandler = null;   // DEBUG
+    //  static Handler consoleHandler = null;   // DEBUG
     static Handler fileHandler = null;
     static Formatter simpleFormatter = null;
     static boolean status = true;
