@@ -1,5 +1,7 @@
 import Core.Log;
+import Core.MegaPDFile;
 import Core.Modules.ModuleInterface.ConnectionModule.ConnectionRequest;
+import Core.Modules.ModuleInterface.FileManagerModule.FileManagerRequest;
 import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Modules.Connection;
@@ -7,6 +9,7 @@ import Modules.FileManager;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 /**
  *
@@ -42,6 +45,12 @@ public class UserThread implements Runnable{
                     handleConnectionRequest((ConnectionRequest) enumRequested);
                     continue;
                 }
+                //FileManager module
+                if(enumRequested instanceof FileManagerRequest){
+                    handleFileManagerRequest((FileManagerRequest) enumRequested);
+                    continue;
+                }
+
 
                 //Request not recognized
                 user.getSocketInput().reset();
@@ -68,6 +77,8 @@ public class UserThread implements Runnable{
         //Server is about to shutdown, notify all main clients
         notifier.serverOff();
     }
+
+
 
     /**
      * Handles all requests made to the Connection Module
@@ -114,6 +125,50 @@ public class UserThread implements Runnable{
             Log.w("Failed to process user["
                     +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
                     +"] request " + request.toString());
+        }
+    }
+
+    private void handleFileManagerRequest(FileManagerRequest request) {
+        try{
+            switch (request) {
+                case updateFiles:
+                    fileManager.updateFiles((List<MegaPDFile>) user.getSocketInput().readObject());
+                    break;
+                case addFile:
+                    fileManager.addFile((MegaPDFile) user.getSocketInput().readObject());
+                    break;
+                case remove:
+                    fileManager.remove((MegaPDFile) user.getSocketInput().readObject());
+                    break;
+                case updateFile:
+                    fileManager.updateFile((String) user.getSocketInput().readObject(), user.getSocketInput().readLong());
+                    break;
+                case getUserFiles:
+                    fileManager.getUserFiles((Integer) user.getSocketInput().readObject());
+                    break;
+                case requestFile:
+                    fileManager.requestFile((String) user.getSocketInput().readObject(), (Integer) user.getSocketInput().readObject());
+                    break;
+                case completeFileTransfer:
+                    fileManager.completeFileTransfer((Integer) user.getSocketInput().readObject());
+                    break;
+                case getFileHistory:
+                    fileManager.getFileHistory();
+                    break;
+
+                default:
+                    //Request not recognized (this should not happen unless the versions of the Core library are not the same)
+                    user.getSocketInput().reset();
+                    connection.newException("Request <" + request.toString() + "> not found");
+                    connection.sendData();
+                    user.getSocketOutput().flush();
+                    break;
+            }
+        }catch(Exception e){
+            Log.w("Failed to process user["
+                    +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
+                    +"] request " + request.toString() + "\n" + e);
+            //e.printStackTrace();
         }
     }
 }
