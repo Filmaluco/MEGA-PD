@@ -15,43 +15,38 @@ public class CommandInterpreter{
     //--------------------------------------------------------------------------------------------------------------
     //Private variables
     private boolean status = true;
-    Scanner scanner = new Scanner(System.in);
-    String lastCommand;
+    private Scanner scanner = new Scanner(System.in);
 
     private final String SHUTDOWN = "shutdown";
 
     //Public variables
+
+    /**
+     * Acceptable commands
+     */
     public enum Commands{
         SHUTDOWN, NOT_DEFINED
     }
 
 
-
     //----------------------------------------------------------------------------------------------
     //      GETTERS
     //----------------------------------------------------------------------------------------------
-
-
     public boolean isAlive() {
         return status;
     }
 
     //----------------------------------------------------------------------------------------------
-    //      SETTERS
-    //----------------------------------------------------------------------------------------------
-
-    //----------------------------------------------------------------------------------------------
     //      Methods
     //----------------------------------------------------------------------------------------------
-
     // Public Methods ------------------------------------------------------------------------------
 
     /**
-     * starts the core of the class
+     * Returns a enumeration with the acceptable commands
      */
     public Commands read() {
 
-        lastCommand = scanner.nextLine();
+        String lastCommand = scanner.nextLine();
 
         if (lastCommand.equalsIgnoreCase(SHUTDOWN)){
             status = false;

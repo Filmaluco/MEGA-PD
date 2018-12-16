@@ -6,7 +6,6 @@ import Core.UserData;
 import Helpers.Constants;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +37,7 @@ public class Server{
      * Create the Server acceptance Socket in the desired port
      * @param name desired name
      * @param port desired port
+     * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
     public Server(String name, int port, List<UserData> users) throws Exception {
@@ -70,6 +70,7 @@ public class Server{
     /**
      * Create the Server acceptance Socket (system generates the port)
      * @param name desired name
+     * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
     public Server(String name, List<UserData> users) throws Exception {
@@ -80,6 +81,9 @@ public class Server{
     //      GETTERS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @return ID of the server
+     */
     public int getID() {
         return ID;
     }
@@ -103,13 +107,17 @@ public class Server{
     }
 
     /**
-     *
-     * @return
+     * Returns the main socket of the server, the socket responsible for handling all requests
+     * @return socket
      */
     public ServerSocket getServerSocket() {
         return serverS;
     }
 
+    /**
+     *
+     * @return list of the users connected to this Server
+     */
     public List<UserData> getUsers() {
         return users;
     }

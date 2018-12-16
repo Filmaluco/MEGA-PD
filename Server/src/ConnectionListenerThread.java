@@ -8,6 +8,13 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ *  Responsible for accepting all initial requests of new Users
+ *
+ * @author FilipeA
+ * @version 1.0
+ */
 public class ConnectionListenerThread implements Runnable{
 
     private List<UserData> users;

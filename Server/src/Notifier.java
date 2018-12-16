@@ -4,6 +4,13 @@ import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
 import java.util.List;
 
+/**
+ *
+ *  Responsible for notifying all connected users about important changes
+ *
+ * @author FilipeA
+ * @version 1.1
+ */
 public class Notifier implements Runnable, ModuleInterface.NotificationModule {
 
     private List<UserData> users;
@@ -19,6 +26,10 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         }
     }
 
+    /**
+     * User disconnected as such it needs to be removed from future connections
+     * @param user to disconnect
+     */
     public void disconnect(UserData user){
         //TODO: sync
         users.remove(user);
