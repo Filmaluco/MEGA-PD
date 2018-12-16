@@ -32,7 +32,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public int login(String s, String s1) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public void logout() throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -56,7 +56,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -68,7 +68,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public UserInfo getUser(int i) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {

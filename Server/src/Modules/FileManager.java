@@ -19,7 +19,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public void updateFiles(List<MegaPDFile> list) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -31,7 +31,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public void addFile(MegaPDFile megaPDFile) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -43,7 +43,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public void remove(MegaPDFile megaPDFile) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -55,7 +55,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public void updateFile(String s, long l) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -67,7 +67,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public List<MegaPDFile> getUserFiles(int i) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -79,7 +79,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public int requestFile(String s, int i) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -91,7 +91,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public void completeFileTransfer(int i) throws MegaPDRemoteException {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
@@ -103,7 +103,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
 
     @Override
     public List<MegaPDHistory> getFileHistory() {
-        this.newException("No yet implemented");
+        this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
