@@ -1,25 +1,32 @@
 package Modules;
 
+import Core.Log;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileReceiverManager {
 
     public static final int MAX_SIZE = 4000;
     public static final int TIMEOUT = 10;
+    public static int requestID = 1;
     public static final String tempPath = System.getProperty("java.io.tmpdir");
 
     private String fileName;
     private long fileSize;
     private String senderIP;
     private int senderPort;
+    private Map<Integer, String> requestMap = null;
 
     public FileReceiverManager(String file, long size, String IP, int port){
         fileName = file;
         fileSize = size;
         senderIP = IP;
         senderPort = port;
+        requestMap = new HashMap<Integer, String>();
     }
 
 
@@ -30,16 +37,35 @@ public class FileReceiverManager {
      * @return a valid request ID
      */
     public int requestFile(String fileName, int clientIP){
-        return 0;
+        //TODO: Request file from server
+        if() {
+            requestMap.put(requestID++, fileName);
+            return requestID;
+        }
+        else
+            return 0;
     }
 
-    public void getFile(String filename, String destPath) throws IOException {
+    public void getFile(int rID, String destPath) throws IOException {
         byte []fileChunk = new byte[MAX_SIZE];
         int nBytes;
         int bytesRead = 0;
         FileOutputStream localFileOS = null;
         PrintWriter pout;
+        String filename = null;
 
+        for (int i: requestMap.keySet()) {
+            if(i == rID)
+                if(requestMap.containsKey(i)) {
+                    filename = requestMap.get(i);
+                    break;
+                }
+                else
+                    Log.w("That request was already processed!");
+        }
+        if (filename == null)
+            return;
+        
         try {
             localFileOS = new FileOutputStream(tempPath + "/" + filename);
         } catch (FileNotFoundException e) {
@@ -96,6 +122,7 @@ public class FileReceiverManager {
         else{
             System.out.println("here");
             moveFromTemp(filename, destPath);
+            requestMap.remove(rID);
         }
 
 
