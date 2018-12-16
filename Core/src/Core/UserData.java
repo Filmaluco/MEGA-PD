@@ -49,6 +49,10 @@ public class UserData extends EntityData {
         this.username = username;
     }
 
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public void setSocket(Socket s) throws IOException {
         super.setSocket(s, false);
     }

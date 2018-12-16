@@ -31,13 +31,16 @@ public class ConnectionListenerThread implements Runnable{
                 s = server.getServerSocket().accept();
 
                 UserData user = new UserData(false);
-                Thread userThread = new Thread(new UserThread(user, notifier));
                 user.setSocket(s);
+                user.setAddress(s.getRemoteSocketAddress().toString());
+
+                Thread userThread = new Thread(new UserThread(user, notifier));
 
                 users.add(user);
                 userThreads.add(userThread);
 
                 userThread.start();
+                Log.i("[" + user.getAddress() + "] connected");
             }catch (SocketTimeoutException ignored){
             } catch (IOException e) {
                 Log.w("Connection Listener [Connection failed]");

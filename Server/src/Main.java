@@ -51,7 +51,7 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Register the server  ----------------------------------------------------------------------------------------
         try {
-            server = new Server(DESIGNATION+"["+VERSION+"]", 0);
+            server = new Server(DESIGNATION+"["+VERSION+"]", 0, users);
         } catch (Exception e) {
             e.printStackTrace();
             Log.exit("Couldn't register the server [" + e + "]");

@@ -40,7 +40,7 @@ public class Server{
      * @param port desired port
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name, int port) throws Exception {
+    public Server(String name, int port, List<UserData> users) throws Exception {
 
         //Find machine real IP address
         try(final DatagramSocket socket = new DatagramSocket()){
@@ -61,7 +61,7 @@ public class Server{
         serverS.setSoTimeout(Constants.SERVER_TIMEOUT);
 
         //Start users sockets storage
-        users = new ArrayList<>();
+        this.users = users;
 
         //Register Server in the DB
         this.ID = DBContextMegaPD.getDBContext().registerServer(name, IP, this.port);
@@ -72,8 +72,8 @@ public class Server{
      * @param name desired name
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name) throws Exception {
-        this(name, 0);
+    public Server(String name, List<UserData> users) throws Exception {
+        this(name, 0, users);
     }
 
     //----------------------------------------------------------------------------------------------
