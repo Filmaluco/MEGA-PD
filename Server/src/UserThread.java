@@ -48,7 +48,9 @@ public class UserThread implements Runnable{
 
             }catch (IOException e){
                 //The socket with the user malfunction as such the connection was lost
-                Log.w("Connection to user ["+ user.getUsername() +"] lost");
+                Log.w("Connection to user ["
+                        +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
+                        +"] lost");
                 //Check if he was authenticated
                 if(user.isAuthenticaded()) {
                     try { connection.logout(); } catch (MegaPDRemoteException e1) { }
@@ -57,7 +59,7 @@ public class UserThread implements Runnable{
                 break;
             } catch (ClassNotFoundException e) {
                 //Failed to read the Request object
-                Log.w("Failed to process request from user["+ user.getUsername() +"] lost");
+                Log.w("Failed to process request from user["+ user.getAddress() +"] lost");
             }
         }
         //Server is about to shutdown, notify all main clients
@@ -75,19 +77,26 @@ public class UserThread implements Runnable{
                     //User requested a connect method
                     Socket notificationS = connection.connect((String)user.getSocketInput().readObject(), (Integer) user.getSocketInput().readObject());
                     user.setNotificationSocket(notificationS, false);
-                    Log.i("Established connection with user[" + user.getUsername() +"");
+                    Log.i("Established connection with user[" + user.getAddress() +"]");
                     break;
 
                 case login:
+                    user.setID(connection.login((String)user.getSocketInput().readObject(), (String) user.getSocketInput().readObject()));
+                    //Todo update user Info based on the ID given
+                    notifier.updateUsers();
+                    Log.i("User[" + user.getUsername() + "] authenticated");
                     break;
 
                 case logout:
+                    connection.logout();
                     break;
 
                 case getUser:
+                    connection.getUser((Integer) user.getSocketInput().readObject());
                     break;
 
                 case getUsersOnline:
+                    connection.getUsersOnline();
                     break;
 
                 default:
@@ -99,7 +108,9 @@ public class UserThread implements Runnable{
                     break;
             }
         }catch(Exception e){
-            Log.w("Failed to process user["+user.getUsername()+"] request");
+            Log.w("Failed to process user["
+                    +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
+                    +"] request " + request.toString());
         }
     }
 }
