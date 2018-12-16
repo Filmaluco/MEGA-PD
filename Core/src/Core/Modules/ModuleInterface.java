@@ -1,10 +1,9 @@
-package MegaPD.Core.Modules;
+package Core.Modules;
 
+import Core.MegaPDFile;
+import Core.MegaPDHistory;
+import Core.UserInfo;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
-import MegaPD.Core.MegaPDFile;
-import MegaPD.Core.MegaPDHistory;
-import MegaPD.Core.UserInfo;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;

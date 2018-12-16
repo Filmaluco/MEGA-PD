@@ -1,11 +1,11 @@
 package Models;
 
 import Core.DBContextMegaPD;
-import PD.Core.Log;
-import PD.Core.User;
+import Core.Log;
+import Core.UserData;
+import Helpers.Constants;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +27,7 @@ public class Server{
 
         //TCP socket variables
     private ServerSocket serverS;
-    private List<User> users;
+    private List<UserData> users;
 
     //----------------------------------------------------------------------------------------------
     //      CONSTRUCTOR'S
@@ -37,9 +37,10 @@ public class Server{
      * Create the Server acceptance Socket in the desired port
      * @param name desired name
      * @param port desired port
+     * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name, int port) throws Exception {
+    public Server(String name, int port, List<UserData> users) throws Exception {
 
         //Find machine real IP address
         try(final DatagramSocket socket = new DatagramSocket()){
@@ -57,8 +58,10 @@ public class Server{
         serverS = new ServerSocket(port);
         this.port = serverS.getLocalPort();
 
+        serverS.setSoTimeout(Constants.SERVER_TIMEOUT);
+
         //Start users sockets storage
-        users = new ArrayList<>();
+        this.users = users;
 
         //Register Server in the DB
         this.ID = DBContextMegaPD.getDBContext().registerServer(name, IP, this.port);
@@ -67,16 +70,20 @@ public class Server{
     /**
      * Create the Server acceptance Socket (system generates the port)
      * @param name desired name
+     * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name) throws Exception {
-        this(name, 0);
+    public Server(String name, List<UserData> users) throws Exception {
+        this(name, 0, users);
     }
 
     //----------------------------------------------------------------------------------------------
     //      GETTERS
     //----------------------------------------------------------------------------------------------
 
+    /**
+     * @return ID of the server
+     */
     public int getID() {
         return ID;
     }
@@ -100,14 +107,18 @@ public class Server{
     }
 
     /**
-     *
-     * @return
+     * Returns the main socket of the server, the socket responsible for handling all requests
+     * @return socket
      */
     public ServerSocket getServerSocket() {
         return serverS;
     }
 
-    public List<User> getUsers() {
+    /**
+     *
+     * @return list of the users connected to this Server
+     */
+    public List<UserData> getUsers() {
         return users;
     }
 
