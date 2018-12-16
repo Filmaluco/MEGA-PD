@@ -1,17 +1,17 @@
 package Modules;
 
 import Core.MegaPDFile;
-import Models.View.File;
+import Models.View.FileModel;
 import javafx.collections.ObservableList;
 
 import javax.swing.filechooser.FileSystemView;
+import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -22,10 +22,10 @@ public class UserFileManager extends Thread {
     private final List<MegaPDFile> megaPDFiles = new ArrayList<>();
     private Path folderPath;
     private WatchService watchService;
-    private ObservableList<File> files;
+    private ObservableList<FileModel> fileModels;
 
-    public UserFileManager(ObservableList<File> files) {
-        this.files = files;
+    public UserFileManager(ObservableList<FileModel> fileModels) {
+        this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
         folderPathName += defaultFolderName;
         folderPath = Paths.get(folderPathName);
@@ -115,7 +115,7 @@ public class UserFileManager extends Thread {
             String fileName = filePath.getFileName().toString();
             if (megaPDFiles.get(i).getFileName().equals(fileName)){
                 megaPDFiles.remove(i);
-                files.remove(i);
+                fileModels.remove(i);
                 return true;
             }
         }
@@ -126,7 +126,7 @@ public class UserFileManager extends Thread {
         String filename = filePath.getFileName().toString();
         String extension = getExtensionByStringHandling(filename);
         long filesize = getFileSize(filename);
-        files.add(new File(filename, getStringSizeLengthFile(filesize)));
+        fileModels.add(new FileModel(filePath, filename, getStringSizeLengthFile(filesize)));
         return megaPDFiles.add(new MegaPDFile(filePath, filename, extension, filesize));
     }
 
@@ -136,7 +136,7 @@ public class UserFileManager extends Thread {
             if (megaPDFiles.get(i).getFileName().equals(fileName)){
                 long fileSize = getFileSize(filePath.getFileName().toString());
                 megaPDFiles.get(i).setFileSize(fileSize);
-                files.get(i).setSize(getStringSizeLengthFile(fileSize));
+                fileModels.get(i).setSize(getStringSizeLengthFile(fileSize));
                 return true;
             }
         }
@@ -145,7 +145,7 @@ public class UserFileManager extends Thread {
 
 
     public void listAllFiles(){
-//        for (Path entry: files) {
+//        for (Path entry: fileModels) {
 //            //List Directory name and
 //            //System.out.println(entry.toString());
 //            System.out.println(entry.getFileName().toString());

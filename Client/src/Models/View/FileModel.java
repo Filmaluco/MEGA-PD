@@ -4,21 +4,25 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class File extends RecursiveTreeObject<File> {
+import java.nio.file.Path;
+
+public class FileModel extends RecursiveTreeObject<FileModel> {
+    Path filePath;
     StringProperty filename;
     StringProperty size;
     StringProperty downloadedFrom;
     StringProperty downloadDate;
 
 
-    public File(String filename, String size, String downloadedFrom, String downloadDate) {
+    public FileModel(Path filePath, String filename, String size, String downloadedFrom, String downloadDate) {
         this.filename = new SimpleStringProperty(filename);
         this.size = new SimpleStringProperty(size);
         this.downloadedFrom = new SimpleStringProperty(downloadedFrom);
         this.downloadDate = new SimpleStringProperty(downloadDate);
     }
 
-    public File(String filename, String size) {
+    public FileModel(Path filePath, String filename, String size) {
+        this.filePath = filePath;
         this.filename = new SimpleStringProperty(filename);
         this.size = new SimpleStringProperty(size);
     }
@@ -57,4 +61,6 @@ public class File extends RecursiveTreeObject<File> {
     }
 
     public void setSize(String size) { this.size.set(size); }
+
+    public Path getFilePath() { return filePath; }
 }

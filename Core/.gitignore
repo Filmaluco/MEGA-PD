@@ -8,7 +8,7 @@
 # PD.Core.Log file
 *.log
 
-# BlueJ files
+# BlueJ fileModels
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
@@ -37,10 +37,10 @@ hs_err_pid*
 .idea/dictionaries
 .idea/shelf
 
-# Generated files
+# Generated fileModels
 .idea/**/contentModel.xml
 
-# Sensitive or high-churn files
+# Sensitive or high-churn fileModels
 .idea/dataSources/
 .idea/dataSources.ids
 .idea/dataSources.local.xml
@@ -54,7 +54,7 @@ hs_err_pid*
 */.idea/libraries
 
 # Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
+# When using Gradle or Maven with auto-import, you should exclude module fileModels,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
 # .idea/modules.xml

@@ -1,9 +1,7 @@
 package Controllers.View;
 
-import Models.View.File;
+import Models.View.FileModel;
 import com.jfoenix.controls.JFXTreeTableView;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -13,7 +11,7 @@ import java.util.ResourceBundle;
 public class BrowseController implements Initializable {
 
     @FXML
-    private JFXTreeTableView<File> ttvBrowse;
+    private JFXTreeTableView<FileModel> ttvBrowse;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
