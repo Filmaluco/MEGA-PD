@@ -3,6 +3,7 @@ import Core.Modules.ModuleInterface.ConnectionModule.ConnectionRequest;
 import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Modules.Connection;
+import Modules.FileManager;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -19,11 +20,13 @@ public class UserThread implements Runnable{
     UserData user;
     Notifier notifier;
     Connection connection;
+    FileManager fileManager;
 
     public UserThread(UserData userData, Notifier notifier){
         this.user = userData;
         this.notifier = notifier;
         this.connection = new Connection(userData);
+        this.fileManager = new FileManager(userData);
     }
 
 
