@@ -38,8 +38,8 @@ public class ModuleInterface {
     public interface NotificationModule{
         enum NotificationRequest {updateUsers, updateFiles}
 
-        public String updateUsers() throws MegaPDRemoteException;
-        public String updateFiles() throws MegaPDRemoteException;
+        public void updateUsers(String notificationMessage) throws MegaPDRemoteException;
+        public void updateFiles(String notificationMessage) throws MegaPDRemoteException;
     }
 
 

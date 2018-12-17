@@ -91,13 +91,14 @@ public class UserThread implements Runnable{
                     //User requested a connect method
                     Socket notificationS = connection.connect((String)user.getSocketInput().readObject(), (Integer) user.getSocketInput().readObject());
                     user.setNotificationSocket(notificationS, false);
+                    notifier.updateUsers((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) + "connected");
                     Log.i("Established connection with user[" + user.getAddress() +"]");
                     break;
 
                 case login:
                     user.setID(connection.login((String)user.getSocketInput().readObject(), (String) user.getSocketInput().readObject()));
                     //Todo update user Info based on the ID given
-                    notifier.updateUsers();
+                    notifier.updateUsers(user.getUsername() + "logged in");
                     Log.i("User[" + user.getUsername() + "] authenticated");
                     break;
 

@@ -9,19 +9,19 @@ public class MegaPDFile implements Serializable{
 
     private int ID;
     private int ownerID;
-    private Path path;
+    private String path;
     private String name;
     private String extension;
     private long size;
 
-    public MegaPDFile(Path filePath,String fileName, String extension, long fileSize) {
+    public MegaPDFile(String filePath,String fileName, String extension, long fileSize) {
         this.path = filePath;
         this.name = fileName;
         this.extension = extension;
         this.size = fileSize;
     }
 
-    public MegaPDFile(int ID, int ownerID, Path path, String name, String extension, long size) {
+    public MegaPDFile(int ID, int ownerID, String path, String name, String extension, long size) {
         this.ID = ID;
         this.ownerID = ownerID;
         this.path = path;
@@ -34,7 +34,7 @@ public class MegaPDFile implements Serializable{
     public int getOwnerID() {
         return ownerID;
     }
-    public Path getFilePath() { return path; }
+    public String getFilePath() { return path; }
     public String getFileName() { return name; }
     public String getExtension() { return extension; }
     public long getFileSize() { return size; }
