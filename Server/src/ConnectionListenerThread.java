@@ -60,7 +60,7 @@ public class ConnectionListenerThread implements Runnable{
                         break;
                         case login:
                             //user.getSocketOutput().writeObject(-1); //tells user that everything went ok
-                            throw new UnsupportedOperationException("No yet implemented");
+                            throw new UnsupportedOperationException("Not yet implemented");
                         default:
                             throw new ClassNotFoundException("Bad request");
                     }
