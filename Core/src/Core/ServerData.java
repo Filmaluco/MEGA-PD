@@ -1,16 +1,16 @@
-package MegaPD.Core;
+package Core;
 
-import MegaPD.Core.Modules.EntityData;
+
+import Core.Modules.EntityData;
 
 import java.io.IOException;
 import java.net.Socket;
 
 public class ServerData extends EntityData {
 
-    public ServerData(String serverAddress, int serverPort) throws IOException {
-        super();
-        this.address = serverAddress;
+    public ServerData(String name, int serverPort) throws IOException {
+        super(name);
         this.port = serverPort;
-        this.setSocket(new Socket(serverAddress, serverPort), true);
+        this.setSocket(new Socket(address, serverPort), true);
     }
 }

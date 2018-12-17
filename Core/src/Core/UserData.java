@@ -1,6 +1,6 @@
-package MegaPD.Core;
+package Core;
 
-import MegaPD.Core.Modules.EntityData;
+import Core.Modules.EntityData;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -47,6 +47,10 @@ public class UserData extends EntityData {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setSocket(Socket s) throws IOException {

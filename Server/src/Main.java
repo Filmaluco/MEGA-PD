@@ -1,33 +1,35 @@
 import Core.DBContextMegaPD;
+import Core.Log;
+import Core.UserData;
 import Helpers.CommandInterpreter;
+import Helpers.Constants;
 import Models.Server;
-import Modules.Connection;
-import PD.Core.Log;
+
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
- * @version 0.1.4
+ * @version 2.0.0
  */
 public class Main {
+
+    public static boolean STATUS;
 
     public static void main(String[] args) throws IOException {
 
         //--------------------------------------------------------------------------------------------------------------
         // Variables
         //--------------------------------------------------------------------------------------------------------------
-        //Server variables
         final double VERSION = 0.2;
         final String DESIGNATION = "SERVER";
         Server server;
         CommandInterpreter commandInterpreter;
-        final int SERVER_TIMEOUT = 9000;
-        //--------------------------------------------------------------------------------------------------------------
-        //Connection Module
-        Thread connectionModule = null;
-        Connection connectionData;
 
+        List<UserData> users = new ArrayList<>();
 
         //--------------------------------------------------------------------------------------------------------------
         // Starting DB and LOG
@@ -47,27 +49,31 @@ public class Main {
         //--------------------------------------------------------------------------------------------------------------
         // Starting Modules
         //--------------------------------------------------------------------------------------------------------------
-
         // Register the server  ----------------------------------------------------------------------------------------
         try {
-            server = new Server(DESIGNATION+"["+VERSION+"]");
+            server = new Server(DESIGNATION+"["+VERSION+"]", 0, users);
         } catch (Exception e) {
+            e.printStackTrace();
             Log.exit("Couldn't register the server [" + e + "]");
             return;
         }
         Log.i("Server [Registered]");
         Log.i("\nServer["+server.getID()+"] info: \nName: "+ DESIGNATION+VERSION +
-                "\nAddress: " + server.getIP() +
-                "\nPort: " + server.getPort() + "\n");
+                 "\nAddress: " + server.getIP() +
+                 "\nPort: " + server.getPort() + "\n");
 
+        STATUS = true;
         Log.i("Server [Started]");
 
-        // Starting ConnectionModule -----------------------------------------------------------------------------------
-        connectionData = new Connection(server);
-        connectionModule = new Thread(connectionData);
-        connectionModule.start();
-        Log.i("ConnectionModule [Started]");
 
+        // Starting User Notifications ---------------------------------------------------------------------------------
+        Notifier notifier = new Notifier(users);
+        Thread notificationNotifier = new Thread(notifier);
+        notificationNotifier.start();
+
+        // Starting User Connections -----------------------------------------------------------------------------------
+        Thread connectionListener = new Thread(new ConnectionListenerThread(server, users, notifier));
+        connectionListener.start();
 
         //--------------------------------------------------------------------------------------------------------------
         // Main Loop
@@ -82,26 +88,42 @@ public class Main {
                 case SHUTDOWN:
                     Log.i("Shutdown Request from command line");
                     System.out.println("... shutting down");
-                    continue;
+                    STATUS = false;
+                break;
             }
         }
 
         //--------------------------------------------------------------------------------------------------------------
         // Closing Modules
         //--------------------------------------------------------------------------------------------------------------
+        // Closing User Connections ------------------------------------------------------------------------------------
         try {
-            connectionData.close();
-            connectionModule.join(SERVER_TIMEOUT);
+            connectionListener.join(Constants.SERVER_TIMEOUT);
         } catch (InterruptedException e) {
-            Log.w(e.toString());
+            Log.exit("ConnectionListener [InterruptedException]");
+            //e.printStackTrace();
         }
-        Log.i("ConnectionModule [Ended]");
+
+        // Closing User Notifications ----------------------------------------------------------------------------------a
+        try {
+            notificationNotifier.join(Constants.SERVER_TIMEOUT);
+        } catch (InterruptedException e) {
+            Log.exit("NotificationNotifier [InterruptedException]");
+            //e.printStackTrace();
+        }
+
+
         try {
             DBContextMegaPD.getDBContext().disconnect();
         } catch (SQLException e) {
-            Log.exit("Couldn't properly disconnect the Server please contact the DB administrator");
+            Log.exit("Database [Couldn't properly disconnect the Server please contact the DB administrator]");
+            //e.printStackTrace();
         }
         Log.i("Database [Disconnected]");
         Log.i("Server [Ended]");
+
+        //--------------------------------------------------------------------------------------------------------------
+        if(connectionListener.isAlive()) connectionListener.stop();
+        if(notificationNotifier.isAlive()) notificationNotifier.stop();
     }
 }
