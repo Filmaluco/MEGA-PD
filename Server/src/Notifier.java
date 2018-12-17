@@ -1,7 +1,9 @@
+import Core.Log;
 import Core.Modules.ModuleInterface;
 import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -34,26 +36,39 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         //TODO: sync
         users.remove(user);
         try {
-            this.updateUsers();
+            this.updateUsers((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected");
         } catch (MegaPDRemoteException e) {
             //e.printStackTrace();
         }
     }
 
-    @Override
-    public String updateUsers() throws MegaPDRemoteException {
-        // TODO: 12/16/2018 implement
-        return null;
-    }
-
-    @Override
-    public String updateFiles() throws MegaPDRemoteException {
-        // TODO: 12/16/2018 implement
-        return null;
-    }
 
     public void serverOff() {
         // TODO: 12/16/2018 implement
         return;
+    }
+
+    @Override
+    public void updateUsers(String s) throws MegaPDRemoteException {
+        for (UserData user: users) {
+            try {
+                user.notificationOuput.writeObject(NotificationRequest.updateUsers);
+                user.notificationOuput.writeObject(s);
+            } catch (IOException e) {
+                Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+            }
+        }
+    }
+
+    @Override
+    public void updateFiles(String s) throws MegaPDRemoteException {
+        for (UserData user: users) {
+            try {
+                user.notificationOuput.writeObject(NotificationRequest.updateFiles);
+                user.notificationOuput.writeObject(s);
+            } catch (IOException e) {
+                Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+            }
+        }
     }
 }
