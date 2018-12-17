@@ -10,7 +10,7 @@ import java.net.Socket;
 public class MegaPDModule {
 
     private String id;
-    private String remoteAdress;
+    protected String remoteAdress;
     private int remotePort;
 
     private boolean hasException;
@@ -23,6 +23,7 @@ public class MegaPDModule {
     public MegaPDModule(EntityData data){
         hasException = false;
         remoteSocket = data.getSocket();
+        remoteAdress = data.address;
         out = data.out;
         in = data.in;
     }

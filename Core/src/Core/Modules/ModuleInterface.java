@@ -13,10 +13,10 @@ public class ModuleInterface {
 
     public interface ConnectionModule {
 
-        enum ConnectionRequest{connect, login, logout, getUsersOnline, getUser}
+        enum ConnectionRequest{guestLogin, login, logout, getUsersOnline, getUser}
 
-        public Socket connect(String ip, int serverPort) throws MegaPDRemoteException, IOException;
-        public int login(String username, String password) throws MegaPDRemoteException;
+        public Socket login(int notificationPort) throws MegaPDRemoteException, IOException;
+        public Socket login(String username, String password, int notificationPort) throws MegaPDRemoteException, IOException;
         public void logout() throws MegaPDRemoteException;
         public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException;
         public UserInfo getUser(int userId)throws MegaPDRemoteException;
