@@ -13,33 +13,35 @@ public class ModuleInterface {
 
     public interface ConnectionModule {
 
-        enum ConnectionRequest{guestLogin, login, logout, getUsersOnline, getUser}
+        enum ConnectionRequest{guestLogin, AuthLogin, registerNotification, registerFileTransfer, logout, getUsersOnline, getUser}
 
-        public Socket login(int notificationPort) throws MegaPDRemoteException, IOException;
-        public Socket login(String username, String password, int notificationPort) throws MegaPDRemoteException, IOException;
-        public void logout() throws MegaPDRemoteException;
-        public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException;
-        public UserInfo getUser(int userId)throws MegaPDRemoteException;
+        int login() throws MegaPDRemoteException, IOException;
+        int login(String username, String password) throws MegaPDRemoteException, IOException;
+        Socket registerNotificationPort(int notificationPort) throws MegaPDRemoteException, IOException;
+        void registerFileTransferPort(int fileTransferPort) throws MegaPDRemoteException, IOException;
+        void logout() throws MegaPDRemoteException, IOException;
+        Map<Integer, String> getUsersOnline() throws MegaPDRemoteException, IOException;
+        UserInfo getUser(int userId)throws MegaPDRemoteException, IOException;
     }
 
     public interface FileManagerModule{
         enum FileManagerRequest {updateFiles, addFile, remove, updateFile, getUserFiles, requestFile, completeFileTransfer, getFileHistory}
 
-        public void updateFiles(List<MegaPDFile> fileList) throws MegaPDRemoteException;
-        public void addFile(MegaPDFile file) throws MegaPDRemoteException;
-        public void remove(MegaPDFile file) throws MegaPDRemoteException;
-        public void updateFile(String fileName, long fileSize) throws MegaPDRemoteException;
-        public List<MegaPDFile> getUserFiles(int userId) throws MegaPDRemoteException;
-        public int requestFile(String fileName, int userId) throws MegaPDRemoteException;
-        public void completeFileTransfer(int requestID) throws MegaPDRemoteException;
-        public List<MegaPDHistory> getFileHistory();
+        void updateFiles(List<MegaPDFile> fileList) throws MegaPDRemoteException, IOException;
+        void addFile(MegaPDFile file) throws MegaPDRemoteException, IOException;
+        void remove(MegaPDFile file) throws MegaPDRemoteException, IOException;
+        void updateFile(String fileName, long fileSize) throws MegaPDRemoteException, IOException;
+        List<MegaPDFile> getUserFiles(int userId) throws MegaPDRemoteException, IOException;
+        int requestFile(String fileName, int userId) throws MegaPDRemoteException, IOException;
+        void completeFileTransfer(int requestID) throws MegaPDRemoteException, IOException;
+        List<MegaPDHistory> getFileHistory() throws MegaPDRemoteException, IOException;
     }
 
     public interface NotificationModule{
         enum NotificationRequest {updateUsers, updateFiles}
 
-        public void updateUsers(String notificationMessage) throws MegaPDRemoteException;
-        public void updateFiles(String notificationMessage) throws MegaPDRemoteException;
+        void updateUsers(String notificationMessage) throws MegaPDRemoteException, IOException;
+        void updateFiles(String notificationMessage) throws MegaPDRemoteException, IOException;
     }
 
 

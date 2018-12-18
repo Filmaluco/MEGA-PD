@@ -54,7 +54,7 @@ public class UserData extends EntityData {
     }
 
     public void setSocket(Socket s) throws IOException {
-        super.setSocket(s, false);
+        super.setConnectionSocket(s, false);
     }
 
     public void setNotificationSocket(Socket s, boolean receiver) throws IOException {

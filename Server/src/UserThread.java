@@ -53,10 +53,10 @@ public class UserThread implements Runnable{
 
 
                 //Request not recognized
-                user.getSocketInput().reset();
+                user.getConnectionIn().reset();
                 connection.newException("Request <"+enumRequested.toString()+"> not found");
                 connection.sendData();
-                user.getSocketOutput().flush();
+                user.getConnectionOut().flush();
 
             }catch (IOException e){
                 //The socket with the user malfunction as such the connection was lost
@@ -87,12 +87,19 @@ public class UserThread implements Runnable{
     private void handleConnectionRequest(ConnectionRequest request) {
         try{
             switch (request) {
+                case registerNotification:
+                    Socket s = connection.registerNotificationPort((Integer) user.getConnectionIn().readObject());
+                    user.setNotificationSocket(s, true);
+                    break;
+                case registerFileTransfer:
+                    connection.registerFileTransferPort((Integer) user.getConnectionIn().readObject());
+                    break;
                 case logout:
                     connection.logout();
                     break;
 
                 case getUser:
-                    connection.getUser((Integer) user.getSocketInput().readObject());
+                    connection.getUser((Integer) user.getConnectionIn().readObject());
                     break;
 
                 case getUsersOnline:
@@ -101,10 +108,10 @@ public class UserThread implements Runnable{
 
                 default:
                     //Request not recognized (this should not happen unless the versions of the Core library are not the same)
-                    user.getSocketInput().reset();
+                    user.getConnectionIn().reset();
                     connection.newException("Request <" + request.toString() + "> not found");
                     connection.sendData();
-                    user.getSocketOutput().flush();
+                    user.getConnectionOut().flush();
                     break;
             }
         }catch(Exception e){
@@ -118,25 +125,25 @@ public class UserThread implements Runnable{
         try{
             switch (request) {
                 case updateFiles:
-                    fileManager.updateFiles((List<MegaPDFile>) user.getSocketInput().readObject());
+                    fileManager.updateFiles((List<MegaPDFile>) user.getConnectionIn().readObject());
                     break;
                 case addFile:
-                    fileManager.addFile((MegaPDFile) user.getSocketInput().readObject());
+                    fileManager.addFile((MegaPDFile) user.getConnectionIn().readObject());
                     break;
                 case remove:
-                    fileManager.remove((MegaPDFile) user.getSocketInput().readObject());
+                    fileManager.remove((MegaPDFile) user.getConnectionIn().readObject());
                     break;
                 case updateFile:
-                    fileManager.updateFile((String) user.getSocketInput().readObject(), user.getSocketInput().readLong());
+                    fileManager.updateFile((String) user.getConnectionIn().readObject(), user.getConnectionIn().readLong());
                     break;
                 case getUserFiles:
-                    fileManager.getUserFiles((Integer) user.getSocketInput().readObject());
+                    fileManager.getUserFiles((Integer) user.getConnectionIn().readObject());
                     break;
                 case requestFile:
-                    fileManager.requestFile((String) user.getSocketInput().readObject(), (Integer) user.getSocketInput().readObject());
+                    fileManager.requestFile((String) user.getConnectionIn().readObject(), (Integer) user.getConnectionIn().readObject());
                     break;
                 case completeFileTransfer:
-                    fileManager.completeFileTransfer((Integer) user.getSocketInput().readObject());
+                    fileManager.completeFileTransfer((Integer) user.getConnectionIn().readObject());
                     break;
                 case getFileHistory:
                     fileManager.getFileHistory();
@@ -144,10 +151,10 @@ public class UserThread implements Runnable{
 
                 default:
                     //Request not recognized (this should not happen unless the versions of the Core library are not the same)
-                    user.getSocketInput().reset();
+                    user.getConnectionIn().reset();
                     connection.newException("Request <" + request.toString() + "> not found");
                     connection.sendData();
-                    user.getSocketOutput().flush();
+                    user.getConnectionOut().flush();
                     break;
             }
         }catch(Exception e){

@@ -11,6 +11,6 @@ public class ServerData extends EntityData {
     public ServerData(String name, int serverPort) throws IOException {
         super(name);
         this.port = serverPort;
-        this.setSocket(new Socket(address, serverPort), true);
+        this.setConnectionSocket(new Socket(address, serverPort), true);
     }
 }

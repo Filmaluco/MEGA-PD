@@ -32,7 +32,7 @@ public class MegaPDModule {
         return id;
     }
 
-    public boolean hasException() {
+    private boolean hasException() {
         return hasException;
     }
 

@@ -56,15 +56,15 @@ public class EntityData {
         return socket;
     }
 
-    public ObjectInputStream getSocketInput() {
+    public ObjectInputStream getConnectionIn() {
         return in;
     }
 
-    public ObjectOutputStream getSocketOutput() {
+    public ObjectOutputStream getConnectionOut() {
         return out;
     }
 
-    protected void setSocket(Socket socket, boolean receiver) throws IOException {
+    protected void setConnectionSocket(Socket socket, boolean receiver) throws IOException {
         this.socket = socket;
         if(receiver){
             this.in = new ObjectInputStream(socket.getInputStream());

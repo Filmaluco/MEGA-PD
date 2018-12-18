@@ -18,14 +18,39 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         super(data);
     }
 
+
     @Override
-    public Socket login(int i) throws MegaPDRemoteException, IOException {
-        return null;
+    public int login() throws MegaPDRemoteException, IOException {
+        sendData();
+        return 0;
     }
 
     @Override
-    public Socket login(String s, String s1, int notificationPort) throws MegaPDRemoteException {
-        return null;
+    public int login(String s, String s1) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
+        return new Socket(this.remoteAdress.substring(1), i);
+    }
+
+    @Override
+    public void registerFileTransferPort(int i) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
     }
 
     @Override
