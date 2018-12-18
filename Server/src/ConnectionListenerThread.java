@@ -48,7 +48,7 @@ public class ConnectionListenerThread implements Runnable{
 
                 //Creates the initial connection
                 Connection userConnection = new Connection(user);
-
+                int userID;
                 try {
                     //Receives the Request for Guest Login or Auth login
                     ConnectionRequest request = (ConnectionRequest) user.getConnectionIn().readObject();
@@ -81,7 +81,6 @@ public class ConnectionListenerThread implements Runnable{
 
                 //Creates user Thread
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
-
                 //Adds user to user list
                 users.add(user);
                 userThreads.add(userThread);

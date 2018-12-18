@@ -60,7 +60,7 @@ public class MegaPDModule {
         if(hasException){
             out.writeObject(getException());
         }else{
-            out.writeObject(-1);
+            out.writeObject(-200);
         }
     }
 
