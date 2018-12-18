@@ -3,6 +3,7 @@ import Core.Modules.ModuleInterface.ConnectionModule.ConnectionRequest;
 import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Models.Server;
+import Modules.Connection;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -43,7 +44,10 @@ public class ConnectionListenerThread implements Runnable{
                 //Create base user data
                 UserData user = new UserData(false);
                 user.setSocket(s);
-                user.setAddress(s.getInetAddress().toString());
+                user.setAddress(s.getInetAddress().toString().substring(1));
+
+                //Creates the initial connection
+                Connection userConnection = new Connection(user);
 
                 try {
                     //Receives the Request for Guest Login or Auth login
@@ -52,12 +56,12 @@ public class ConnectionListenerThread implements Runnable{
 
                     switch (request) {
                         case guestLogin:
-                            user.getConnectionOut().writeObject(-1); //tells user that everything went ok
+                            userConnection.login();
                             notifier.updateUsers("<GuestUser> connected");
                             Log.i("Established connection with user[" + user.getAddress() + "]");
                         break;
                         case AuthLogin:
-                            //user.getSocketOutput().writeObject(-1); //tells user that everything went ok
+                            userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
                             throw new UnsupportedOperationException("Not yet implemented");
                         default:
                             throw new ClassNotFoundException("Bad request");
@@ -76,7 +80,7 @@ public class ConnectionListenerThread implements Runnable{
                 }
 
                 //Creates user Thread
-                Thread userThread = new Thread(new UserThread(user, notifier));
+                Thread userThread = new Thread(new UserThread(userConnection, notifier));
 
                 //Adds user to user list
                 users.add(user);

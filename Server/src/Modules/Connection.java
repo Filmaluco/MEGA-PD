@@ -1,9 +1,9 @@
 package Modules;
 
 import Core.Log;
-import Core.Modules.EntityData;
 import Core.Modules.MegaPDModule;
 import Core.Modules.ModuleInterface;
+import Core.UserData;
 import Core.UserInfo;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
@@ -13,9 +13,11 @@ import java.util.Map;
 
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
+    UserData data;
 
-    public Connection(EntityData data) {
+    public Connection(UserData data) {
         super(data);
+        this.data = data;
     }
 
 
@@ -40,7 +42,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     @Override
     public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
         sendData();
-        return new Socket(this.remoteAdress.substring(1), i);
+        return new Socket(this.remoteAdress, i);
     }
 
     @Override
@@ -88,5 +90,9 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
             //e.printStackTrace();
         }
         return null;
+    }
+
+    public UserData getUserData() {
+        return data;
     }
 }
