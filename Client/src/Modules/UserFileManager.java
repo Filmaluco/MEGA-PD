@@ -126,8 +126,9 @@ public class UserFileManager extends Thread {
         String filename = filePath.getFileName().toString();
         String extension = getExtensionByStringHandling(filename);
         long filesize = getFileSize(filename);
-        fileModels.add(new FileModel(filePath, filename, getStringSizeLengthFile(filesize)));
-        return megaPDFiles.add(new MegaPDFile(filePath, filename, extension, filesize));
+        String filepath = folderPathName + '/' + filename;
+        fileModels.add(new FileModel(Paths.get(filepath), filename, getStringSizeLengthFile(filesize)));
+        return megaPDFiles.add(new MegaPDFile(filePath.toAbsolutePath().toString(), filename, extension, filesize));
     }
 
     public boolean updateFile(Path filePath){
