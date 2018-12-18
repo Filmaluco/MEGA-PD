@@ -3,6 +3,7 @@ import Core.Modules.ModuleInterface.ConnectionModule.ConnectionRequest;
 import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Models.Server;
+import Modules.Connection;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -43,42 +44,43 @@ public class ConnectionListenerThread implements Runnable{
                 //Create base user data
                 UserData user = new UserData(false);
                 user.setSocket(s);
-                user.setAddress(s.getInetAddress().toString());
+                user.setAddress(s.getInetAddress().toString().substring(1));
+
+                //Creates the initial connection
+                Connection userConnection = new Connection(user);
 
                 try {
                     //Receives the Request for Guest Login or Auth login
-                    ConnectionRequest request = (ConnectionRequest) user.getSocketInput().readObject();
-                    user.getSocketInput().readObject(); //will also receive a Integer just discard ...
+                    ConnectionRequest request = (ConnectionRequest) user.getConnectionIn().readObject();
+                    user.getConnectionIn().readObject(); //will also receive a Integer just discard ...
 
                     switch (request) {
                         case guestLogin:
-                            user.getSocketOutput().writeObject(-1); //tells user that everything went ok
-                            //simulates guest login method < public Socket login(int i) >
-                            user.setNotificationSocket(new Socket(user.getAddress().substring(1), (Integer) user.getSocketInput().readObject()), false);
+                            userConnection.login();
                             notifier.updateUsers("<GuestUser> connected");
                             Log.i("Established connection with user[" + user.getAddress() + "]");
                         break;
-                        case login:
-                            //user.getSocketOutput().writeObject(-1); //tells user that everything went ok
+                        case AuthLogin:
+                            userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
                             throw new UnsupportedOperationException("Not yet implemented");
                         default:
                             throw new ClassNotFoundException("Bad request");
                     }
                 }catch (ClassNotFoundException e) {
                     Log.w("Connection Listener [Connection failed - Bad Request]");
-                    user.getSocketOutput().writeObject(new MegaPDRemoteException("Failed to connect to remote host \n" + e.getClass().getName()));
+                    user.getConnectionOut().writeObject(new MegaPDRemoteException("Failed to connect to remote host \n" + e.getClass().getName()));
                     //e.printStackTrace();
                     continue;
                     //e.printStackTrace();
                 }catch (Exception e){
                     Log.w("Connection with "+ user.getAddress()+ " failed");
-                    user.getSocketOutput().writeObject(new MegaPDRemoteException("Failed to connect to remote host \n" + e.getClass().getName()));
-                    //e.printStackTrace();
+                    user.getConnectionOut().writeObject(new MegaPDRemoteException("Failed to connect to remote host \n" + e.getClass().getName()));
+                    e.printStackTrace();
                     continue;
                 }
 
                 //Creates user Thread
-                Thread userThread = new Thread(new UserThread(user, notifier));
+                Thread userThread = new Thread(new UserThread(userConnection, notifier));
 
                 //Adds user to user list
                 users.add(user);

@@ -19,56 +19,57 @@ public abstract class MegaPDRemoteModule {
 
     public MegaPDRemoteModule(EntityData remoteData){
         id = remoteData.id;
-        remoteSocket = remoteData.getSocket();
+        remoteSocket = remoteData.getConnectionSocket();
         out = remoteData.out;
         in = remoteData.in;
     }
 
-    public <E extends Enum<E>> boolean request(E requestCode) {
+
+    public  <E extends Enum<E>> Object remoteMethod(E requestCode, Object ...data) throws MegaPDRemoteException, IOException{
+
         try {
+            //Send requestCode (so server knows what method is being requested)
             out.reset();
             out.writeObject(requestCode);
             out.writeObject(id);
             out.flush();
-        } catch (IOException e) {
-            //Todo throw connection exception
-            return false;
-        }
-            return true;
-    }
 
-    public boolean sendData(Object ... data){
-        try {
+            //Send data
             for (Object toSend : data) {
                 out.writeObject(toSend);
             }
-        }catch(Exception e){
-            return false;
+        }catch (IOException e) {
+            throw new IOException("Failed to properly connect to the server \n" + e);
         }
-        return true;
+
+        //Process the server response
+        return receiveData();
     }
 
-    public Object receiveData() throws MegaPDRemoteException {
+    private Object receiveData() throws MegaPDRemoteException, IOException {
         try {
             Object o = in.readObject();
+            //Checks if received a RemoteException
             if(o instanceof MegaPDRemoteException){
                 throw (MegaPDRemoteException)o;
             }
+            //Checks if received -200 (this means everything went ok)
             if(o instanceof Integer){
-                if(((Integer) o).compareTo(-1) == 0){
+                if(((Integer) o).compareTo(-200) == 0){
                     return null;
                 }
             }
             return o;
         } catch(Exception e){
             if(e instanceof MegaPDRemoteException){
+                //It was indeed a remote Exception we received
                 throw new MegaPDRemoteException(e.getMessage());
             }else {
+                //Any other socket related exception
                 e.printStackTrace();
-                System.out.println(e);
+                throw new IOException(e);
             }
         }
-        return null;
     }
 
     public void close(){

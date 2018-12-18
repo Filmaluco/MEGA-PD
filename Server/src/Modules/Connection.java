@@ -1,9 +1,9 @@
 package Modules;
 
 import Core.Log;
-import Core.Modules.EntityData;
 import Core.Modules.MegaPDModule;
 import Core.Modules.ModuleInterface;
+import Core.UserData;
 import Core.UserInfo;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
@@ -13,19 +13,47 @@ import java.util.Map;
 
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
+    UserData data;
 
-    public Connection(EntityData data) {
+    public Connection(UserData data) {
         super(data);
+        this.data = data;
+    }
+
+
+    @Override
+    public int login() throws MegaPDRemoteException, IOException {
+        sendData();
+        return 0;
     }
 
     @Override
-    public Socket login(int i) throws MegaPDRemoteException, IOException {
-        return null;
+    public int login(String s, String s1) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
-    public Socket login(String s, String s1, int notificationPort) throws MegaPDRemoteException {
-        return null;
+    public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
+        sendData();
+        return new Socket(this.remoteAdress, i);
+    }
+
+    @Override
+    public void registerFileTransferPort(int i) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
     }
 
     @Override
@@ -62,5 +90,9 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
             //e.printStackTrace();
         }
         return null;
+    }
+
+    public UserData getUserData() {
+        return data;
     }
 }
