@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -20,15 +21,15 @@ import java.util.List;
  */
 public class ConnectionListenerThread implements Runnable{
 
-    private List<UserData> users;
-    private List<Thread> userThreads;
+    private HashMap<Integer, UserData> users;
+    private HashMap<Integer, Thread> userThreads;
     private Notifier notifier;
     private Server server;
 
-    public ConnectionListenerThread(Server server, List<UserData> users, Notifier notificationNotifier) {
+    public ConnectionListenerThread(Server server, HashMap<Integer, UserData> users, Notifier notificationNotifier) {
         this.users = users;
         this.notifier = notificationNotifier;
-        userThreads = new ArrayList<>();
+        userThreads = new HashMap<>();
         this.server = server;
     }
 
@@ -56,12 +57,16 @@ public class ConnectionListenerThread implements Runnable{
 
                     switch (request) {
                         case guestLogin:
-                            userConnection.login();
-                            notifier.updateUsers("<GuestUser> connected");
+                            userID = userConnection.login();
+                            user.setID(userID);
+                            user.setUsername("<GuestUser"+userID+">");
+                            notifier.updateUsers(user.getUsername() +" connected", userID);
                             Log.i("Established connection with user[" + user.getAddress() + "]");
                         break;
                         case AuthLogin:
-                            userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
+                            userID = userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
+                            user.setID(userID);
+                            user.authenticate();
                             throw new UnsupportedOperationException("Not yet implemented");
                         default:
                             throw new ClassNotFoundException("Bad request");
@@ -82,8 +87,8 @@ public class ConnectionListenerThread implements Runnable{
                 //Creates user Thread
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
                 //Adds user to user list
-                users.add(user);
-                userThreads.add(userThread);
+                users.put(userID,user);
+                userThreads.put(userID, userThread);
 
                 //Starts user Thread
                 userThread.start();
@@ -94,5 +99,6 @@ public class ConnectionListenerThread implements Runnable{
                 //e.printStackTrace();
             }
         }
+
     }
 }

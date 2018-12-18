@@ -8,8 +8,7 @@ import Models.Server;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 
 /**
@@ -29,7 +28,7 @@ public class Main {
         Server server;
         CommandInterpreter commandInterpreter;
 
-        List<UserData> users = new ArrayList<>();
+        HashMap<Integer, UserData> users = new HashMap<>();
 
         //--------------------------------------------------------------------------------------------------------------
         // Starting DB and LOG

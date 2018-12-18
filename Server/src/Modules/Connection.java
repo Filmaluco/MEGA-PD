@@ -10,6 +10,7 @@ import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
+import java.util.Random;
 
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
@@ -23,8 +24,10 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public int login() throws MegaPDRemoteException, IOException {
-        sendData();
-        return 0;
+        Random rd = new Random();
+        int id = rd.nextInt();
+        sendData(id);
+        return id;
     }
 
     @Override

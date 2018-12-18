@@ -40,8 +40,8 @@ public class ModuleInterface {
     public interface NotificationModule{
         enum NotificationRequest {updateUsers, updateFiles}
 
-        void updateUsers(String notificationMessage) throws MegaPDRemoteException, IOException;
-        void updateFiles(String notificationMessage) throws MegaPDRemoteException, IOException;
+        void updateUsers(String notificationMessage, int ignoreUser) throws MegaPDRemoteException, IOException;
+        void updateFiles(String notificationMessage, int ignoreUser) throws MegaPDRemoteException, IOException;
     }
 
 
