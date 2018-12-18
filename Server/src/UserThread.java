@@ -28,7 +28,7 @@ public class UserThread implements Runnable{
     public UserThread(Connection connection, Notifier notifier){
         this.connection = connection;
         this.user = connection.getUserData();
-        this.fileManager = new FileManager(user);
+        this.fileManager = new FileManager(connection);
         this.notifier = notifier;
     }
 

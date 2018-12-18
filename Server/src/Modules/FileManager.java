@@ -13,8 +13,8 @@ import java.util.List;
 
 public class FileManager extends MegaPDModule implements FileManagerModule {
 
-    public FileManager(EntityData data) {
-        super(data);
+    public FileManager(Connection conn) {
+        super(conn.getUserData());
     }
 
     @Override
