@@ -52,8 +52,8 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
     public void updateUsers(String s) throws MegaPDRemoteException {
         for (UserData user: users) {
             try {
-                user.notificationOuput.writeObject(NotificationRequest.updateUsers);
-                user.notificationOuput.writeObject(s);
+                user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
+                user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
                 Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
             }
@@ -64,8 +64,8 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
     public void updateFiles(String s) throws MegaPDRemoteException {
         for (UserData user: users) {
             try {
-                user.notificationOuput.writeObject(NotificationRequest.updateFiles);
-                user.notificationOuput.writeObject(s);
+                user.getNotificationOut().writeObject(NotificationRequest.updateFiles);
+                user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
                 Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
             }

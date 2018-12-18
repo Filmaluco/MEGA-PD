@@ -19,7 +19,7 @@ public abstract class MegaPDRemoteModule {
 
     public MegaPDRemoteModule(EntityData remoteData){
         id = remoteData.id;
-        remoteSocket = remoteData.getSocket();
+        remoteSocket = remoteData.getConnectionSocket();
         out = remoteData.out;
         in = remoteData.in;
     }

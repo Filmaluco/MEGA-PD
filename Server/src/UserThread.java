@@ -89,7 +89,7 @@ public class UserThread implements Runnable{
             switch (request) {
                 case registerNotification:
                     Socket s = connection.registerNotificationPort((Integer) user.getConnectionIn().readObject());
-                    user.setNotificationSocket(s, true);
+                    user.setNotificationSocket(s, false);
                     break;
                 case registerFileTransfer:
                     connection.registerFileTransferPort((Integer) user.getConnectionIn().readObject());

@@ -39,6 +39,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
+        sendData();
         return new Socket(this.remoteAdress.substring(1), i);
     }
 

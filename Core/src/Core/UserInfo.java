@@ -8,16 +8,22 @@ public class UserInfo implements Serializable {
 
     private int ID;
     private String address;
-    private int notificationPort,
+    private int connectionPort,
+                notificationPort,
                 fileTransferPort,
                 pingPort;
 
-    public UserInfo(int id, String address, int notificationPort, int fileTransferPort, int pingPort) {
-        this.address = address;
+    public UserInfo(int id, String address, int connectionPort, int notificationPort, int fileTransferPort, int pingPort) {
         this.ID = id;
+        this.address = address;
+        this.connectionPort = connectionPort;
         this.notificationPort = notificationPort;
         this.fileTransferPort = fileTransferPort;
         this.pingPort = pingPort;
+    }
+
+    public int getID() {
+        return ID;
     }
 
     public String getAddress() {
@@ -36,7 +42,5 @@ public class UserInfo implements Serializable {
         return pingPort;
     }
 
-    public int getID() {
-        return ID;
-    }
+    public int getConnectionPort() { return connectionPort; }
 }

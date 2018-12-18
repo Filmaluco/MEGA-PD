@@ -52,7 +52,7 @@ public class EntityData {
         return address;
     }
 
-    public Socket getSocket() {
+    public Socket getConnectionSocket() {
         return socket;
     }
 
@@ -75,7 +75,7 @@ public class EntityData {
         }
     }
 
-    public void closeSocket() throws IOException {
+    public void closeConnectionSocket() throws IOException {
         if(socket != null){
             in.close();
             out.close();

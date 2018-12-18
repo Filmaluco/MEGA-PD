@@ -22,7 +22,7 @@ public class MegaPDModule {
 
     public MegaPDModule(EntityData data){
         hasException = false;
-        remoteSocket = data.getSocket();
+        remoteSocket = data.getConnectionSocket();
         remoteAdress = data.address;
         out = data.out;
         in = data.in;
