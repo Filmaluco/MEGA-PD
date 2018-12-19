@@ -1,6 +1,8 @@
 package Core;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -313,7 +315,7 @@ public final class DBContextMegaPD {
      *
      * @param userID
      */
-    public void disconnectUser(int userID){
+    public void logoutUser(int userID){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
         try {
@@ -353,7 +355,7 @@ public final class DBContextMegaPD {
             sql = "SELECT * FROM `User` WHERE `ID` = ? LIMIT 1";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, userID);
-            if (!preparedStatement.execute()) throw new Exception("User does not exists");
+            preparedStatement.execute();
 
             //Retrieve USER ID
             ResultSet rs = preparedStatement.getResultSet();
@@ -379,5 +381,81 @@ public final class DBContextMegaPD {
         }
 
         return userInfo;
+    }
+
+    /**
+     *
+     * @param user
+     * @param port
+     */
+    public void updateUserNotificationPort(int user, int port) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `user`.`ID` = ?; ";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, port);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    //EU SEI A REDUNDANCIA!!!!! SIGAM EM FRENTE VOCES NAO VIRAM NADA! (sorry time is short...)
+    /**
+     *
+     * @param user
+     * @param port
+     */
+    public void updateUserFileTransferPort(int user, int port) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `user`.`ID` = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, port);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    public Map<Integer, String> getServerUsers(){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+
+        Map<Integer, String> usersOnline = new HashMap<>();
+        String sql;
+        PreparedStatement preparedStatement;
+        try {
+            sql = "SELECT * FROM `Server_Users` WHERE `ServerID` = ? AND `Status` = 1;";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, serverID);
+            preparedStatement.execute();
+
+            ResultSet rs = preparedStatement.getResultSet();
+            int id;
+
+            while (rs.next()) {
+                id = rs.getInt(2);
+                usersOnline.put(id, this.getUser(id).getName());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to get server users");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usersOnline;
     }
 }

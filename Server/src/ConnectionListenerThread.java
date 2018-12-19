@@ -62,6 +62,7 @@ public class ConnectionListenerThread implements Runnable{
                         case AuthLogin:
                             try {
                                 userID = userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
+                                notifier.updateUsers(user.getUsername() +" connected", userID);
                                 Log.i("Established connection with [" + user.getAddress() + "], designated as <"+user.getUsername()+">");
                             }catch (MegaPDRemoteException e){
                                 Log.i("Failed attempt to connect login from ["+user.getAddress()+"]");

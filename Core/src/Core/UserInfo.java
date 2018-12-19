@@ -50,4 +50,17 @@ public class UserInfo implements Serializable {
 
     public int getConnectionPort() { return connectionPort; }
 
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "ID=" + ID +
+                ", address='" + address + '\'' +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", connectionPort=" + connectionPort +
+                ", notificationPort=" + notificationPort +
+                ", fileTransferPort=" + fileTransferPort +
+                ", pingPort=" + pingPort +
+                '}';
+    }
 }

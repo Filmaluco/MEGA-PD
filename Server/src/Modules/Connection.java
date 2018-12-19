@@ -72,25 +72,21 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Socket registerNotificationPort(int i) throws IOException {
+        dbContext.updateUserNotificationPort(data.getID(), i);
         sendData();
         return new Socket(this.remoteAdress, i);
     }
 
     @Override
-    public void registerFileTransferPort(int i) {
-        this.newException("Not yet implemented");
-        try {
-            sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            e.printStackTrace();
-        }
+    public void registerFileTransferPort(int i) throws IOException {
+        dbContext.updateUserNotificationPort(data.getID(), i);
+        sendData();
     }
 
     @Override
     public void logout() throws MegaPDRemoteException {
         try {
-            dbContext.disconnectUser(data.getID());
+            dbContext.logoutUser(data.getID());
             sendData();
         } catch (IOException e) {
             //Can be ignored, since the connection is already lost at this point (depends on implementation on the other side)
@@ -99,26 +95,28 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException {
-        this.newException("Not yet implemented");
+        Map<Integer, String> usersOnline = dbContext.getServerUsers();
+
         try {
-            sendData();
+            sendData(usersOnline);
         } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
             e.printStackTrace();
         }
-        return null;
+        return usersOnline;
     }
 
     @Override
-    public UserInfo getUser(int i) {
-        this.newException("Not yet implemented");
+    public UserInfo getUser(int i) throws IOException {
+        UserInfo userInfo = null;
         try {
-            sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
+            userInfo = dbContext.getUser(i);
+        } catch (Exception e) {
+            this.newException("Failed to retrieve user info: " + e.getClass().getName());
             e.printStackTrace();
         }
-        return null;
+
+        sendData(userInfo);
+        return userInfo;
     }
 
     public UserData getUserData() {
