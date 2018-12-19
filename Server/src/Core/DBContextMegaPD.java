@@ -428,6 +428,32 @@ public final class DBContextMegaPD {
         }
     }
 
+    /**
+     *
+     * @param user
+     * @param address
+     */
+    public void updateUserAddress(int user, String address) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `User`.`IP_Address` = ? WHERE `user`.`ID` = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, address);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
     public Map<Integer, String> getServerUsers(){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
