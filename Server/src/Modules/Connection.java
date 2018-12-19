@@ -6,6 +6,7 @@ import Core.Modules.MegaPDModule;
 import Core.Modules.ModuleInterface;
 import Core.UserData;
 import Core.UserInfo;
+import Helpers.PasswordHasher;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     public int login() throws MegaPDRemoteException, IOException {
         int id;
         try {
-            id = dbContext.registerGuestUser(data.getAddress(), data.getPort());
+            id = dbContext.loginGuestUser(data.getAddress(), data.getPort());
         }catch (Exception e){
             String errorMessage = "Failed registerGuest user ["+data.getAddress() +"]";
             e.printStackTrace();
@@ -42,14 +43,31 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public int login(String s, String s1) throws MegaPDRemoteException {
-        this.newException("Not yet implemented");
+        int userID = 0;
+        String username;
+
         try {
-            sendData();
+            userID = dbContext.loginUser(s, PasswordHasher.generateSecurePassword(s1));
+            username = dbContext.getUser(userID).getUsername();
+        } catch (Exception e) {
+            this.newException(e.getMessage());
+            try { sendData(); } catch (IOException e1) { e1.printStackTrace(); }
+            e.printStackTrace();
+            throw new MegaPDRemoteException(e.getMessage());
+        }
+
+        data.setID(userID);
+        data.setUsername(username);
+
+        //send correct data --------------------------------------------------------------------------------------------
+        try {
+            sendData(userID);
         } catch (IOException e) {
             Log.w("Failed to transmit data to the user");
             e.printStackTrace();
+            throw new MegaPDRemoteException(e.getMessage());
         }
-        return 0;
+        return userID;
     }
 
     @Override

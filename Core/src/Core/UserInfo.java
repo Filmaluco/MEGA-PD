@@ -7,14 +7,16 @@ public class UserInfo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int ID;
-    private String address;
+    private String address, username, name;
     private int connectionPort,
                 notificationPort,
                 fileTransferPort,
                 pingPort;
 
-    public UserInfo(int id, String address, int connectionPort, int notificationPort, int fileTransferPort, int pingPort) {
+    public UserInfo(int id, String name, String username, String address, int connectionPort, int notificationPort, int fileTransferPort, int pingPort) {
         this.ID = id;
+        this.name = name;
+        this.username = username;
         this.address = address;
         this.connectionPort = connectionPort;
         this.notificationPort = notificationPort;
@@ -30,6 +32,10 @@ public class UserInfo implements Serializable {
         return address;
     }
 
+    public String getName() { return name; }
+
+    public String getUsername() { return username; }
+
     public int getNotificationPort() {
         return notificationPort;
     }
@@ -43,4 +49,5 @@ public class UserInfo implements Serializable {
     }
 
     public int getConnectionPort() { return connectionPort; }
+
 }

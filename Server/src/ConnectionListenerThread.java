@@ -62,8 +62,12 @@ public class ConnectionListenerThread implements Runnable{
                         case AuthLogin:
                             try {
                                 userID = userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
-                            }catch (MegaPDRemoteException e){Log.i("Failed attempt to connect login from ["+user.getAddress()+"]");continue; }
-                            Log.i("Established connection with [" + user.getAddress() + "], designated as <"+user.getUsername()+">");
+                                Log.i("Established connection with [" + user.getAddress() + "], designated as <"+user.getUsername()+">");
+                            }catch (MegaPDRemoteException e){
+                                Log.i("Failed attempt to connect login from ["+user.getAddress()+"]");
+                                user.getConnectionOut().writeObject(new MegaPDRemoteException("Failed to Login \n" + e.getClass().getName()));
+                                continue; }
+                        break;
                         default:
                             throw new ClassNotFoundException("Bad request");
                     }
