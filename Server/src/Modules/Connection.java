@@ -16,6 +16,7 @@ import java.util.Map;
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
     DBContextMegaPD dbContext;
+
     UserData data;
 
     public Connection(UserData data) {
@@ -71,6 +72,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         return userID;
     }
 
+
     @Override
     public Socket registerNotificationPort(int i) throws IOException {
         dbContext.updateUserNotificationPort(data.getID(), i);
@@ -123,4 +125,5 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     public UserData getUserData() {
         return data;
     }
+
 }

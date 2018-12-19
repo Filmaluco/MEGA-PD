@@ -13,6 +13,7 @@ public class UserInfo implements Serializable {
                 fileTransferPort,
                 pingPort;
 
+
     public UserInfo(int id, String name, String username, String address, int connectionPort, int notificationPort, int fileTransferPort, int pingPort) {
         this.ID = id;
         this.name = name;
@@ -50,6 +51,7 @@ public class UserInfo implements Serializable {
 
     public int getConnectionPort() { return connectionPort; }
 
+
     @Override
     public String toString() {
         return "UserInfo{" +
@@ -63,4 +65,5 @@ public class UserInfo implements Serializable {
                 ", pingPort=" + pingPort +
                 '}';
     }
+
 }

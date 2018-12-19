@@ -5,7 +5,7 @@
 [![License-MIT%20-brightgreen.svg](https://img.shields.io/badge/License-MIT%20-brightgreen.svg)](https://github.com/Filmaluco/MEGA-PD/blob/master/LICENSE)
 
 
-###### Dependecies: [![JDK-8u191-orange.svg](https://img.shields.io/badge/JDK-8u191-orange.svg)](https://www.oracle.com/technetwork/java/javase/8u191-relnotes-5032181.html) [![Core.svg](https://img.shields.io/badge/Core-2.0.0-orange.svg)](https://github.com/Filmaluco/MEGA-PD/releases/tag/2.0) 
+###### Dependecies: [![JDK-8u191-orange.svg](https://img.shields.io/badge/JDK-8u191-orange.svg)](https://www.oracle.com/technetwork/java/javase/8u191-relnotes-5032181.html) [![Core.svg](https://img.shields.io/badge/Core-2.2-orange.svg)](https://github.com/Filmaluco/MEGA-PD/releases/tag/v2.2) 
 ###### Server only Dependecies: [![jconnector.svg](https://img.shields.io/badge/ConnectorJ-8.0.13-orange.svg)](https://dev.mysql.com/downloads/connector/j/8.0.html)
 ###### Cliente only Dependecies: [![Jfontawesomefx-8-9.svg](https://img.shields.io/badge/fontawesomefx-8.9-orange.svg)](https://bitbucket.org/Jerady/fontawesomefx/downloads/) [![JFoeniX.svg](https://img.shields.io/badge/JFoeniX-8.0.7-orange.svg)](https://mvnrepository.com/artifact/com.jfoenix/jfoenix/8.0.7) [![JSONO.svg](https://img.shields.io/badge/JSONJava-20180813-orange.svg)](https://github.com/stleary/JSON-java) 
 
@@ -15,13 +15,6 @@ MEGA-PD takes inspiration in the popular MEGA.NZ software, and is an attempt to 
 
 MEGA-PD is free to use and licensed under the MIT License
 
-
-Planned Features
-=======
-Milestone (21-11-2018)
-* Connection to remote server
-* Connection to localhost
-* Login
 
 Changes
 =======

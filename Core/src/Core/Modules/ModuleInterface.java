@@ -42,6 +42,7 @@ public class ModuleInterface {
 
         void updateUsers(String notificationMessage, int ignoreUser) throws MegaPDRemoteException, IOException;
         void updateFiles(String notificationMessage, int ignoreUser) throws MegaPDRemoteException, IOException;
+
     }
 
 
