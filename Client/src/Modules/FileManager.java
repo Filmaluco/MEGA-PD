@@ -57,9 +57,6 @@ public class FileManager extends MegaPDRemoteModule implements ModuleInterface.F
 
     @Override
     public int requestFile(String s, int i) throws MegaPDRemoteException, IOException {
-
-        //int ret = new Integer((Integer) this.remoteMethod(FileManagerRequest.requestFile, s, i));
-
         return (Integer) this.remoteMethod(FileManagerRequest.requestFile, s, i);
     }
 
@@ -73,22 +70,29 @@ public class FileManager extends MegaPDRemoteModule implements ModuleInterface.F
         return (List<MegaPDHistory>) this.remoteMethod(FileManagerRequest.getFileHistory);
     }
 
-    public void getFile(int rID, String destPath, UserInfo info, MegaPDFile transferFile) throws IOException {
+    public void getFile(String destPath, UserInfo info, MegaPDFile transferFile) throws IOException {
         byte []fileChunk = new byte[MAX_SIZE];
         int nBytes;
         int bytesRead = 0;
         FileOutputStream localFileOS = null;
         PrintWriter pout;
         String filename = null;
-
-        for (int i: requestMap.keySet()) {
-            if(i == rID)
-                if(requestMap.containsKey(i)) {
-                    filename = requestMap.get(i);
-                    break;
-                }
-                else
-                    Log.w("That request was already processed!");
+        int rID = 0;
+        try{
+            rID = requestFile(transferFile.getFileName(), info.getID());
+            requestMap.put(rID, transferFile.getFileName());
+            for (int i: requestMap.keySet()) {
+                if(i == rID)
+                    if(requestMap.containsKey(i)) {
+                        filename = requestMap.get(i);
+                        break;
+                    }
+                    else
+                        Log.w("That request was already processed!");
+            }
+        }catch (MegaPDRemoteException e) {
+            Log.w("File is not accessible!" + e);
+            //e.printStackTrace();
         }
 
         if (filename == null)
