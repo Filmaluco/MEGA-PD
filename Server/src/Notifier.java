@@ -65,7 +65,7 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
     }
 
     @Override
-    public void updateFiles(String s, int i) throws MegaPDRemoteException {
+    public void updateFiles(String s, int i) {
         users.forEach((id, user) -> {
             if(id == i) return; //equals a continue;
             try {

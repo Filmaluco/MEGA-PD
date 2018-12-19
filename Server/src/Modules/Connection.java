@@ -41,36 +41,36 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     }
 
     @Override
-    public int login(String s, String s1) throws MegaPDRemoteException, IOException {
+    public int login(String s, String s1) throws MegaPDRemoteException {
         this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
             Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return 0;
     }
 
     @Override
-    public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
+    public Socket registerNotificationPort(int i) throws IOException {
         sendData();
         return new Socket(this.remoteAdress, i);
     }
 
     @Override
-    public void registerFileTransferPort(int i) throws MegaPDRemoteException, IOException {
+    public void registerFileTransferPort(int i) {
         this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
             Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void logout() throws MegaPDRemoteException, IOException {
+    public void logout() throws MegaPDRemoteException {
         try {
             dbContext.disconnectUser(data.getID());
             sendData();
@@ -86,19 +86,19 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
             sendData();
         } catch (IOException e) {
             Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public UserInfo getUser(int i) throws MegaPDRemoteException {
+    public UserInfo getUser(int i) {
         this.newException("Not yet implemented");
         try {
             sendData();
         } catch (IOException e) {
             Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
