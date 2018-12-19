@@ -37,10 +37,10 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         //TODO: sync
         try {
             this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected"), user.getID());
-            users.remove(user);
+            users.remove(user.getID());
             user = null;
         } catch (MegaPDRemoteException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -59,6 +59,7 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
                 user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
                 Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+                e.printStackTrace();
             }
         });
     }

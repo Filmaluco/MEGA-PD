@@ -63,10 +63,8 @@ public class UserThread implements Runnable{
                 Log.w("Connection to user ["
                         +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
                         +"] lost");
-                //Check if he was authenticated
-                if(user.isAuthenticaded()) {
-                    try { connection.logout(); } catch (MegaPDRemoteException e1) { }
-                }
+                //Safe remove from the DB
+                try { connection.logout(); } catch (Exception ignored) {}
                 notifier.disconnect(user);
                 break;
             } catch (ClassNotFoundException e) {
@@ -74,8 +72,6 @@ public class UserThread implements Runnable{
                 Log.w("Failed to process request from user["+ user.getAddress() +"] lost");
             }
         }
-        //Server is about to shutdown, notify all main clients
-        notifier.serverOff();
     }
 
 

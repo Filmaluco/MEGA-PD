@@ -1,6 +1,7 @@
 package Core;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
+import java.util.Random;
 
 
 /**
@@ -176,6 +177,7 @@ public final class DBContextMegaPD {
     public int registerServer(String name, String ip, int connPort) throws Exception {
         if(isRegistered) throw  new Exception();
 
+        //No need to prepare statement, if someone has access to this method it already has all the power he wants
         String sql = "INSERT INTO `Servers` (`ID`, `Name`, `IP`, `Port`, `Status`) " +
                 "VALUES"+"(NULL, '"+name+"', '"+ip+"', '"+connPort+"', '1');";
         try {
@@ -196,5 +198,67 @@ public final class DBContextMegaPD {
 
         isRegistered = false;
         return 0;
+    }
+
+    public int registerGuestUser(String ip, int connectionPort) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        int guestID = -1;
+
+        try {
+            //Sql statement to create a new user
+            String sql = "INSERT INTO `filmaluc_PD`.`User` " +
+                    "(`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) " +
+                    "VALUES (NULL, ?, ?, NULL, NULL, NULL, ?, NULL, NULL, 0);";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, ip);
+            preparedStatement.setInt(2, connectionPort);
+            preparedStatement.setString(3, "GestUser");
+            preparedStatement.executeUpdate();
+
+            //Retrieve GUEST USER ID
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if(rs.next()){
+                guestID = rs.getInt(1);
+            }
+
+            //Sql statement to link new user to the current server
+            sql = "INSERT INTO `filmaluc_PD`.`Server_Users` (`ServerID`, `UserID`, `Errors`, `JoinedDate`, `Status`) VALUES (?, ?, '0', CURRENT_TIMESTAMP, '1');";
+            //Link GuestUser to this server
+            preparedStatement = connection
+                    .prepareStatement(sql);
+            preparedStatement.setInt(1, this.serverID);
+            preparedStatement.setInt(2, guestID);
+            preparedStatement.executeUpdate();
+
+            //Return the guestID
+            return guestID;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    public void disconnectUser(int userID){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+        String sql = "UPDATE `Server_Users` SET `Status` = 0 WHERE `ServerID` = ? AND `UserID` = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+        preparedStatement.setInt(1, this.serverID);
+        preparedStatement.setInt(2, userID);
+        preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package Modules;
 
+import Core.DBContextMegaPD;
 import Core.Log;
 import Core.Modules.MegaPDModule;
 import Core.Modules.ModuleInterface;
@@ -10,22 +11,31 @@ import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
-import java.util.Random;
 
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
+    DBContextMegaPD dbContext;
     UserData data;
 
     public Connection(UserData data) {
         super(data);
         this.data = data;
+        dbContext = DBContextMegaPD.getDBContext();
     }
 
 
     @Override
     public int login() throws MegaPDRemoteException, IOException {
-        Random rd = new Random();
-        int id = rd.nextInt();
+        int id;
+        try {
+            id = dbContext.registerGuestUser(data.getAddress(), data.getPort());
+        }catch (Exception e){
+            String errorMessage = "Failed registerGuest user ["+data.getAddress() +"]";
+            e.printStackTrace();
+            throw new MegaPDRemoteException(errorMessage);
+        }
+        data.setUsername("GuestUser"+id);
+        data.setID(id);
         sendData(id);
         return id;
     }
@@ -60,15 +70,13 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     }
 
     @Override
-    public void logout() throws MegaPDRemoteException {
-        this.newException("Not yet implemented");
+    public void logout() throws MegaPDRemoteException, IOException {
         try {
+            dbContext.disconnectUser(data.getID());
             sendData();
         } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            //Can be ignored, since the connection is already lost at this point (depends on implementation on the other side)
         }
-        return;
     }
 
     @Override
