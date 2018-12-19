@@ -4,6 +4,7 @@ import Core.UserData;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,8 +16,8 @@ import java.util.List;
  */
 public class Notifier implements Runnable, ModuleInterface.NotificationModule {
 
-    private List<UserData> users;
-    public Notifier(List<UserData> users) {
+    private HashMap<Integer, UserData> users;
+    public Notifier(HashMap<Integer, UserData> users) {
         this.users = users;
     }
 
@@ -34,11 +35,12 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
      */
     public void disconnect(UserData user){
         //TODO: sync
-        users.remove(user);
         try {
-            this.updateUsers((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected");
+            this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected"), user.getID());
+            users.remove(user.getID());
+            user = null;
         } catch (MegaPDRemoteException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -49,26 +51,29 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
     }
 
     @Override
-    public void updateUsers(String s) throws MegaPDRemoteException {
-        for (UserData user: users) {
+    public void updateUsers(String s, int i) throws MegaPDRemoteException {
+        users.forEach((id, user) -> {
+            if(id == i) return; //equals a continue;
             try {
                 user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
                 user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
                 Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+                e.printStackTrace();
             }
-        }
+        });
     }
 
     @Override
-    public void updateFiles(String s) throws MegaPDRemoteException {
-        for (UserData user: users) {
+    public void updateFiles(String s, int i) {
+        users.forEach((id, user) -> {
+            if(id == i) return; //equals a continue;
             try {
                 user.getNotificationOut().writeObject(NotificationRequest.updateFiles);
                 user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
                 Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
             }
-        }
+        });
     }
 }

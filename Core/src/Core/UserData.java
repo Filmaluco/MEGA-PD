@@ -9,6 +9,7 @@ import java.net.Socket;
 
 public class UserData extends EntityData {
     private String  username;
+    private boolean isAuthenticated;
     private Socket  notificationSocket;
     private ObjectInputStream notificationInput;
     private ObjectOutputStream notificationOuput;
@@ -78,8 +79,9 @@ public class UserData extends EntityData {
     }
 
 
+    public void authenticate(){this.isAuthenticated = true;};
     public boolean isAuthenticaded(){
-        return this.getID() != -1;
+        return isAuthenticated;
     }
 
 }

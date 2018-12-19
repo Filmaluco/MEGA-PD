@@ -1,6 +1,9 @@
 package Core;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 
 /**
@@ -176,6 +179,7 @@ public final class DBContextMegaPD {
     public int registerServer(String name, String ip, int connPort) throws Exception {
         if(isRegistered) throw  new Exception();
 
+        //No need to prepare statement, if someone has access to this method it already has all the power he wants
         String sql = "INSERT INTO `Servers` (`ID`, `Name`, `IP`, `Port`, `Status`) " +
                 "VALUES"+"(NULL, '"+name+"', '"+ip+"', '"+connPort+"', '1');";
         try {
@@ -196,5 +200,288 @@ public final class DBContextMegaPD {
 
         isRegistered = false;
         return 0;
+    }
+
+    /**
+     *
+     * @param ip
+     * @param connectionPort
+     * @return
+     */
+    public int loginGuestUser(String ip, int connectionPort) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        int guestID = -1;
+
+        try {
+            //Sql statement to create a new user
+            String sql = "INSERT INTO `filmaluc_PD`.`User` " +
+                    "(`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) " +
+                    "VALUES (NULL, ?, ?, NULL, NULL, NULL, ?, NULL, NULL, 0);";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setString(1, ip);
+            preparedStatement.setInt(2, connectionPort);
+            preparedStatement.setString(3, "GestUser");
+            preparedStatement.executeUpdate();
+
+            //Retrieve GUEST USER ID
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if(rs.next()){
+                guestID = rs.getInt(1);
+            }
+
+            //Sql statement to link new user to the current server
+            sql = "INSERT INTO `filmaluc_PD`.`Server_Users` (`ServerID`, `UserID`, `Errors`, `JoinedDate`, `Status`) VALUES (?, ?, '0', CURRENT_TIMESTAMP, '1');";
+            //Link GuestUser to this server
+            preparedStatement = connection
+                    .prepareStatement(sql);
+            preparedStatement.setInt(1, this.serverID);
+            preparedStatement.setInt(2, guestID);
+            preparedStatement.executeUpdate();
+
+            //Return the guestID
+            return guestID;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    /**
+     *
+     * @param username
+     * @param hashedPassword
+     * @return
+     * @throws Exception
+     */
+    public int loginUser(String username, String hashedPassword) throws Exception {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+
+        String sql;
+        PreparedStatement preparedStatement;
+        int userID = -1;
+
+        try {
+        //Sql statement to check if user Exists ------------------------------------------------------------------------
+        sql = "SELECT * FROM `User` WHERE `Username` = ? LIMIT 1 ";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        preparedStatement.execute();
+
+        //Retrieve USER ID
+        ResultSet rs = preparedStatement.getResultSet();
+
+        if(rs.next()){
+            userID = rs.getInt(1);
+        }
+
+        if(userID == -1) throw new Exception("User does not exists");
+
+        //Sql statement to check if password matches -------------------------------------------------------------------
+        sql = "SELECT * FROM `User` WHERE `Username` = ? AND `Password` = ? LIMIT 1";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, hashedPassword);
+        preparedStatement.execute();
+
+        if(!(preparedStatement.getResultSet().next())) throw new Exception("Wrong Password");
+
+
+        //Sql statement to link new user to the current server ---------------------------------------------------------
+        sql = "INSERT INTO `filmaluc_PD`.`Server_Users` (`ServerID`, `UserID`, `Errors`, `JoinedDate`, `Status`) VALUES (?, ?, '0', CURRENT_TIMESTAMP, '1');";
+        //Link GuestUser to this server
+        preparedStatement = connection
+                .prepareStatement(sql);
+        preparedStatement.setInt(1, this.serverID);
+        preparedStatement.setInt(2, userID);
+        preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new Exception("DB Query failed");
+        }
+
+        return userID;
+    }
+
+    /**
+     *
+     * @param userID
+     */
+    public void logoutUser(int userID){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+        String sql = "UPDATE `Server_Users` SET `Status` = 0 WHERE `ServerID` = ? AND `UserID` = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+        preparedStatement.setInt(1, this.serverID);
+        preparedStatement.setInt(2, userID);
+        preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    /**
+     *
+     * @param userID
+     * @return
+     * @throws Exception
+     */
+    public UserInfo getUser(int userID) throws Exception {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+
+        UserInfo userInfo = null;
+
+        String name, username, address;
+        int id, connectionPort, notificationPort, fileTransferPort, pingPort;
+
+        String sql;
+        PreparedStatement preparedStatement;
+
+        try {
+            //Sql statement to check if user Exists ------------------------------------------------------------------------
+            sql = "SELECT * FROM `User` WHERE `ID` = ? LIMIT 1";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.execute();
+
+            //Retrieve USER ID
+            ResultSet rs = preparedStatement.getResultSet();
+
+            if (rs.next()) {
+                id = rs.getInt(1);
+                address = rs.getString(2);
+                connectionPort = rs.getInt(3);
+                notificationPort = rs.getInt(4);
+                fileTransferPort = rs.getInt(5);
+                pingPort = rs.getInt(6);
+                name = rs.getString(7);
+                username = rs.getString(8);
+
+                userInfo = new UserInfo(id, name, username, address, connectionPort, notificationPort, fileTransferPort, pingPort);
+            }
+
+            if(userInfo==null) throw new Exception("ID incorrect");
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to obtain user info");
+        }
+
+        return userInfo;
+    }
+
+    /**
+     *
+     * @param user
+     * @param port
+     */
+    public void updateUserNotificationPort(int user, int port) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `user`.`ID` = ?; ";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, port);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    //EU SEI A REDUNDANCIA!!!!! SIGAM EM FRENTE VOCES NAO VIRAM NADA! (sorry time is short...)
+    /**
+     *
+     * @param user
+     * @param port
+     */
+    public void updateUserFileTransferPort(int user, int port) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `user`.`ID` = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, port);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    /**
+     *
+     * @param user
+     * @param address
+     */
+    public void updateUserAddress(int user, String address) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+        try {
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `User`.`IP_Address` = ? WHERE `user`.`ID` = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setString(1, address);
+            preparedStatement.setInt(2, user);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to register new user");
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Map<Integer, String> getServerUsers(){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+
+        Map<Integer, String> usersOnline = new HashMap<>();
+        String sql;
+        PreparedStatement preparedStatement;
+        try {
+            sql = "SELECT * FROM `Server_Users` WHERE `ServerID` = ? AND `Status` = 1;";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, serverID);
+            preparedStatement.execute();
+
+            ResultSet rs = preparedStatement.getResultSet();
+            int id;
+
+            while (rs.next()) {
+                id = rs.getInt(2);
+                usersOnline.put(id, this.getUser(id).getName());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to get server users");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usersOnline;
     }
 }

@@ -8,8 +8,7 @@ import Modules.Connection;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  *
@@ -20,15 +19,15 @@ import java.util.List;
  */
 public class ConnectionListenerThread implements Runnable{
 
-    private List<UserData> users;
-    private List<Thread> userThreads;
+    private HashMap<Integer, UserData> users;
+    private HashMap<Integer, Thread> userThreads;
     private Notifier notifier;
     private Server server;
 
-    public ConnectionListenerThread(Server server, List<UserData> users, Notifier notificationNotifier) {
+    public ConnectionListenerThread(Server server, HashMap<Integer, UserData> users, Notifier notificationNotifier) {
         this.users = users;
         this.notifier = notificationNotifier;
-        userThreads = new ArrayList<>();
+        userThreads = new HashMap<>();
         this.server = server;
     }
 
@@ -48,7 +47,7 @@ public class ConnectionListenerThread implements Runnable{
 
                 //Creates the initial connection
                 Connection userConnection = new Connection(user);
-
+                int userID;
                 try {
                     //Receives the Request for Guest Login or Auth login
                     ConnectionRequest request = (ConnectionRequest) user.getConnectionIn().readObject();
@@ -56,13 +55,20 @@ public class ConnectionListenerThread implements Runnable{
 
                     switch (request) {
                         case guestLogin:
-                            userConnection.login();
-                            notifier.updateUsers("<GuestUser> connected");
-                            Log.i("Established connection with user[" + user.getAddress() + "]");
+                            userID = userConnection.login();
+                            notifier.updateUsers(user.getUsername() +" connected", userID);
+                            Log.i("Established connection with [" + user.getAddress() + "], designated as <"+user.getUsername()+">");
                         break;
                         case AuthLogin:
-                            userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
-                            throw new UnsupportedOperationException("Not yet implemented");
+                            try {
+                                userID = userConnection.login((String) user.getConnectionIn().readObject(), (String) user.getConnectionIn().readObject());
+                                notifier.updateUsers(user.getUsername() +" connected", userID);
+                                Log.i("Established connection with [" + user.getAddress() + "], designated as <"+user.getUsername()+">");
+                            }catch (MegaPDRemoteException e){
+                                Log.i("Failed attempt to connect login from ["+user.getAddress()+"]");
+                                user.getConnectionOut().writeObject(new MegaPDRemoteException("Failed to Login \n" + e.getClass().getName()));
+                                continue; }
+                        break;
                         default:
                             throw new ClassNotFoundException("Bad request");
                     }
@@ -83,8 +89,8 @@ public class ConnectionListenerThread implements Runnable{
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
 
                 //Adds user to user list
-                users.add(user);
-                userThreads.add(userThread);
+                users.put(userID,user);
+                userThreads.put(userID, userThread);
 
                 //Starts user Thread
                 userThread.start();
@@ -95,5 +101,6 @@ public class ConnectionListenerThread implements Runnable{
                 //e.printStackTrace();
             }
         }
+
     }
 }
