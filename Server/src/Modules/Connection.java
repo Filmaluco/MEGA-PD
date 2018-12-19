@@ -71,6 +71,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         return userID;
     }
 
+
     @Override
     public Socket registerNotificationPort(int i) throws IOException {
         dbContext.updateUserNotificationPort(data.getID(), i);
@@ -82,6 +83,34 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
     public void registerFileTransferPort(int i) throws IOException {
         dbContext.updateUserNotificationPort(data.getID(), i);
         sendData();
+
+    @Override
+    public int login(String s, String s1) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public Socket registerNotificationPort(int i) throws MegaPDRemoteException, IOException {
+        sendData();
+        return new Socket(this.remoteAdress, i);
+    }
+
+    @Override
+    public void registerFileTransferPort(int i) throws MegaPDRemoteException, IOException {
+        this.newException("Not yet implemented");
+        try {
+            sendData();
+        } catch (IOException e) {
+            Log.w("Failed to transmit data to the user");
+            //e.printStackTrace();
+        }
     }
 
     @Override
@@ -118,6 +147,10 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
         sendData(userInfo);
         return userInfo;
+    }
+
+    public UserData getUserData() {
+        return data;
     }
 
     public UserData getUserData() {

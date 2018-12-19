@@ -87,6 +87,7 @@ public class ConnectionListenerThread implements Runnable{
 
                 //Creates user Thread
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
+
                 //Adds user to user list
                 users.put(userID,user);
                 userThreads.put(userID, userThread);
