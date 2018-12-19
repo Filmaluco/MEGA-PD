@@ -200,6 +200,12 @@ public final class DBContextMegaPD {
         return 0;
     }
 
+    /**
+     *
+     * @param ip
+     * @param connectionPort
+     * @return
+     */
     public int loginGuestUser(String ip, int connectionPort) {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
@@ -245,6 +251,13 @@ public final class DBContextMegaPD {
         }
     }
 
+    /**
+     *
+     * @param username
+     * @param hashedPassword
+     * @return
+     * @throws Exception
+     */
     public int loginUser(String username, String hashedPassword) throws Exception {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
@@ -296,6 +309,10 @@ public final class DBContextMegaPD {
         return userID;
     }
 
+    /**
+     *
+     * @param userID
+     */
     public void disconnectUser(int userID){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
@@ -313,6 +330,12 @@ public final class DBContextMegaPD {
         }
     }
 
+    /**
+     *
+     * @param userID
+     * @return
+     * @throws Exception
+     */
     public UserInfo getUser(int userID) throws Exception {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
