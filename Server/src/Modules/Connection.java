@@ -16,7 +16,6 @@ import java.util.Map;
 public class Connection extends MegaPDModule implements ModuleInterface.ConnectionModule {
 
     DBContextMegaPD dbContext;
-
     UserData data;
 
     public Connection(UserData data) {
