@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 19-Dez-2018 às 01:23
+-- Generation Time: 19-Dez-2018 às 03:11
 -- Versão do servidor: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `Servers` (
   `IP` varchar(32) NOT NULL COMMENT 'Server IP',
   `Port` int(11) NOT NULL COMMENT 'TCP Port',
   `Status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '[ON] = 1'
-) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=latin1 COMMENT='Server Info';
+) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=latin1 COMMENT='Server Info';
 
 -- --------------------------------------------------------
 
@@ -107,14 +107,16 @@ CREATE TABLE IF NOT EXISTS `User` (
   `Username` varchar(32) DEFAULT NULL COMMENT 'User Username',
   `Password` varchar(255) DEFAULT NULL COMMENT 'User Passowrd',
   `Blocked` tinyint(4) NOT NULL DEFAULT '0' COMMENT '[BLOCKED] = 1'
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `User`
 --
 
 INSERT INTO `User` (`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) VALUES
-(23, 'notDefinedYet', 0, NULL, NULL, NULL, 'FilipeA', 'user1', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0);
+(23, 'notDefinedYet', 0, 53405, 1, NULL, 'FilipeA', 'user1', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0),
+(24, 'notDefinedYet', 0, NULL, NULL, NULL, 'VascoA', 'user2', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0),
+(25, 'notDefinedYet', 0, NULL, NULL, NULL, 'RicardoS', 'user3', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0);
 
 -- --------------------------------------------------------
 
@@ -204,12 +206,12 @@ ALTER TABLE `Message`
 -- AUTO_INCREMENT for table `Servers`
 --
 ALTER TABLE `Servers`
-  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=197;
+  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=222;
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User ID',AUTO_INCREMENT=24;
+  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User ID',AUTO_INCREMENT=26;
 --
 -- Constraints for dumped tables
 --
