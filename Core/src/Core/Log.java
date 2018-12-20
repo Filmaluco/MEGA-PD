@@ -46,6 +46,7 @@ public final class Log {
             date = new Date();
             dateFormat = new SimpleDateFormat("yyy_MMMdd_HH'h'_mm_ss");
             file = new File("src/Logs/" + dateFormat.format(date) + ".log");
+            file.getParentFile().mkdirs();
             file.createNewFile();
             //consoleHandler = new ConsoleHandler();
             fileHandler = new FileHandler(file.getPath());
