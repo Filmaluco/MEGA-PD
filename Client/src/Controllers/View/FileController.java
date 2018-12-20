@@ -21,7 +21,6 @@ import javafx.util.Callback;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ResourceBundle;
 
@@ -79,10 +78,12 @@ public class FileController implements Initializable {
         final File file = fileChooser.showOpenDialog((Stage) ttvFiles.getScene().getWindow());
         if (file != null) {
             File destFile = new File(userFiles.getFilesFolderPath() + "/" + file.toPath().getFileName());
+            String originalName = destFile.getName();
             try {
                 Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                try { Thread.sleep(100); } catch (InterruptedException e) { }
+                userFiles.updateFile(destFile.toPath());
                 //Uncomment will make instant visual feedback but might cause problems
-                //userFiles.addFile(destFile.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -93,11 +94,11 @@ public class FileController implements Initializable {
     public void removeFile(ActionEvent event) {
         FileModel selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
 
-        if (selectedFile!=null){
+        if (Files.exists(selectedFile.getFilePath())){
             try {
                 Files.delete(selectedFile.getFilePath());
                 //Uncomment will make instant visual feedback but might cause problems
-                //userFiles.deleteFile(selectedFile.getFilePath());
+                userFiles.deleteFile(selectedFile.getFilePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }

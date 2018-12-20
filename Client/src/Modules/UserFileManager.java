@@ -78,18 +78,12 @@ public class UserFileManager extends Thread {
 
                     if (OVERFLOW == kind) {
                         continue; // loop
-                    } else if (ENTRY_CREATE == kind) {
-                        // A new Path was created
-                        newPath = ((WatchEvent<Path>) event).context();
-                        addFile(newPath);
-                        // Output
-                        System.out.println("New folderPath created: " + newPath);
                     } else if (ENTRY_MODIFY == kind) {
-                        // modified
+                        // A new Path was created
                         newPath = ((WatchEvent<Path>) event).context();
                         updateFile(newPath);
                         // Output
-                        System.out.println("New folderPath modified: " + newPath);
+                        System.out.println("New folderPath created: " + newPath);
                     } else if (ENTRY_DELETE == kind){
                         newPath = ((WatchEvent<Path>) event).context();
                         deleteFile(newPath);
@@ -125,7 +119,7 @@ public class UserFileManager extends Thread {
     public boolean addFile(Path filePath){
         String filename = filePath.getFileName().toString();
         String extension = getExtensionByStringHandling(filename);
-        long filesize = getFileSize(filename);
+        long filesize = filePath.toFile().length();
         String filepath = folderPathName + '/' + filename;
         fileModels.add(new FileModel(Paths.get(filepath), filename, getStringSizeLengthFile(filesize)));
         return megaPDFiles.add(new MegaPDFile(filePath.toAbsolutePath().toString(), filename, extension, filesize));
@@ -135,13 +129,13 @@ public class UserFileManager extends Thread {
         for (int i = 0; i < megaPDFiles.size(); i++) {
             String fileName = filePath.getFileName().toString();
             if (megaPDFiles.get(i).getFileName().equals(fileName)){
-                long fileSize = getFileSize(filePath.getFileName().toString());
+                long fileSize = filePath.toFile().length();
                 megaPDFiles.get(i).setFileSize(fileSize);
                 fileModels.get(i).setSize(getStringSizeLengthFile(fileSize));
                 return true;
             }
         }
-        return false;
+        return addFile(filePath);
     }
 
 
@@ -175,27 +169,6 @@ public class UserFileManager extends Thread {
 
     public String getFilesFolderPathString() {
         return folderPathName;
-    }
-
-    public long getFileSize(String filename){
-        //float sizeKb = 1024.0f;
-        //float sizeMb = sizeKb * sizeKb;
-
-        String filePath = folderPathName + '/' + filename;
-
-        long imageFileSize = -1;
-
-        Path imageFilePath = Paths.get(filePath);
-
-        try {
-            FileChannel imageFileChannel = FileChannel.open(imageFilePath);
-            imageFileSize = imageFileChannel.size();
-            //imageFileSize /= sizeMB;
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        return imageFileSize;
     }
 
     public static String getStringSizeLengthFile(long size) {
