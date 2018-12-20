@@ -9,9 +9,10 @@ import java.net.Socket;
 
 public class UserData extends EntityData {
     private String  username;
+    private boolean isAuthenticated;
     private Socket  notificationSocket;
-    public ObjectInputStream notificationInput;
-    public ObjectOutputStream notificationOuput;
+    private ObjectInputStream notificationInput;
+    private ObjectOutputStream notificationOuput;
 
     public UserData(Boolean bool){
         super(bool);
@@ -54,7 +55,7 @@ public class UserData extends EntityData {
     }
 
     public void setSocket(Socket s) throws IOException {
-        super.setSocket(s, false);
+        super.setConnectionSocket(s, false);
     }
 
     public void setNotificationSocket(Socket s, boolean receiver) throws IOException {
@@ -69,9 +70,18 @@ public class UserData extends EntityData {
 
     }
 
+    public ObjectInputStream getNotificationIn() {
+        return notificationInput;
+    }
 
+    public ObjectOutputStream getNotificationOut() {
+        return notificationOuput;
+    }
+
+
+    public void authenticate(){this.isAuthenticated = true;};
     public boolean isAuthenticaded(){
-        return this.getID() != -1;
+        return isAuthenticated;
     }
 
 }

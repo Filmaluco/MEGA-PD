@@ -52,19 +52,19 @@ public class EntityData {
         return address;
     }
 
-    public Socket getSocket() {
+    public Socket getConnectionSocket() {
         return socket;
     }
 
-    public ObjectInputStream getSocketInput() {
+    public ObjectInputStream getConnectionIn() {
         return in;
     }
 
-    public ObjectOutputStream getSocketOutput() {
+    public ObjectOutputStream getConnectionOut() {
         return out;
     }
 
-    protected void setSocket(Socket socket, boolean receiver) throws IOException {
+    protected void setConnectionSocket(Socket socket, boolean receiver) throws IOException {
         this.socket = socket;
         if(receiver){
             this.in = new ObjectInputStream(socket.getInputStream());
@@ -75,7 +75,7 @@ public class EntityData {
         }
     }
 
-    public void closeSocket() throws IOException {
+    public void closeConnectionSocket() throws IOException {
         if(socket != null){
             in.close();
             out.close();

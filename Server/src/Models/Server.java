@@ -6,7 +6,7 @@ import Core.UserData;
 import Helpers.Constants;
 
 import java.net.*;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  *
@@ -27,7 +27,7 @@ public class Server{
 
         //TCP socket variables
     private ServerSocket serverS;
-    private List<UserData> users;
+    private HashMap<Integer, UserData> users;
 
     //----------------------------------------------------------------------------------------------
     //      CONSTRUCTOR'S
@@ -40,7 +40,7 @@ public class Server{
      * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name, int port, List<UserData> users) throws Exception {
+    public Server(String name, int port, HashMap<Integer, UserData> users) throws Exception {
 
         //Find machine real IP address
         try(final DatagramSocket socket = new DatagramSocket()){
@@ -73,7 +73,7 @@ public class Server{
      * @param users list of the users connected to this server
      * @throws Exception if it can't create a new server socket
      */
-    public Server(String name, List<UserData> users) throws Exception {
+    public Server(String name, HashMap<Integer, UserData> users) throws Exception {
         this(name, 0, users);
     }
 
@@ -118,7 +118,7 @@ public class Server{
      *
      * @return list of the users connected to this Server
      */
-    public List<UserData> getUsers() {
+    public HashMap<Integer, UserData> getUsers() {
         return users;
     }
 
