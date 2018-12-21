@@ -132,19 +132,6 @@ public class UserFileManager extends Thread {
         return megaPDFiles.add(new MegaPDFile(filePath.toAbsolutePath().toString(), filename, extension, filesize));
     }
 
-    public boolean updateFile(Path filePath){
-        for (int i = 0; i < megaPDFiles.size(); i++) {
-            String fileName = filePath.getFileName().toString();
-            if (megaPDFiles.get(i).getFileName().equals(fileName)){
-                long fileSize = filePath.toFile().length();
-                megaPDFiles.get(i).setFileSize(fileSize);
-                fileModels.get(i).setSize(getStringSizeLengthFile(fileSize));
-                return true;
-            }
-        }
-        return addFile(filePath);
-    }
-
 
     public String getExtensionByStringHandling(String filename) {
 

@@ -81,8 +81,6 @@ public class FileController implements Initializable {
             String originalName = destFile.getName();
             try {
                 Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                userFiles.updateFile(destFile.toPath());
-                //Uncomment will make instant visual feedback but might cause problems
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -96,8 +94,6 @@ public class FileController implements Initializable {
         if (Files.exists(selectedFile.getFilePath())){
             try {
                 Files.delete(selectedFile.getFilePath());
-                //Uncomment will make instant visual feedback but might cause problems
-                //userFiles.deleteFile(selectedFile.getFilePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
