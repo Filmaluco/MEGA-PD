@@ -21,7 +21,6 @@ public class UserFileManager extends Thread {
     private String folderPathName;
     private final List<MegaPDFile> megaPDFiles = new ArrayList<>();
     private Path folderPath;
-    private WatchService watchService;
     private ObservableList<FileModel> fileModels;
 
     public UserFileManager(ObservableList<FileModel> fileModels) {
@@ -31,7 +30,6 @@ public class UserFileManager extends Thread {
         folderPath = Paths.get(folderPathName);
         initFolder();
         registerFiles();
-        setWatcher();
     }
 
     private void initFolder(){
@@ -57,51 +55,29 @@ public class UserFileManager extends Thread {
         }
     }
 
-    private void setWatcher(){
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-            WatchKey watchKey = folderPath.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void processFolderFiles(){
-        WatchKey key;
-        try {
-            while ((key = watchService.take()) != null) {
-                WatchEvent.Kind<?> kind = null;
+       while (true){
+           try {
+               Thread.sleep(8000);
 
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    Path newPath;
-                    kind = event.kind();
+               DirectoryStream<Path> stream;
+               stream = Files.newDirectoryStream(folderPath);
 
-                    if (OVERFLOW == kind) {
-                        continue; // loop
-                    } else if (ENTRY_MODIFY == kind) {
-                        // A new Path was created
-                        newPath = ((WatchEvent<Path>) event).context();
-                        updateFile(newPath);
-                        // Output
-                        System.out.println("New folderPath created: " + newPath);
-                    } else if (ENTRY_DELETE == kind){
-                        newPath = ((WatchEvent<Path>) event).context();
-                        deleteFile(newPath);
-                        // Output
-                        System.out.println("Path deleted: " + newPath);
-                    }
-                }
+               for (Path entry : stream) {
+                   updateFile(entry);
+               }
 
-                listAllFiles();
+               stream.close();
 
-                if(!key.reset()){
-                    break;
-                }
 
-            }
-        }catch (InterruptedException e){
-
-        }
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+               break;
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
     }
 
     public boolean deleteFile(Path filePath){
