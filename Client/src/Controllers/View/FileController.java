@@ -37,7 +37,7 @@ public class FileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        userFiles = new UserFileManager(fileModels);
+        try { userFiles = new UserFileManager(fileModels); } catch (IOException e) { }
         userFiles.start();
 
         ttvFiles.getStyleClass().add("noheader");
@@ -81,7 +81,6 @@ public class FileController implements Initializable {
             String originalName = destFile.getName();
             try {
                 Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                try { Thread.sleep(100); } catch (InterruptedException e) { }
                 userFiles.updateFile(destFile.toPath());
                 //Uncomment will make instant visual feedback but might cause problems
             } catch (IOException e) {
@@ -98,7 +97,7 @@ public class FileController implements Initializable {
             try {
                 Files.delete(selectedFile.getFilePath());
                 //Uncomment will make instant visual feedback but might cause problems
-                userFiles.deleteFile(selectedFile.getFilePath());
+                //userFiles.deleteFile(selectedFile.getFilePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }

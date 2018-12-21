@@ -5,33 +5,39 @@ import Models.View.FileModel;
 import javafx.collections.ObservableList;
 
 import javax.swing.filechooser.FileSystemView;
-import java.io.File;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.nio.file.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class UserFileManager extends Thread {
 
+    private final WatchService watcher;
+    private final Map<WatchKey, Path> keys;
+
     private final String defaultFolderName = "/MegaPDFiles";
     private String folderPathName;
     private final List<MegaPDFile> megaPDFiles = new ArrayList<>();
     private Path folderPath;
-    private WatchService watchService;
     private ObservableList<FileModel> fileModels;
 
-    public UserFileManager(ObservableList<FileModel> fileModels) {
+    public UserFileManager(ObservableList<FileModel> fileModels) throws IOException {
         this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
         folderPathName += defaultFolderName;
         folderPath = Paths.get(folderPathName);
         initFolder();
         registerFiles();
-        setWatcher();
+
+        this.watcher = FileSystems.getDefault().newWatchService();
+        this.keys = new HashMap<WatchKey, Path>();
+        WatchKey key = folderPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
+        keys.put(key, folderPath);
     }
 
     private void initFolder(){
@@ -42,7 +48,7 @@ public class UserFileManager extends Thread {
         }
     }
 
-    private void registerFiles(){
+    private void registerFiles() {
         try {
             DirectoryStream<Path> stream;
             stream = Files.newDirectoryStream(folderPath);
@@ -50,57 +56,58 @@ public class UserFileManager extends Thread {
             for (Path entry : stream) {
                 addFile(entry);
             }
-
-            stream.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private void setWatcher(){
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-            WatchKey watchKey = folderPath.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }catch (Exception e){}
     }
 
     private void processFolderFiles(){
-        WatchKey key;
-        try {
-            while ((key = watchService.take()) != null) {
-                WatchEvent.Kind<?> kind = null;
+        for (;;) {
 
-                for (WatchEvent<?> event : key.pollEvents()) {
-                    Path newPath;
-                    kind = event.kind();
+            // wait for key to be signalled
+            WatchKey key;
+            try {
+                key = watcher.take();
+            } catch (InterruptedException x) {
+                return;
+            }
 
-                    if (OVERFLOW == kind) {
-                        continue; // loop
-                    } else if (ENTRY_MODIFY == kind) {
-                        // A new Path was created
-                        newPath = ((WatchEvent<Path>) event).context();
-                        updateFile(newPath);
-                        // Output
-                        System.out.println("New folderPath created: " + newPath);
-                    } else if (ENTRY_DELETE == kind){
-                        newPath = ((WatchEvent<Path>) event).context();
-                        deleteFile(newPath);
-                        // Output
-                        System.out.println("Path deleted: " + newPath);
-                    }
+            Path dir = keys.get(key);
+            if (dir == null) {
+                System.err.println("WatchKey not recognized!!");
+                continue;
+            }
+
+            for (WatchEvent<?> event : key.pollEvents()) {
+                @SuppressWarnings("rawtypes")
+                WatchEvent.Kind kind = event.kind();
+
+                // Context for directory entry event is the file name of entry
+                @SuppressWarnings("unchecked")
+                Path name = ((WatchEvent<Path>)event).context();
+                Path child = dir.resolve(name);
+
+                // print out event
+                //System.out.format("%s: %s\n", event.kind().name(), child);
+
+                // if directory is created, and watching recursively, then register it and its sub-directories
+                if (kind == ENTRY_CREATE) {
+                    System.out.println("New file added: " + child);
+                    addFile(child);
+                }else if(kind == ENTRY_DELETE){
+                    System.out.println(child + "deleted");
+                    deleteFile(child);
                 }
+            }
 
-                listAllFiles();
+            // reset key and remove from set if directory no longer accessible
+            boolean valid = key.reset();
+            if (!valid) {
+                keys.remove(key);
 
-                if(!key.reset()){
+                // all directories are inaccessible
+                if (keys.isEmpty()) {
                     break;
                 }
-
             }
-        }catch (InterruptedException e){
-
         }
     }
 
@@ -139,18 +146,6 @@ public class UserFileManager extends Thread {
     }
 
 
-    public void listAllFiles(){
-//        for (Path entry: fileModels) {
-//            //List Directory name and
-//            //System.out.println(entry.toString());
-//            System.out.println(entry.getFileName().toString());
-//        }
-
-        for(MegaPDFile megaPDFile : megaPDFiles){
-            System.out.println(megaPDFile);
-        }
-    }
-
     public String getExtensionByStringHandling(String filename) {
 
         int lastIndexOfDot = filename.lastIndexOf('.');
@@ -165,10 +160,6 @@ public class UserFileManager extends Thread {
 
     public Path getFilesFolderPath() {
         return folderPath;
-    }
-
-    public String getFilesFolderPathString() {
-        return folderPathName;
     }
 
     public static String getStringSizeLengthFile(long size) {
