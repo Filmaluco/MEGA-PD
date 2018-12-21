@@ -1,13 +1,7 @@
 <?php
 require_once("DB.php");
 
-$db = new DB("localhost", "filmaluc_PD", "filmaluc_server", "server_pd");
-
-echo 'URL: ' . $_GET['url'];
-echo '</br>';
-echo 'status: ' . $_GET['status'];
-
-echo '</br> <pre>';
+$db = new DB(address, bdname, user, password);
 
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
@@ -44,7 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             }
              http_response_code(300);
         }
+        
+        if ($_GET['url'] == "delete") {
+                $server = $db->query('DELETE FROM `Servers` WHERE 1');
+                http_response_code(200);
+            }
+        
+        http_response_code(300);
 
 }
-
-echo '</br> </pre>';
