@@ -4,8 +4,10 @@ import Core.Context;
 import Core.Modules.ModuleInterface.NotificationModule;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +98,12 @@ public class NotificationManager implements Runnable, NotificationModule {
                 }
 
             } catch (IOException e){
-                JOptionPane.showMessageDialog(null, "Conexao com o Servidor Perdida", "Connection Lost",JOptionPane.ERROR_MESSAGE);
-                //JOptionPane.showMessageDialog(null, "Connection Lost");
+                Toolkit.getDefaultToolkit().beep();
+
+                JFrame jf=new JFrame();
+                jf.setAlwaysOnTop(true);
+                JOptionPane.showMessageDialog(jf, "Conexao com o Servidor Perdida", "Connection Lost",JOptionPane.ERROR_MESSAGE);
+                Platform.exit(); //somehow its not properly closing the FX
                 System.exit(-2);
             }catch( ClassNotFoundException | MegaPDRemoteException e) {
                 e.printStackTrace();
