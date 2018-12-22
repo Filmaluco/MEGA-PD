@@ -55,6 +55,10 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         users.forEach((id, user) -> {
             if(id == i) return; //equals a continue;
             try {
+                if(user.getNotificationOut() == null){
+                    Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
+                    return;
+                }
                 user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
                 user.getNotificationOut().writeObject(s);
             } catch (IOException e) {
