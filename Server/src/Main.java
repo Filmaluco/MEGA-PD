@@ -3,6 +3,7 @@ import Core.Log;
 import Core.UserData;
 import Helpers.CommandInterpreter;
 import Helpers.Constants;
+import Helpers.PasswordHasher;
 import Models.Server;
 
 
@@ -90,6 +91,20 @@ public class Main {
                     notifier.serverOff();
                     STATUS = false;
                 break;
+                case ADD:
+                    String name, username, password;
+                    name = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
+                    username = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
+                    password = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
+                    if(username == null && password == null){ System.out.println("Invalid params check help command") ;continue;}
+                    System.out.println(  DBContextMegaPD.getDBContext().registerUser(name, username, PasswordHasher.generateSecurePassword(password)) ? "Registered new user <"+username+">" : "Failed to register new user");
+                break;
+                case HELP:
+                    System.out.println("CommandName: arg1 arg2 ... argN");
+                    System.out.println("\t" + CommandInterpreter.Commands.ADD.toString().toLowerCase() + " : name username password");
+                    break;
+                default:
+                    System.out.println("Invalid command, please check the <help> command");
             }
         }
 
