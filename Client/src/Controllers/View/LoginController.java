@@ -52,11 +52,15 @@ public class LoginController implements Initializable {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        //TODO: Implement real authentication
-
-        if (true){
+        ServerInfo serverInfo = null;
+        try {
+            serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            Context.getConnection().login(username, password);
             closeStage();
             loadMain();
+        }catch (Exception e){
+            setWarning(e.getMessage());
         }
     }
 
