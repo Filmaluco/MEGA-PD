@@ -38,7 +38,6 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         try {
             this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected"), user.getID());
             users.remove(user.getID());
-            user = null;
         } catch (MegaPDRemoteException e) {
             e.printStackTrace();
         }
