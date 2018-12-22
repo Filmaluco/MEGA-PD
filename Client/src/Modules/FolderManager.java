@@ -118,6 +118,12 @@ public class FolderManager extends Thread {
         for (int i = 0; i < megaPDFiles.size(); i++) {
             String fileName = filePath.getFileName().toString();
             if (megaPDFiles.get(i).getFileName().equals(fileName)){
+                try {
+                    Context.getFileManager().remove(megaPDFiles.get(i));
+                } catch (MegaPDRemoteException | IOException e) {
+                    Context.getNotificationManager().addNotification(e.getMessage());
+                    return false;
+                }
                 megaPDFiles.remove(i);
                 fileModels.remove(i);
                 return true;

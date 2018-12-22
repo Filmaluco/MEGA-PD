@@ -528,7 +528,24 @@ public final class DBContextMegaPD {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("Failed to register file");
+            throw new IllegalArgumentException("Failed to register file (confirm fileSize and Name lenght)");
+        }
+    }
+
+    public void removeFile(int userID, String fileName){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+        try {
+            String sql = "DELETE FROM `Files` WHERE `UserID` = ? AND `Name` = ? ";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setString(2, fileName);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed to remove file");
         }
     }
 

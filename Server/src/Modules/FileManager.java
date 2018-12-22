@@ -35,13 +35,13 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public void addFile(MegaPDFile megaPDFile) throws IOException {
+    public void addFile(MegaPDFile megaPDFile) throws IOException{
         try {
-            if(megaPDFile.getFileName().length() >= 30){throw new Exception("Data truncation: name too long"); }
+            if(megaPDFile.getFileName().length() >= 30){throw new Exception("Data truncation: name too long"); } else
             dbContext.addFile(userID, megaPDFile.getFileName(), megaPDFile.getFileSize());
         } catch (Exception e) {
             this.newException(e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         sendData();
@@ -49,14 +49,15 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public void remove(MegaPDFile megaPDFile) {
-        this.newException("Not yet implemented");
+    public void remove(MegaPDFile megaPDFile) throws IOException {
         try {
-            sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            dbContext.removeFile(userID, megaPDFile.getFileName());
+        } catch (Exception e) {
+            this.newException(e.getMessage());
+            e.printStackTrace();
         }
+
+        sendData();
         return;
     }
 

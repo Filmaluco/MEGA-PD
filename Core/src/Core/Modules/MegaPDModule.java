@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 public class MegaPDModule {
 
@@ -41,12 +42,13 @@ public class MegaPDModule {
         return lastMegaPDRemoteException;
     }
 
-    public Enum getRequest() throws IOException, ClassNotFoundException {
+    public Enum getRequest() throws SocketTimeoutException, IOException, ClassNotFoundException {
         Enum enumRead = null;
         try {
             enumRead = (Enum) in.readObject();
             this.id = (String) in.readObject();
-        } catch (IOException e) {
+        }catch (SocketTimeoutException exception){ throw new SocketTimeoutException();}
+        catch (IOException e) {
             newException("IOException");
             throw new IOException(e);
         } catch (ClassNotFoundException e) {

@@ -127,10 +127,14 @@ public class UserThread implements Runnable{
                     fileManager.updateFiles((List<MegaPDFile>) user.getConnectionIn().readObject());
                     break;
                 case addFile:
-                    fileManager.addFile((MegaPDFile) user.getConnectionIn().readObject());
+                    MegaPDFile file = (MegaPDFile) user.getConnectionIn().readObject();
+                    fileManager.addFile(file);
+                    notifier.updateFiles(user.getUsername() + " added the file " + file.getFileName(), user.getID());
                     break;
                 case remove:
-                    fileManager.remove((MegaPDFile) user.getConnectionIn().readObject());
+                    file = (MegaPDFile) user.getConnectionIn().readObject();
+                    fileManager.remove(file);
+                    notifier.updateFiles(user.getUsername() + " removed the file " + file.getFileName(), user.getID());
                     break;
                 case updateFile:
                     fileManager.updateFile((String) user.getConnectionIn().readObject(), user.getConnectionIn().readLong());

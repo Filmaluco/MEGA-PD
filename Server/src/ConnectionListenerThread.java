@@ -39,7 +39,6 @@ public class ConnectionListenerThread implements Runnable{
             try {
                 Socket s;
                 s = server.getServerSocket().accept();
-                s.setSoTimeout(Constants.SERVER_TIMEOUT);
 
                 //New user connection ----------------------------------------------------------------------------------
                 //Create base user data
@@ -88,8 +87,7 @@ public class ConnectionListenerThread implements Runnable{
                 }
 
 
-                user.setID(userID);
-
+                s.setSoTimeout(Constants.SERVER_TIMEOUT);
                 //Creates user Thread
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
 
