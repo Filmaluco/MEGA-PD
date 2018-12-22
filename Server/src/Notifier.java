@@ -38,7 +38,6 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         try {
             this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected"), user.getID());
             users.remove(user.getID());
-            user = null;
         } catch (MegaPDRemoteException e) {
             e.printStackTrace();
         }
@@ -55,6 +54,10 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
         users.forEach((id, user) -> {
             if(id == i) return; //equals a continue;
             try {
+                if(user.getNotificationOut() == null){
+                    Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
+                    return;
+                }
                 user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
                 user.getNotificationOut().writeObject(s);
             } catch (IOException e) {

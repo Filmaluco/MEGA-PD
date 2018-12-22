@@ -1,9 +1,12 @@
 package Modules;
 
+import Core.Context;
+import Core.Modules.ModuleInterface.NotificationModule;
+import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import com.jfoenix.controls.JFXButton;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,7 +16,7 @@ import java.util.List;
  * @version 1.0
  */
 
-public class NotificationManager {
+public class NotificationManager implements Runnable, NotificationModule {
     private JFXButton btnNotifications;
     private List<String> notifications;
 
@@ -58,5 +61,42 @@ public class NotificationManager {
         notifications.clear();
         btnNotifications.getStyleClass().removeAll("notificationOn");
         btnNotifications.getStyleClass().add("jfx-button");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void updateUsers(String s, int i) throws MegaPDRemoteException, IOException {
+        this.addNotification(s);
+    }
+
+    @Override
+    public void updateFiles(String s, int i) throws MegaPDRemoteException, IOException {
+        this.addNotification(s);
+    }
+
+    @Override
+    public void run() {
+        System.out.println("[Notification] started");
+        while(true){
+            try {
+                Enum request = (Enum) Context.getUser().getNotificationIn().readObject();
+                String message = (String) Context.getUser().getNotificationIn().readObject();
+                if(request instanceof NotificationRequest){
+                    NotificationRequest notificationRequest = (NotificationRequest) request;
+                    switch (notificationRequest){
+                        case updateUsers:
+                            this.updateUsers(message, 0);
+                            break;
+                        case updateFiles:
+                            this.updateFiles(message, 0);
+                            break;
+                    }
+                }
+
+            } catch (IOException | ClassNotFoundException | MegaPDRemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

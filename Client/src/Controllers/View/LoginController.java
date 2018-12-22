@@ -1,5 +1,11 @@
 package Controllers.View;
 
+import Core.Context;
+import Core.ServerData;
+import Core.UserData;
+import Helpers.ServerRESTRequest;
+import Models.ServerInfo;
+import Modules.Connection;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -11,18 +17,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import sun.applet.Main;
 
-import java.awt.*;
-import java.awt.image.SampleModel;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import static javafx.collections.FXCollections.observableArrayList;
 
 public class LoginController implements Initializable {
     @FXML
@@ -47,18 +48,6 @@ public class LoginController implements Initializable {
         ObservableList<String> list = FXCollections.observableArrayList();
     }
 
-    @FXML
-    private void userLogin(ActionEvent event) {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        //TODO: Implement real authentication
-
-        if (true){
-            closeStage();
-            loadMain();
-        }
-    }
 
     private void closeStage(){
         ((Stage)usernameField.getScene().getWindow()).close();
@@ -78,7 +67,36 @@ public class LoginController implements Initializable {
 
     @FXML
     private void guestLogin(ActionEvent event) {
-        //TODO: Implement
+        ServerInfo serverInfo = null;
+        try {
+            serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setUser(new UserData());
+            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            Context.getConnection().login();
+            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
+            closeStage();
+            loadMain();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void userLogin(ActionEvent event) {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
+        ServerInfo serverInfo = null;
+        try {
+            serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            Context.getConnection().login(username, password);
+            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
+            closeStage();
+            loadMain();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+        }
     }
 
     public void setWarning(String warning){
