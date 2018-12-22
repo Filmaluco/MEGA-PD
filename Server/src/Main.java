@@ -105,10 +105,16 @@ public class Main {
                     DBContextMegaPD.getDBContext().getServerUsers().forEach((id, user) -> System.out.println("\t["+id+"] => "+ user));
                     System.out.println("------------------------------------");
                 break;
+                case CLS:
+                    for (int i = 0; i < 50; ++i) System.out.println();
+                    System.out.flush();
+                    break;
                 case HELP:
-                    System.out.println("CommandName: arg1 arg2 ... argN");
-                    System.out.println("\t" + CommandInterpreter.Commands.ADD.toString().toLowerCase() + " : name username password");
-                    System.out.println("\t" + CommandInterpreter.Commands.LS.toString().toLowerCase());
+                    System.out.println(" commandDesc> CommandName: arg1 arg2 ... argN");
+                    System.out.println("\tadd's a new user to the DB> " + CommandInterpreter.Commands.ADD.toString().toLowerCase() + " : name username password");
+                    System.out.println("\tlists all users connected to this server> " + CommandInterpreter.Commands.LS.toString().toLowerCase());
+                    System.out.println("\tturns off the server> " + CommandInterpreter.Commands.SHUTDOWN.toString().toLowerCase());
+                    System.out.println("\tclears the screen> " + CommandInterpreter.Commands.CLS.toString().toLowerCase());
                     break;
                 default:
                     System.out.println("Invalid command, please check the <help> command");

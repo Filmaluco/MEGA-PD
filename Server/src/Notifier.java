@@ -41,7 +41,7 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
             user.closeConnectionSocket();
             user.closeNotificationSocket();
         } catch (MegaPDRemoteException | IOException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
     }
 
