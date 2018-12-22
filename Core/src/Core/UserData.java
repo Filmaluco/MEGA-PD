@@ -84,4 +84,6 @@ public class UserData extends EntityData {
         return isAuthenticated;
     }
 
+    public void closeNotificationSocket() throws IOException {notificationSocket.close();}
+
 }

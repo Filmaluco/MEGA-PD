@@ -90,6 +90,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         try {
             dbContext.logoutUser(data.getID());
             sendData();
+            //All other relevant data is done on the notifier class
         } catch (IOException e) {
             //Can be ignored, since the connection is already lost at this point (depends on implementation on the other side)
         }

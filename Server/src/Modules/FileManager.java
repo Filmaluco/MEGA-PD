@@ -1,5 +1,6 @@
 package Modules;
 
+import Core.DBContextMegaPD;
 import Core.Log;
 import Core.MegaPDFile;
 import Core.MegaPDHistory;
@@ -13,8 +14,12 @@ import java.util.List;
 
 public class FileManager extends MegaPDModule implements FileManagerModule {
 
-    public FileManager(Connection conn) {
+    DBContextMegaPD dbContext = DBContextMegaPD.getDBContext();
+    private int userID;
+
+    public FileManager(Connection conn, int userID) {
         super(conn.getUserData());
+        this.userID = userID;
     }
 
     @Override
@@ -30,14 +35,16 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public void addFile(MegaPDFile megaPDFile) {
-        this.newException("Not yet implemented");
+    public void addFile(MegaPDFile megaPDFile) throws IOException {
         try {
-            sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            if(megaPDFile.getFileName().length() >= 30){throw new Exception("Data truncation: name too long"); }
+            dbContext.addFile(userID, megaPDFile.getFileName(), megaPDFile.getFileSize());
+        } catch (Exception e) {
+            this.newException(e.getMessage());
+            e.printStackTrace();
         }
+
+        sendData();
         return;
     }
 
