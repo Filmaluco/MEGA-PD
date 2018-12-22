@@ -2,6 +2,7 @@ package Controllers.View;
 
 import Core.Context;
 import Core.ServerData;
+import Core.UserData;
 import Helpers.ServerRESTRequest;
 import Models.ServerInfo;
 import Modules.Connection;
@@ -47,22 +48,6 @@ public class LoginController implements Initializable {
         ObservableList<String> list = FXCollections.observableArrayList();
     }
 
-    @FXML
-    private void userLogin(ActionEvent event) {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-
-        ServerInfo serverInfo = null;
-        try {
-            serverInfo = ServerRESTRequest.getFirst(true);
-            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
-            Context.getConnection().login(username, password);
-            closeStage();
-            loadMain();
-        }catch (Exception e){
-            setWarning(e.getMessage());
-        }
-    }
 
     private void closeStage(){
         ((Stage)usernameField.getScene().getWindow()).close();
@@ -85,8 +70,28 @@ public class LoginController implements Initializable {
         ServerInfo serverInfo = null;
         try {
             serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setUser(new UserData());
             Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
             Context.getConnection().login();
+            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
+            closeStage();
+            loadMain();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void userLogin(ActionEvent event) {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
+        ServerInfo serverInfo = null;
+        try {
+            serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            Context.getConnection().login(username, password);
+            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
             closeStage();
             loadMain();
         }catch (Exception e){

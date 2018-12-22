@@ -22,6 +22,9 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         notificationManager = new NotificationManager(btnNotifications);
+        Thread t = new Thread(notificationManager);
+        t.setDaemon(true);
+        t.start();
     }
 
     public void showNotifications(ActionEvent eventAction) {

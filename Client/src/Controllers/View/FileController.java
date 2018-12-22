@@ -7,18 +7,17 @@ import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import java.io.*;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -38,6 +37,7 @@ public class FileController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try { userFiles = new UserFileManager(fileModels); } catch (IOException e) { }
+        userFiles.setDaemon(true);
         userFiles.start();
 
         ttvFiles.getStyleClass().add("noheader");
@@ -45,22 +45,12 @@ public class FileController implements Initializable {
         //Setting up columns
         JFXTreeTableColumn<FileModel, String> filename = new JFXTreeTableColumn<>("Filename");
         filename.setPrefWidth(400);
-        filename.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FileModel, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<FileModel, String> param) {
-                return param.getValue().getValue().filenameProperty();
-            }
-        });
+        filename.setCellValueFactory(param -> param.getValue().getValue().filenameProperty());
 
 
         JFXTreeTableColumn<FileModel, String> fileSize = new JFXTreeTableColumn<>("FileSize");
         fileSize.setPrefWidth(400);
-        fileSize.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FileModel, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<FileModel, String> param) {
-                return param.getValue().getValue().sizeProperty();
-            }
-        });
+        fileSize.setCellValueFactory(param -> param.getValue().getValue().sizeProperty());
 
         //Adding fileModels to observable array
         //fileModels.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
