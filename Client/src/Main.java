@@ -1,3 +1,4 @@
+import Core.Log;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         //--------------------------------------------------------------------------------------------------------------
-        //Log.initLog();
+        Log.initLog();
 
         Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
         //Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));
