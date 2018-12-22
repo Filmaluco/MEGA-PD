@@ -11,9 +11,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         //--------------------------------------------------------------------------------------------------------------
         Log.initLog();
+
 
         Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
         //Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));

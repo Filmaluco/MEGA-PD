@@ -23,6 +23,7 @@ public class CommandInterpreter{
     private final String SHUTDOWN = "shutdown";
     private final String ADD = "add";
     private final String HELP = "help";
+    private final String LS = "ls";
 
     private int argC =-1;
     private List<String> commandArguments;
@@ -33,7 +34,7 @@ public class CommandInterpreter{
      * Acceptable commands
      */
     public enum Commands{
-        SHUTDOWN, NOT_DEFINED, ADD, HELP
+        SHUTDOWN, NOT_DEFINED, ADD, HELP, LS
     }
 
     //----------------------------------------------------------------------------------------------
@@ -74,6 +75,7 @@ public class CommandInterpreter{
         argC = -1;
         commandArguments.clear();
         StringTokenizer st = new StringTokenizer(lastCommand);
+        lastCommand = st.nextToken();
 
         if (lastCommand.equalsIgnoreCase(SHUTDOWN)){
             status = false;
@@ -84,7 +86,11 @@ public class CommandInterpreter{
             return Commands.HELP;
         }
 
-        if(st.nextToken().contains(ADD)){
+        if (lastCommand.equalsIgnoreCase(LS)){
+            return Commands.LS;
+        }
+
+        if(lastCommand.contains(ADD)){
             while (st.hasMoreTokens()){
                 argC++;
                 commandArguments.add(st.nextToken());

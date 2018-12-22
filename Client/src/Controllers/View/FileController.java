@@ -79,7 +79,10 @@ public class FileController implements Initializable {
 
     @FXML
     public void removeFile(ActionEvent event) {
-        FileModel selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
+        FileModel selectedFile;
+        try {
+            selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
+        }catch (Exception ignored){return;}
 
         if (Files.exists(selectedFile.getFilePath())){
             try {

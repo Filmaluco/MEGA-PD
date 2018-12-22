@@ -99,9 +99,16 @@ public class Main {
                     if(username == null && password == null){ System.out.println("Invalid params check help command") ;continue;}
                     System.out.println(  DBContextMegaPD.getDBContext().registerUser(name, username, PasswordHasher.generateSecurePassword(password)) ? "Registered new user <"+username+">" : "Failed to register new user");
                 break;
+                case LS:
+                    System.out.println("Users online ----------------------");
+                    System.out.println("\t [id] => name");
+                    DBContextMegaPD.getDBContext().getServerUsers().forEach((id, user) -> System.out.println("\t["+id+"] => "+ user));
+                    System.out.println("------------------------------------");
+                break;
                 case HELP:
                     System.out.println("CommandName: arg1 arg2 ... argN");
                     System.out.println("\t" + CommandInterpreter.Commands.ADD.toString().toLowerCase() + " : name username password");
+                    System.out.println("\t" + CommandInterpreter.Commands.LS.toString().toLowerCase());
                     break;
                 default:
                     System.out.println("Invalid command, please check the <help> command");
