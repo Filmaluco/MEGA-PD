@@ -87,6 +87,7 @@ public class Main {
                 case SHUTDOWN:
                     Log.i("Shutdown Request from command line");
                     System.out.println("... shutting down");
+                    notifier.serverOff();
                     STATUS = false;
                 break;
             }

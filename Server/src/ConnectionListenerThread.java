@@ -93,6 +93,7 @@ public class ConnectionListenerThread implements Runnable{
                 userThreads.put(userID, userThread);
 
                 //Starts user Thread
+                userThread.setDaemon(true);
                 userThread.start();
                 //Log.i("[" + user.getAddress() + "] connected");
             }catch (SocketTimeoutException ignored){

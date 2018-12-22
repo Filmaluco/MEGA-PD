@@ -20,7 +20,7 @@
             </padding>
         </JFXButton>
         <JFXTreeTableView fx:id="ttvFiles" prefHeight="450.0" prefWidth="800.0" />
-      <JFXButton id="bntFile" fx:id="btnRemoveFile" layoutX="571.0" layoutY="460.0" onAction="#addFile" prefHeight="33.0" prefWidth="103.0" text="Remove">
+      <JFXButton id="bntFile" fx:id="btnRemoveFile" layoutX="571.0" layoutY="460.0" onAction="#removeFile" prefHeight="33.0" prefWidth="103.0" text="Remove">
          <graphic>
             <FontAwesomeIconView glyphName="TRASH" size="15" />
          </graphic>
