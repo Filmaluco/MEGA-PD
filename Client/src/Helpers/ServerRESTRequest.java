@@ -16,14 +16,14 @@ public final class ServerRESTRequest {
 
     //TODO: use common sense
     //This string is made for development only! should not be pushed to production
-    private static String devActiveServers = "http://127.0.0.1:8080/megapd/index.php?url=servers&servers=active";
+    private static String devActiveServers = "http://127.0.0.1:8080/megapd/index.php?url=servers&status=active";
 
     private static String activeServers = "http://api.filmaluco.cloud/servers?status=active";
     //private static String inactiveServers = "http://api.filmaluco.cloud/servers?status=innactive";
     private static String specificServer = "http://api.filmaluco.cloud/server?id=";
 
 
-    private static ArrayList<ServerInfo> jsonRequest(String uri){
+    private static ArrayList<ServerInfo> jsonRequest(String uri) throws IOException, IllegalAccessException {
         ArrayList<ServerInfo> serverInfo = new ArrayList<>();
 
         try {
@@ -46,8 +46,10 @@ public final class ServerRESTRequest {
             try {
                  json = new JSONArray(resp.toString());
             }catch (Exception e){
-                return null;
+                throw new IllegalAccessException("No active servers are avaiable");
             }
+
+            if(json.length() == 0) throw new IllegalAccessException("No active servers are avaiable");
 
             for (int i = 0; i < json.length(); i++) {
                 JSONObject jsonobject = json.getJSONObject(i);
@@ -62,10 +64,9 @@ public final class ServerRESTRequest {
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+          throw new IOException("Check your online connection");
         }
 
-        System.out.println(serverInfo);
         return serverInfo;
     }
 
@@ -80,8 +81,8 @@ public final class ServerRESTRequest {
     public static ServerInfo getFirst(boolean devMode) throws IOException {
         try {
             return devMode ? jsonRequest(devActiveServers).get(0) : jsonRequest(activeServers).get(0);
-        }catch (Exception e){
-            throw new IOException("Theres no active servers");
+        }catch (IOException | IllegalAccessException e){
+            throw new IOException(e.getMessage());
         }
     }
 }

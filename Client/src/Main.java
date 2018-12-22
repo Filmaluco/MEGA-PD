@@ -1,4 +1,4 @@
-import Helpers.ServerRESTRequest;
+import Core.Log;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,10 +11,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        //--------------------------------------------------------------------------------------------------------------
+        Log.initLog();
+
         Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
         //Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));
-
-        ServerRESTRequest.getFirst(true);
 
         Scene login = new Scene(root);
 

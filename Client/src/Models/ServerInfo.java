@@ -47,7 +47,7 @@ public class ServerInfo {
         return "ServerInfo{" +
                 "id=" + id +
                 ", port=" + port +
-                ", status=" + status +
+                " <" + (status ? "online" : "offline") + ">" +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 '}';
