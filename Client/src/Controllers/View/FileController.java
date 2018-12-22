@@ -1,7 +1,7 @@
 package Controllers.View;
 
 import Models.View.FileModel;
-import Modules.UserFileManager;
+import Modules.FolderManager;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -27,7 +27,7 @@ public class FileController implements Initializable {
     @FXML
     JFXButton btnAddFile;
 
-    UserFileManager userFiles;
+    FolderManager userFiles;
 
     @FXML
     private JFXTreeTableView<FileModel> ttvFiles;
@@ -36,7 +36,7 @@ public class FileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try { userFiles = new UserFileManager(fileModels); } catch (IOException e) { }
+        try { userFiles = new FolderManager(fileModels); } catch (IOException e) { }
         userFiles.setDaemon(true);
         userFiles.start();
 

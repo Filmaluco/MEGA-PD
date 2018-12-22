@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public class UserFileManager extends Thread {
+public class FolderManager extends Thread {
 
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
@@ -26,7 +26,7 @@ public class UserFileManager extends Thread {
     private Path folderPath;
     private ObservableList<FileModel> fileModels;
 
-    public UserFileManager(ObservableList<FileModel> fileModels) throws IOException {
+    public FolderManager(ObservableList<FileModel> fileModels) throws IOException {
         this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
         folderPathName += defaultFolderName;
@@ -87,8 +87,6 @@ public class UserFileManager extends Thread {
 
                 // print out event
                 //System.out.format("%s: %s\n", event.kind().name(), child);
-
-                // if directory is created, and watching recursively, then register it and its sub-directories
                 if (kind == ENTRY_CREATE) {
                     System.out.println("New file added: " + child);
                     addFile(child);
