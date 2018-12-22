@@ -1,4 +1,4 @@
-package Controllers.View;
+package Controllers;
 
 import Modules.NotificationManager;
 import com.jfoenix.controls.JFXAlert;

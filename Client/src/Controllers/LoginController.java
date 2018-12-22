@@ -1,4 +1,4 @@
-package Controllers.View;
+package Controllers;
 
 import Core.Context;
 import Core.ServerData;

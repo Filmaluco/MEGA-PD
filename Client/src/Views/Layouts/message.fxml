@@ -16,7 +16,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Controllers.View.MessageController"
+            fx:controller="Controllers.MessageController"
             prefHeight="400.0" prefWidth="600.0">
     <children>
         <SplitPane dividerPositions="0.25" layoutX="-4.0" layoutY="-5.0" prefHeight="455.0" prefWidth="814.0">
