@@ -202,6 +202,23 @@ public final class DBContextMegaPD {
         return 0;
     }
 
+    public boolean registerUser(String name, String username, String generateSecurePassword) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        this.connect();
+
+        String sql = "INSERT INTO `filmaluc_PD`.`User` (`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) " +
+                "VALUES (NULL, 'notDefinedYet', '0', NULL, NULL, NULL, '"+name+"', '"+username+"', '"+generateSecurePassword+"', '0');";
+
+        try {
+           int worked = stmt.executeUpdate(sql);
+           if(worked!=1) throw new SQLException();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     /**
      *
      * @param ip
@@ -484,4 +501,5 @@ public final class DBContextMegaPD {
 
         return usersOnline;
     }
+
 }

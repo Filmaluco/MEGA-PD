@@ -49,6 +49,7 @@ public class UserInfo implements Serializable {
     }
 
     public int getConnectionPort() { return connectionPort; }
+
     @Override
     public String toString() {
         return "UserInfo{" +

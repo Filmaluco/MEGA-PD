@@ -1,7 +1,10 @@
-package Controllers.View;
+package Controllers;
 
 import Modules.NotificationManager;
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXListView;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

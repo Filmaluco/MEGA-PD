@@ -6,7 +6,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="460.0" prefWidth="683.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.View.FileController">
+<AnchorPane prefHeight="460.0" prefWidth="683.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.FileController">
     <children>
         <JFXButton id="bntFile" fx:id="btnAddFile" layoutX="683.0" layoutY="460.0" onAction="#addFile" prefHeight="33.0" prefWidth="103.0" text="Add ">
             <graphic>
