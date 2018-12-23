@@ -74,19 +74,23 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public List<MegaPDFile> getUserFiles(int i) {
-        this.newException("Not yet implemented");
+    public List<MegaPDFile> getUserFiles(int i) throws IOException {
+        List<MegaPDFile> fileList;
         try {
+            fileList = dbContext.getUserFiles(userID);
+        } catch (Exception e) {
+            this.newException(e.getMessage());
+            e.printStackTrace();
             sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            return null;
         }
-        return null;
+
+        sendData(fileList);
+        return fileList;
     }
 
     @Override
-    public int requestFile(String s, int i) {
+    public int requestFile(String fileName, int userID) {
         this.newException("Not yet implemented");
         try {
             sendData();
@@ -98,7 +102,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public void completeFileTransfer(int i) {
+    public void completeFileTransfer(int requestID) {
         this.newException("Not yet implemented");
         try {
             sendData();

@@ -15,6 +15,6 @@ public class BrowseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        ttvBrowse.getStyleClass().add("noheader");
     }
 }

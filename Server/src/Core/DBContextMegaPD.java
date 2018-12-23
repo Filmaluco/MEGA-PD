@@ -1,9 +1,7 @@
 package Core;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 /**
@@ -514,7 +512,7 @@ public final class DBContextMegaPD {
         return usersOnline;
     }
 
-    public void addFile(int userID, String fileName, float fileSize){
+    public void addFile(int userID, String fileName, long fileSize){
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
@@ -523,7 +521,7 @@ public final class DBContextMegaPD {
 
             preparedStatement.setInt(1, userID);
             preparedStatement.setString(2, fileName);
-            preparedStatement.setFloat(3, fileSize);
+            preparedStatement.setLong(3, fileSize);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
@@ -549,4 +547,29 @@ public final class DBContextMegaPD {
         }
     }
 
+    public List<MegaPDFile> getUserFiles(int userID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        List<MegaPDFile> fileList = new ArrayList<>();
+        String sql;
+
+        try{
+            sql = "SELECT `ID`, `UserID`, `Name`, `Directory`, `Size` FROM `Files` WHERE `UserID` = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, userID);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()){
+                fileList.add(new MegaPDFile(result.getInt(1), result.getInt(2), result.getString(4), result.getString(3), "", result.getLong(5)));
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
+        }
+
+        return fileList;
+    }
 }
