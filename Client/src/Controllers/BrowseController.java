@@ -1,5 +1,6 @@
 package Controllers;
 
+import Helpers.ListViewSetupHelper;
 import Models.View.FileModel;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -7,7 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TreeItem;
 
 import javafx.event.ActionEvent;
@@ -22,7 +22,7 @@ public class BrowseController implements Initializable {
     public ObservableList<FileModel> fileModels = FXCollections.observableArrayList();
 
     @FXML
-    private JFXListView<String> lvUsers;
+    private JFXListView<String> lvUsersList;
 
     public ObservableList<String> usersList = FXCollections.observableArrayList();
 
@@ -47,21 +47,10 @@ public class BrowseController implements Initializable {
         ttvBrowse.setRoot(root);
         ttvBrowse.setShowRoot(false);
 
-        lvUsers.setItems(usersList);
+        //TODO: Get active users from server
+        lvUsersList.setItems(usersList);
         //Setting up users list
-        lvUsers.setCellFactory(param -> new ListCell<String>(){
-            public void updateItem(String name, boolean empty){
-                super.updateItem(name, empty);
-
-                if (empty)
-                    setText(null);
-                else
-                    setText(name);
-
-            }
-        });
-
-
+        lvUsersList.setCellFactory(param -> new ListViewSetupHelper());
     }
 
     @FXML
