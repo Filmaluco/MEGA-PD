@@ -98,7 +98,11 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException {
-        Map<Integer, String> usersOnline = dbContext.getServerUsers();
+        Map<Integer, String> usersOnline = dbContext.getServerAuthUsers();
+
+        //Remove myself
+        usersOnline.remove(this.data.getID());
+
 
         try {
             sendData(usersOnline);

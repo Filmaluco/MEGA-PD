@@ -14,7 +14,7 @@ import java.util.*;
  *
  *
  * @author FilipeA
- * @version 0.1.0
+ * @version 1.0.0
  *
  */
 public final class DBContextMegaPD {
@@ -500,6 +500,43 @@ public final class DBContextMegaPD {
             while (rs.next()) {
                 id = rs.getInt(2);
                 usersOnline.put(id, this.getUser(id).getName());
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to get server users");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usersOnline;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Map<Integer, String> getServerAuthUsers(){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        Map<Integer, String> usersOnline = new HashMap<>();
+        String sql;
+        PreparedStatement preparedStatement;
+        try {
+            sql = "SELECT * FROM `User` WHERE ID IN (SELECT UserID FROM Server_Users WHERE `ServerID` = ?) AND `PASSWORD` IS NOT NULL ";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, serverID);
+            preparedStatement.execute();
+
+            ResultSet rs = preparedStatement.getResultSet();
+            int id;
+            String username;
+
+            while (rs.next()) {
+                id = rs.getInt(1);
+                username = rs.getString(8);
+                usersOnline.put(id, username);
             }
 
         } catch (SQLException e) {

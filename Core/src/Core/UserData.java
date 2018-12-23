@@ -5,6 +5,7 @@ import Core.Modules.EntityData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class UserData extends EntityData {
@@ -13,6 +14,7 @@ public class UserData extends EntityData {
     private Socket  notificationSocket;
     private ObjectInputStream notificationInput;
     private ObjectOutputStream notificationOuput;
+    private ServerSocket fileTransferServerSocket;
 
     public UserData(Boolean bool){
         super(bool);
@@ -68,6 +70,14 @@ public class UserData extends EntityData {
             notificationInput = new ObjectInputStream(s.getInputStream());
         }
 
+    }
+
+    public void setFileTransferServerSocket(ServerSocket ss){
+        this.fileTransferServerSocket = ss;
+    }
+
+    public ServerSocket getFileTransferServerSocket() {
+        return fileTransferServerSocket;
     }
 
     public ObjectInputStream getNotificationIn() {
