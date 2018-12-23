@@ -47,8 +47,6 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         String username;
 
         try {
-            System.out.println(s + " - " + s1);
-            System.out.println(PasswordHasher.generateSecurePassword(s1));
             userID = dbContext.loginUser(s, PasswordHasher.generateSecurePassword(s1));
             dbContext.updateUserAddress(userID, data.getAddress());
             username = dbContext.getUser(userID).getUsername();
