@@ -94,6 +94,7 @@ public class CommandInterpreter{
             return Commands.CLS;
         }
 
+
         if(lastCommand.contains(ADD)){
             while (st.hasMoreTokens()){
                 argC++;

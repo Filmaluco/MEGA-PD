@@ -14,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -39,7 +38,7 @@ public class MainController implements Initializable {
 
         Context.setFileManager(fileManager);
         Context.setNotificationManager(notificationManager);
-
+      
         Thread t = new Thread(notificationManager);
         t.setDaemon(true);
         t.start();
