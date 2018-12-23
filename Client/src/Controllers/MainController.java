@@ -33,10 +33,7 @@ public class MainController implements Initializable {
             e.printStackTrace();
             System.exit(-1);
         }
-        fileManager = new FileManager(Context.getServer());
         notificationManager = new NotificationManager(btnNotifications);
-
-        Context.setFileManager(fileManager);
         Context.setNotificationManager(notificationManager);
       
         Thread t = new Thread(notificationManager);

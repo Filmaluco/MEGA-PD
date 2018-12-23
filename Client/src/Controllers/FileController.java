@@ -1,7 +1,10 @@
 package Controllers;
 
+import Core.Context;
 import Models.View.FileModel;
+import Modules.FileTransferManager;
 import Modules.FolderManager;
+import Modules.RemoteModules.FileManager;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -28,6 +31,8 @@ public class FileController implements Initializable {
     JFXButton btnAddFile;
 
     FolderManager userFiles;
+    FileTransferManager fileTransferManager;
+    FileManager fileManager;
 
     @FXML
     private JFXTreeTableView<FileModel> ttvFiles;
@@ -36,9 +41,17 @@ public class FileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        fileManager = new FileManager(Context.getServer());
+        Context.setFileManager(fileManager);
+
         try { userFiles = new FolderManager(fileModels); } catch (IOException e) { }
         userFiles.setDaemon(true);
         userFiles.start();
+
+        try { fileTransferManager = new FileTransferManager(); } catch (IOException e) { }
+        Thread fileTransferThread = new Thread(fileTransferManager);
+        fileTransferThread.setDaemon(true);
+        fileTransferThread.start();
 
         ttvFiles.getStyleClass().add("noheader");
 
@@ -59,6 +72,7 @@ public class FileController implements Initializable {
         ttvFiles.getColumns().setAll(filename, fileSize);
         ttvFiles.setRoot(root);
         ttvFiles.setShowRoot(false);
+
     }
 
     @FXML
@@ -79,6 +93,10 @@ public class FileController implements Initializable {
 
     @FXML
     public void removeFile(ActionEvent event) {
+
+        fileTransferManager.getFile("Nerd", 23);
+
+        /*
         FileModel selectedFile;
         try {
             selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
@@ -91,5 +109,6 @@ public class FileController implements Initializable {
                 e.printStackTrace();
             }
         }
+        */
     }
 }

@@ -81,7 +81,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public void registerFileTransferPort(int i) throws IOException {
-        dbContext.updateUserNotificationPort(data.getID(), i);
+        dbContext.updateUserFileTransferPort(data.getID(), i);
         sendData();
     }
 

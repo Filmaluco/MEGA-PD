@@ -7,6 +7,7 @@ import Models.View.FileModel;
 import javafx.collections.ObservableList;
 
 import javax.swing.filechooser.FileSystemView;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.text.DecimalFormat;
@@ -28,7 +29,12 @@ public class FolderManager extends Thread {
     private Path folderPath;
     private ObservableList<FileModel> fileModels;
 
+
+    private boolean initialLoad = true;
+
     public FolderManager(ObservableList<FileModel> fileModels) throws IOException {
+        Context.setFolderManager(this);
+        //-------------------------------------------------------------------------------------------------------------
         this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
         folderPathName += defaultFolderName;
@@ -38,11 +44,11 @@ public class FolderManager extends Thread {
 
         //Send to the server my files
 
-
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
         WatchKey key = folderPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         keys.put(key, folderPath);
+        initialLoad = false;
     }
 
     private void initFolder(){
@@ -61,7 +67,7 @@ public class FolderManager extends Thread {
             for (Path entry : stream) {
                 addFile(entry);
             }
-        }catch (Exception e){}
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void processFolderFiles(){
@@ -148,7 +154,7 @@ public class FolderManager extends Thread {
         } catch (MegaPDRemoteException | IOException e) {
             path.toFile().delete();
             Context.getNotificationManager().addNotification(e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
             return;
         }
         fileModels.add(fileModel);
@@ -194,5 +200,16 @@ public class FolderManager extends Thread {
     @Override
     public void run() {
         processFolderFiles();
+    }
+
+    public File getFile(String fileName) throws NoSuchFileException {
+
+        for (FileModel fileModel : fileModels){
+            if(fileName.compareTo(fileModel.getFilename()) == 0){
+                return new File(fileModel.getFilePath().toString());
+            }
+        }
+
+        throw new NoSuchFileException("fileName incorrect");
     }
 }
