@@ -25,13 +25,13 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </opaqueInsets>
                         </Label>
-                        <JFXListView fx:id="lvUsersList" layoutX="-1.0" layoutY="47.0" prefHeight="407.0" prefWidth="200.0" />
+                        <JFXListView fx:id="lvUsersList" onMouseClicked="#selectUser" layoutX="-1.0" layoutY="47.0" prefHeight="407.0" prefWidth="200.0" />
                         <Line endX="85.0" layoutX="107.0" layoutY="44.0" startX="-100.0" stroke="WHITE" />
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                     <children>
-                        <JFXTreeTableView fx:id="ttvBrowse" onMouseClicked="#selectUser" layoutX="-7.0" layoutY="5.0" prefHeight="450.0" prefWidth="603.0" />
+                        <JFXTreeTableView fx:id="ttvBrowse" layoutX="-7.0" layoutY="5.0" prefHeight="450.0" prefWidth="603.0" />
                     </children>
                 </AnchorPane>
             </items>

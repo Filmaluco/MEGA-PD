@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class BrowseController implements Initializable{
 
-    private UserInfo selectedUser;
+    private UserInfo selectedUser = null;
 
     @FXML
     private JFXTreeTableView<FileModel> ttvBrowse;
@@ -63,11 +63,12 @@ public class BrowseController implements Initializable{
 
         //Bind to disable browser if there are no users online
         ttvBrowse.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
-        btnDownload.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
+        //btnDownload.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
     }
 
     @FXML
     public void startDownload(ActionEvent event) {
+        Context.getUsersList().add("Ola");
         FileModel file = ttvBrowse.getSelectionModel().getSelectedItem().getValue();
         if (file == null) return;
 
