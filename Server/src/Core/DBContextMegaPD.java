@@ -464,7 +464,7 @@ public final class DBContextMegaPD {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
-            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `user`.`ID` = ?; ";
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `User`.`ID` = ?; ";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, port);
@@ -487,7 +487,7 @@ public final class DBContextMegaPD {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
-            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `user`.`ID` = ?;";
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `User`.`ID` = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, port);
