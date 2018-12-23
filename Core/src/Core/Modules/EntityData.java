@@ -84,16 +84,14 @@ public class EntityData {
     }
 
     private String getIP(){
-        String ip = UNDEFINED;
         //Find machine real IP address
-        try(final DatagramSocket socket = new DatagramSocket()){
-            String localIP = InetAddress.getLocalHost().getHostAddress();
-        } catch (SocketException e) {
-            //TODO Log.w("Cant reach local IP [" + e + "]");
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-        return ip;
+        return ip.getHostAddress().toString();
     }
 }
