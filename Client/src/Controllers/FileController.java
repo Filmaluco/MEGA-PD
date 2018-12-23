@@ -94,9 +94,6 @@ public class FileController implements Initializable {
     @FXML
     public void removeFile(ActionEvent event) {
 
-        fileTransferManager.getFile("Nerd", 23);
-
-        /*
         FileModel selectedFile;
         try {
             selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
@@ -109,6 +106,6 @@ public class FileController implements Initializable {
                 e.printStackTrace();
             }
         }
-        */
+
     }
 }
