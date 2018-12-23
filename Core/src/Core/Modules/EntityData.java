@@ -87,14 +87,11 @@ public class EntityData {
         String ip = UNDEFINED;
         //Find machine real IP address
         try(final DatagramSocket socket = new DatagramSocket()){
-            try {
-                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            } catch (UnknownHostException e) {
-                //TODO Log.w("Cant reach local IP [" + e + "]");
-            }
-            ip = socket.getLocalAddress().getHostAddress();
+            String localIP = InetAddress.getLocalHost().getHostAddress();
         } catch (SocketException e) {
             //TODO Log.w("Cant reach local IP [" + e + "]");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         }
 
         return ip;
