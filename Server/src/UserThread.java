@@ -9,6 +9,7 @@ import Modules.FileManager;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class UserThread implements Runnable{
     public UserThread(Connection connection, Notifier notifier){
         this.connection = connection;
         this.user = connection.getUserData();
-        this.fileManager = new FileManager(connection);
+        this.fileManager = new FileManager(connection, user.getID());
         this.notifier = notifier;
     }
 
@@ -58,20 +59,22 @@ public class UserThread implements Runnable{
                 connection.sendData();
                 user.getConnectionOut().flush();
 
-            }catch (IOException e){
+            } catch (SocketTimeoutException e){
+                continue;
+            } catch (IOException e){
                 //The socket with the user malfunction as such the connection was lost
                 Log.w("Connection to user ["
                         +  ( user.getUsername() == null ? user.getAddress() : user.getUsername())
                         +"] lost");
-                //Safe remove from the DB
-                try { connection.logout(); } catch (Exception ignored) {}
-                notifier.disconnect(user);
                 break;
             } catch (ClassNotFoundException e) {
                 //Failed to read the Request object
                 Log.w("Failed to process request from user["+ user.getAddress() +"] lost");
             }
         }
+        //Safe remove from the DB
+        try { connection.logout(); } catch (Exception ignored) {}
+        notifier.disconnect(user);
     }
 
 
@@ -124,10 +127,14 @@ public class UserThread implements Runnable{
                     fileManager.updateFiles((List<MegaPDFile>) user.getConnectionIn().readObject());
                     break;
                 case addFile:
-                    fileManager.addFile((MegaPDFile) user.getConnectionIn().readObject());
+                    MegaPDFile file = (MegaPDFile) user.getConnectionIn().readObject();
+                    fileManager.addFile(file);
+                    notifier.updateFiles(user.getUsername() + " added the file " + file.getFileName(), user.getID());
                     break;
                 case remove:
-                    fileManager.remove((MegaPDFile) user.getConnectionIn().readObject());
+                    file = (MegaPDFile) user.getConnectionIn().readObject();
+                    fileManager.remove(file);
+                    notifier.updateFiles(user.getUsername() + " removed the file " + file.getFileName(), user.getID());
                     break;
                 case updateFile:
                     fileManager.updateFile((String) user.getConnectionIn().readObject(), user.getConnectionIn().readLong());

@@ -1,6 +1,8 @@
 package Modules;
 
+import Core.Context;
 import Core.MegaPDFile;
+import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Models.View.FileModel;
 import javafx.collections.ObservableList;
 
@@ -33,6 +35,9 @@ public class FolderManager extends Thread {
         folderPath = Paths.get(folderPathName);
         initFolder();
         registerFiles();
+
+        //Send to the server my files
+
 
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
@@ -113,6 +118,12 @@ public class FolderManager extends Thread {
         for (int i = 0; i < megaPDFiles.size(); i++) {
             String fileName = filePath.getFileName().toString();
             if (megaPDFiles.get(i).getFileName().equals(fileName)){
+                try {
+                    Context.getFileManager().remove(megaPDFiles.get(i));
+                } catch (MegaPDRemoteException | IOException e) {
+                    Context.getNotificationManager().addNotification(e.getMessage());
+                    return false;
+                }
                 megaPDFiles.remove(i);
                 fileModels.remove(i);
                 return true;
@@ -121,13 +132,27 @@ public class FolderManager extends Thread {
         return false;
     }
 
-    public boolean addFile(Path filePath){
-        String filename = filePath.getFileName().toString();
-        String extension = getExtensionByStringHandling(filename);
-        long filesize = filePath.toFile().length();
-        String filepath = folderPathName + '/' + filename;
-        fileModels.add(new FileModel(Paths.get(filepath), filename, getStringSizeLengthFile(filesize)));
-        return megaPDFiles.add(new MegaPDFile(filePath.toAbsolutePath().toString(), filename, extension, filesize));
+    public void addFile(Path path){
+        // Information extraction
+        String fileName = path.getFileName().toString();
+        String extension = getExtensionByStringHandling(fileName);
+        long fileSize = path.toFile().length();
+        String filePath = folderPathName + '/' + fileName;
+        //----------------------------------------------
+        FileModel fileModel = new FileModel(Paths.get(filePath), fileName, getStringSizeLengthFile(fileSize));
+        MegaPDFile file = new MegaPDFile(path.toAbsolutePath().toString(), fileName, extension, fileSize);
+        //----------------------------------------------
+
+        try {
+            Context.getFileManager().addFile(file);
+        } catch (MegaPDRemoteException | IOException e) {
+            path.toFile().delete();
+            Context.getNotificationManager().addNotification(e.getMessage());
+            //e.printStackTrace();
+            return;
+        }
+        fileModels.add(fileModel);
+        megaPDFiles.add(file);
     }
 
 

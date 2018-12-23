@@ -1,9 +1,7 @@
 package Core;
 import com.mysql.cj.exceptions.UnableToConnectException;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 /**
@@ -136,13 +134,16 @@ public final class DBContextMegaPD {
     public void disconnect() throws SQLException {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
         this.connect();
-        //Remove current server from active
-        String sql = "UPDATE `Servers` SET `Status` = '0' WHERE `Servers`.`ID` = "+ this.serverID +";";
-        isConnected = false;
 
+        //Delete all files from users connected to this server
+        String sql = "DELETE FROM Files WHERE UserID IN( SELECT UserID FROM Server_Users Where ServerID = "+this.serverID+")";
         stmt.executeUpdate(sql);
 
+        //Remove current server from active
+        sql = "UPDATE `Servers` SET `Status` = '0' WHERE `Servers`.`ID` = "+ this.serverID +";";
+        stmt.executeUpdate(sql);
 
+        isConnected = false;
         //Close connection
         //JConnector is losing the connection after N time, the system is doing an autoReconnect there's no need to close because he loses the connection every N time
         if (stmt != null) stmt.close();
@@ -203,7 +204,7 @@ public final class DBContextMegaPD {
     }
 
     public boolean registerUser(String name, String username, String generateSecurePassword) {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
 
         String sql = "INSERT INTO `filmaluc_PD`.`User` (`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) " +
@@ -226,7 +227,7 @@ public final class DBContextMegaPD {
      * @return
      */
     public int loginGuestUser(String ip, int connectionPort) {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         int guestID = -1;
 
@@ -278,7 +279,7 @@ public final class DBContextMegaPD {
      * @throws Exception
      */
     public int loginUser(String username, String hashedPassword) throws Exception {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
 
         String sql;
@@ -333,9 +334,10 @@ public final class DBContextMegaPD {
      * @param userID
      */
     public void logoutUser(int userID){
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
+            // First make sure he is no longer connected to the server
         String sql = "UPDATE `Server_Users` SET `Status` = 0 WHERE `ServerID` = ? AND `UserID` = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -343,9 +345,17 @@ public final class DBContextMegaPD {
         preparedStatement.setInt(2, userID);
         preparedStatement.executeUpdate();
 
+            //Then make sure to reset all his files by deleting this session files
+
+            sql = "DELETE FROM `Files` WHERE `UserID` = ?";
+            preparedStatement = connection.prepareStatement(sql);
+
+        preparedStatement.setInt(1, userID);
+        preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new UnableToConnectException("Failed to register new user");
+            throw new UnableToConnectException("Failed to properly logoutUser");
         }
     }
 
@@ -356,7 +366,7 @@ public final class DBContextMegaPD {
      * @throws Exception
      */
     public UserInfo getUser(int userID) throws Exception {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
 
         UserInfo userInfo = null;
@@ -406,7 +416,7 @@ public final class DBContextMegaPD {
      * @param port
      */
     public void updateUserNotificationPort(int user, int port) {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
             String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `user`.`ID` = ?; ";
@@ -429,7 +439,7 @@ public final class DBContextMegaPD {
      * @param port
      */
     public void updateUserFileTransferPort(int user, int port) {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
             String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `user`.`ID` = ?;";
@@ -451,7 +461,7 @@ public final class DBContextMegaPD {
      * @param address
      */
     public void updateUserAddress(int user, String address) {
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
             String sql = "UPDATE `filmaluc_PD`.`User` SET `User`.`IP_Address` = ? WHERE `user`.`ID` = ?;";
@@ -472,7 +482,7 @@ public final class DBContextMegaPD {
      * @return
      */
     public Map<Integer, String> getServerUsers(){
-        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to disconnect");
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
 
         Map<Integer, String> usersOnline = new HashMap<>();
@@ -502,4 +512,64 @@ public final class DBContextMegaPD {
         return usersOnline;
     }
 
+    public void addFile(int userID, String fileName, long fileSize){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+        try {
+            String sql = "INSERT INTO `filmaluc_PD`.`Files` (`ID`, `UserID`, `Name`, `Directory`, `Size`) VALUES (NULL, ?, ?, '~/MegaPDFiles', ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setString(2, fileName);
+            preparedStatement.setLong(3, fileSize);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed to register file (confirm fileSize and Name lenght)");
+        }
+    }
+
+    public void removeFile(int userID, String fileName){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+        try {
+            String sql = "DELETE FROM `Files` WHERE `UserID` = ? AND `Name` = ? ";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setString(2, fileName);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed to remove file");
+        }
+    }
+
+    public List<MegaPDFile> getUserFiles(int userID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        List<MegaPDFile> fileList = new ArrayList<>();
+        String sql;
+
+        try{
+            sql = "SELECT `ID`, `UserID`, `Name`, `Directory`, `Size` FROM `Files` WHERE `UserID` = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            preparedStatement.setInt(1, userID);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()){
+                fileList.add(new MegaPDFile(result.getInt(1), result.getInt(2), result.getString(4), result.getString(3), "", result.getLong(5)));
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
+        }
+
+        return fileList;
+    }
 }

@@ -5,7 +5,7 @@ import Core.ServerData;
 import Core.UserData;
 import Helpers.ServerRESTRequest;
 import Models.ServerInfo;
-import Modules.Connection;
+import Modules.RemoteModules.Connection;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
@@ -41,6 +41,8 @@ public class LoginController implements Initializable {
     @FXML
     private Label lbWarning;
 
+    private ServerInfo serverInfo = null;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //TODO: Update visual changes
@@ -67,13 +69,9 @@ public class LoginController implements Initializable {
 
     @FXML
     private void guestLogin(ActionEvent event) {
-        ServerInfo serverInfo = null;
         try {
-            serverInfo = ServerRESTRequest.getFirst(true);
-            Context.setUser(new UserData());
-            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            this.updateServer();
             Context.getConnection().login();
-            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
             closeStage();
             loadMain();
         }catch (Exception e){
@@ -81,19 +79,27 @@ public class LoginController implements Initializable {
         }
     }
 
+
     @FXML
     private void userLogin(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
-
-        ServerInfo serverInfo = null;
         try {
-            serverInfo = ServerRESTRequest.getFirst(true);
-            Context.setConnection(new Connection(new ServerData(serverInfo.getAddress(), serverInfo.getPort())));
+            this.updateServer();
             Context.getConnection().login(username, password);
-            Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
             closeStage();
             loadMain();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+        }
+    }
+
+    private void updateServer(){
+        try {
+            serverInfo = ServerRESTRequest.getFirst(true);
+            Context.setUser(new UserData());
+            Context.setServer(new ServerData(serverInfo.getAddress(), serverInfo.getPort()));
+            Context.setConnection(new Connection(Context.getServer()));
         }catch (Exception e){
             setWarning(e.getMessage());
         }

@@ -1,6 +1,7 @@
 import Core.Log;
 import Core.Modules.ModuleInterface.ConnectionModule.ConnectionRequest;
 import Core.UserData;
+import Helpers.Constants;
 import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Models.Server;
 import Modules.Connection;
@@ -85,6 +86,8 @@ public class ConnectionListenerThread implements Runnable{
                     continue;
                 }
 
+
+                s.setSoTimeout(Constants.SERVER_TIMEOUT);
                 //Creates user Thread
                 Thread userThread = new Thread(new UserThread(userConnection, notifier));
 

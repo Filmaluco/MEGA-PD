@@ -1,4 +1,4 @@
-package Modules;
+package Modules.RemoteModules;
 
 import Core.Modules.EntityData;
 import Core.Modules.MegaPDRemoteModule;

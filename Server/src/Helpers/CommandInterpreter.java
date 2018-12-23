@@ -24,6 +24,7 @@ public class CommandInterpreter{
     private final String ADD = "add";
     private final String HELP = "help";
     private final String LS = "ls";
+    private final String CLS = "cls";
 
     private int argC =-1;
     private List<String> commandArguments;
@@ -34,7 +35,7 @@ public class CommandInterpreter{
      * Acceptable commands
      */
     public enum Commands{
-        SHUTDOWN, NOT_DEFINED, ADD, HELP, LS
+        SHUTDOWN, NOT_DEFINED, ADD, HELP, LS, CLS
     }
 
     //----------------------------------------------------------------------------------------------
@@ -89,6 +90,10 @@ public class CommandInterpreter{
         if (lastCommand.equalsIgnoreCase(LS)){
             return Commands.LS;
         }
+        if (lastCommand.equalsIgnoreCase(CLS)){
+            return Commands.CLS;
+        }
+
 
         if(lastCommand.contains(ADD)){
             while (st.hasMoreTokens()){

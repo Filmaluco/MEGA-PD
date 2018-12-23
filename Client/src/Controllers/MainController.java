@@ -1,5 +1,8 @@
 package Controllers;
 
+import Core.Context;
+import MegaPD.Core.Exeptions.MegaPDRemoteException;
+import Modules.RemoteModules.FileManager;
 import Modules.NotificationManager;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
@@ -11,7 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,10 +24,21 @@ public class MainController implements Initializable {
     JFXButton btnNotifications;
 
     private NotificationManager notificationManager;
+    private FileManager fileManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        try { Context.getUser().setNotificationSocket(Context.getConnection().registerNotificationPort(0), true);
+        } catch (IOException | MegaPDRemoteException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        fileManager = new FileManager(Context.getServer());
         notificationManager = new NotificationManager(btnNotifications);
+
+        Context.setFileManager(fileManager);
+        Context.setNotificationManager(notificationManager);
+      
         Thread t = new Thread(notificationManager);
         t.setDaemon(true);
         t.start();
