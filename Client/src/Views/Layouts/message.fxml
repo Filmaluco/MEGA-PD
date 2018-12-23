@@ -44,7 +44,7 @@
                 <Font name="Al Nile" />
             </font>
         </JFXButton>
-        <JFXButton defaultButton="true" ellipsisString="" layoutX="748.0" layoutY="461.0" onAction="#sendMessageGlobally" prefHeight="35.0" prefWidth="35.0">
+        <JFXButton fx:id="btnSendGlobally" defaultButton="true" ellipsisString="" layoutX="748.0" layoutY="461.0" onAction="#sendMessageGlobally" prefHeight="35.0" prefWidth="35.0">
             <graphic>
                 <FontAwesomeIconView glyphName="GLOBE" size="20" />
             </graphic>

@@ -51,7 +51,7 @@ public class TransferController implements Initializable {
         downloadedDate.setPrefWidth(170);
         downloadedDate.setCellValueFactory(param -> param.getValue().getValue().downloadDateProperty());
 
-        //Adding fileModels to observable array
+        //Adding userDownloads to observable array
         //transfers.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
 
         final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(transfers, RecursiveTreeObject::getChildren);

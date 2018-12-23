@@ -1,6 +1,7 @@
 package Controllers;
 
 import Helpers.ListViewSetupHelper;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import javafx.beans.binding.Bindings;
@@ -19,6 +20,12 @@ public class MessageController implements Initializable {
     private String selectedUser = "none";
 
     private String currentUser;
+
+    @FXML
+    private JFXButton btnSendToUser;
+
+    @FXML
+    private JFXButton btnSendGlobally;
 
     @FXML
     JFXTextField tfUserText;
@@ -48,8 +55,10 @@ public class MessageController implements Initializable {
         //Setting up users list
         lvUserMessages.setCellFactory(param -> new ListViewSetupHelper());
 
-        //Bind to disable text area if there are no users online
+        //Bind to disable text area and buttons if there are no users online
         tfUserText.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
+        btnSendGlobally.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
+        btnSendToUser.disableProperty().bind(Bindings.isEmpty(lvUsersList.getItems()));
     }
 
     @FXML

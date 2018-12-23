@@ -65,8 +65,8 @@ public class FileController implements Initializable {
         fileSize.setPrefWidth(400);
         fileSize.setCellValueFactory(param -> param.getValue().getValue().sizeProperty());
 
-        //Adding fileModels to observable array
-        //fileModels.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
+        //Adding userDownloads to observable array
+        //userDownloads.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
 
         final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(fileModels, RecursiveTreeObject::getChildren);
         ttvFiles.getColumns().setAll(filename, fileSize);
