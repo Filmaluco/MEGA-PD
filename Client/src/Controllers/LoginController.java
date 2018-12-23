@@ -71,6 +71,10 @@ public class LoginController implements Initializable {
     private void guestLogin(ActionEvent event) {
         try {
             this.updateServer();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+            return;}
+        try {
             Context.getConnection().login();
             closeStage();
             loadMain();
@@ -86,6 +90,10 @@ public class LoginController implements Initializable {
         String password = passwordField.getText();
         try {
             this.updateServer();
+        }catch (Exception e){
+            setWarning(e.getMessage());
+            return;}
+        try {
             Context.getConnection().login(username, password);
             closeStage();
             loadMain();
@@ -94,15 +102,11 @@ public class LoginController implements Initializable {
         }
     }
 
-    private void updateServer(){
-        try {
-            serverInfo = ServerRESTRequest.getFirst(true);
-            Context.setUser(new UserData());
-            Context.setServer(new ServerData(serverInfo.getAddress(), serverInfo.getPort()));
-            Context.setConnection(new Connection(Context.getServer()));
-        }catch (Exception e){
-            setWarning(e.getMessage());
-        }
+    private void updateServer() throws IOException {
+        serverInfo = ServerRESTRequest.getFirst(true);
+        Context.setUser(new UserData());
+        Context.setServer(new ServerData(serverInfo.getAddress(), serverInfo.getPort()));
+        Context.setConnection(new Connection(Context.getServer()));
     }
 
     public void setWarning(String warning){

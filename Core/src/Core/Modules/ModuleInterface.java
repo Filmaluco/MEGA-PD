@@ -13,7 +13,7 @@ public class ModuleInterface {
 
     public interface ConnectionModule {
 
-        enum ConnectionRequest{guestLogin, AuthLogin, registerNotification, registerFileTransfer, logout, getUsersOnline, getUser}
+        enum ConnectionRequest{guestLogin, AuthLogin, registerNotification, registerFileTransfer, logout, getUsersOnline, getUserByID, getUserByUsername}
 
         int login() throws MegaPDRemoteException, IOException;
         int login(String username, String password) throws MegaPDRemoteException, IOException;
@@ -22,6 +22,7 @@ public class ModuleInterface {
         void logout() throws MegaPDRemoteException, IOException;
         Map<Integer, String> getUsersOnline() throws MegaPDRemoteException, IOException;
         UserInfo getUser(int userId)throws MegaPDRemoteException, IOException;
+        UserInfo getUser(String userId)throws MegaPDRemoteException, IOException;
     }
 
     public interface FileManagerModule{

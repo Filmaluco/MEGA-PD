@@ -410,6 +410,51 @@ public final class DBContextMegaPD {
         return userInfo;
     }
 
+    public UserInfo getUser(String uName) throws Exception {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        UserInfo userInfo = null;
+
+        String name, username, address;
+        int id, connectionPort, notificationPort, fileTransferPort, pingPort;
+
+        String sql;
+        PreparedStatement preparedStatement;
+
+        try {
+            //Sql statement to check if user Exists ------------------------------------------------------------------------
+            sql = "SELECT * FROM `User` WHERE `Username` = ? LIMIT 1";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, uName);
+            preparedStatement.execute();
+
+            //Retrieve USER ID
+            ResultSet rs = preparedStatement.getResultSet();
+
+            if (rs.next()) {
+                id = rs.getInt(1);
+                address = rs.getString(2);
+                connectionPort = rs.getInt(3);
+                notificationPort = rs.getInt(4);
+                fileTransferPort = rs.getInt(5);
+                pingPort = rs.getInt(6);
+                name = rs.getString(7);
+                username = rs.getString(8);
+
+                userInfo = new UserInfo(id, name, username, address, connectionPort, notificationPort, fileTransferPort, pingPort);
+            }
+
+            if(userInfo==null) throw new Exception("ID incorrect");
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to obtain user info");
+        }
+
+        return userInfo;
+    }
+
     /**
      *
      * @param user

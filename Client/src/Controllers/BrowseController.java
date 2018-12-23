@@ -1,7 +1,10 @@
 package Controllers;
 
 import Core.Context;
+import Core.MegaPDFile;
+import Core.UserInfo;
 import Helpers.ListViewSetupHelper;
+import MegaPD.Core.Exeptions.MegaPDRemoteException;
 import Models.View.FileModel;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
@@ -14,17 +17,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class BrowseController implements Initializable{
 
-    private String selectedUser = "none";
+    private UserInfo selectedUser;
 
     @FXML
     private JFXTreeTableView<FileModel> ttvBrowse;
 
-    public ObservableList<FileModel> userDownloads = FXCollections.observableArrayList();
+    public ObservableList<FileModel> userFileNames = FXCollections.observableArrayList();
+    public List<MegaPDFile> userFiles;
 
     @FXML
     private JFXListView<String> lvUsersList;
@@ -46,7 +52,7 @@ public class BrowseController implements Initializable{
         fileSize.setPrefWidth(300);
         fileSize.setCellValueFactory(param -> param.getValue().getValue().sizeProperty());
 
-        final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(userDownloads, RecursiveTreeObject::getChildren);
+        final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(userFileNames, RecursiveTreeObject::getChildren);
         ttvBrowse.getColumns().setAll(filename, fileSize);
         ttvBrowse.setRoot(root);
         ttvBrowse.setShowRoot(false);
@@ -70,16 +76,33 @@ public class BrowseController implements Initializable{
 
     @FXML
     public void selectUser(MouseEvent event) {
+        System.out.println("user selected");
         if(lvUsersList.getItems().isEmpty()) return;
 
-        String user = lvUsersList.getSelectionModel().getSelectedItem();
+        String selectedUsername = lvUsersList.getSelectionModel().getSelectedItem();
 
-        if (user == null) return;
-        else if (selectedUser.equals(user)) return;
-        else selectedUser = user;
+        //Check if anything was selected
+        if (selectedUsername == null) return;
+        //check if selected the same user
+        else if (selectedUser.getName().compareTo(selectedUsername) == 0) return;
+        else {
 
-        userDownloads.clear();
-        //TODO: Get User Downloads from server into userDownloads
-        //userDownloads.add();
+            try {
+                //retrieve new user info
+                selectedUser = Context.getConnection().getUser(selectedUsername);
+
+                userFileNames.clear();
+                userFiles = Context.getFileManager().getUserFiles(selectedUser.getID());
+
+                for (MegaPDFile file : userFiles){
+                    userFileNames.add(new FileModel(file.getFileName(), Long.toString(file.getFileSize())));
+                }
+            } catch (MegaPDRemoteException | IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+
     }
 }

@@ -126,6 +126,20 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         return userInfo;
     }
 
+    @Override
+    public UserInfo getUser(String s) throws MegaPDRemoteException, IOException {
+        UserInfo userInfo = null;
+        try {
+            userInfo = dbContext.getUser(s);
+        } catch (Exception e) {
+            this.newException("Failed to retrieve user info: " + e.getClass().getName());
+            e.printStackTrace();
+        }
+
+        sendData(userInfo);
+        return userInfo;
+    }
+
     public UserData getUserData() {
         return data;
     }

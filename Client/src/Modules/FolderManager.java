@@ -161,6 +161,16 @@ public class FolderManager extends Thread {
         megaPDFiles.add(file);
     }
 
+    public void updateFile(Path path){
+        for (int i = 0; i < megaPDFiles.size(); i++) {
+            if(path.getFileName().toString().compareTo(megaPDFiles.get(i).getFileName()) == 0){
+                long fileSize = path.toFile().length();
+                megaPDFiles.get(i).setFileSize(fileSize);
+                fileModels.get(i).setSize(getStringSizeLengthFile(fileSize));
+            }
+        }
+    }
+
 
     public String getExtensionByStringHandling(String filename) {
 
