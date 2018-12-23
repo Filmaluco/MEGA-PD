@@ -524,7 +524,7 @@ public final class DBContextMegaPD {
         String sql;
         PreparedStatement preparedStatement;
         try {
-            sql = "SELECT * FROM `User` WHERE ID IN (SELECT UserID FROM Server_Users WHERE `ServerID` = ?) AND `PASSWORD` IS NOT NULL ";
+            sql = "SELECT * FROM `User` WHERE ID IN (SELECT UserID FROM Server_Users WHERE `ServerID` = ? AND `Status` = 1) AND `PASSWORD` IS NOT NULL ";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, serverID);
             preparedStatement.execute();

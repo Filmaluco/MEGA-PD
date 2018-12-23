@@ -1,5 +1,6 @@
 package Controllers;
 
+import Core.Context;
 import Helpers.ListViewSetupHelper;
 import Models.View.FileModel;
 import com.jfoenix.controls.*;
@@ -7,17 +8,16 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
-
-import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class BrowseController implements Initializable {
+public class BrowseController implements Initializable{
 
     private String selectedUser = "none";
 
@@ -29,7 +29,6 @@ public class BrowseController implements Initializable {
     @FXML
     private JFXListView<String> lvUsersList;
 
-    public ObservableList<String> usersList = FXCollections.observableArrayList();
 
     @FXML
     private JFXButton btnDownload;
@@ -52,8 +51,7 @@ public class BrowseController implements Initializable {
         ttvBrowse.setRoot(root);
         ttvBrowse.setShowRoot(false);
 
-        //TODO: Get active users from server
-        lvUsersList.setItems(usersList);
+        lvUsersList.setItems(Context.getUsersList());
         //Setting up users list
         lvUsersList.setCellFactory(param -> new ListViewSetupHelper());
 

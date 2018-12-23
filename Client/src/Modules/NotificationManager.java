@@ -71,6 +71,8 @@ public class NotificationManager implements Runnable, NotificationModule {
     @Override
     public void updateUsers(String s, int i) throws MegaPDRemoteException, IOException {
         this.addNotification(s);
+        Context.getUsersList().clear();
+        Context.getConnection().getUsersOnline().forEach((id, username)-> Context.getUsersList().add(username));
     }
 
     @Override

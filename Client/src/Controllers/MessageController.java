@@ -1,5 +1,6 @@
 package Controllers;
 
+import Core.Context;
 import Helpers.ListViewSetupHelper;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
@@ -33,7 +34,6 @@ public class MessageController implements Initializable {
     @FXML
     private JFXListView<String> lvUsersList;
 
-    public ObservableList<String> usersList = FXCollections.observableArrayList();
 
     @FXML
     private JFXListView<String> lvUserMessages;
@@ -46,7 +46,7 @@ public class MessageController implements Initializable {
         currentUser = "none";
 
         //TODO: Get active users from server
-        lvUsersList.setItems(usersList);
+        lvUsersList.setItems(Context.getUsersList());
         //Setting up users list
         lvUsersList.setCellFactory(param -> new ListViewSetupHelper());
 
