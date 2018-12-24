@@ -44,7 +44,7 @@ public class BrowseController implements Initializable{
         ttvBrowse.getStyleClass().add("noheader");
 
         //Sample user
-        selectedUser = new UserInfo(0, "", "", "",0,0,0, 0);
+        selectedUser = new UserInfo(0, "", "", "",0,0,0);
 
 
         //Setting up browse columns
