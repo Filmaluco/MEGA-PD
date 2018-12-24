@@ -1,8 +1,6 @@
 package Core.Modules;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 
 public class EntityData {
@@ -87,8 +85,10 @@ public class EntityData {
         //Find machine real IP address
         String ip = null;
         try {
-            ip = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
+            URL url = new URL("http://checkip.amazonaws.com/");
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+           ip = br.readLine();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
