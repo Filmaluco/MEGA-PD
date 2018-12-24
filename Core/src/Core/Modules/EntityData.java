@@ -85,13 +85,13 @@ public class EntityData {
 
     private String getIP(){
         //Find machine real IP address
-        InetAddress ip = null;
+        String ip = null;
         try {
-            ip = InetAddress.getLocalHost();
+            ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
-        return ip.getHostAddress().toString();
+        return ip;
     }
 }

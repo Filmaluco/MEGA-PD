@@ -43,6 +43,10 @@ public class BrowseController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         ttvBrowse.getStyleClass().add("noheader");
 
+        //Sample user
+        selectedUser = new UserInfo(0, "", "", "",0,0,0);
+
+
         //Setting up browse columns
         JFXTreeTableColumn<FileModel, String> filename = new JFXTreeTableColumn<>("Filename");
         filename.setPrefWidth(300);
