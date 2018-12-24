@@ -45,13 +45,7 @@ public class Server{
     public Server(String name, int port, HashMap<Integer, UserData> users) throws Exception {
 
         //Find machine real IP address
-        try{
-            URL url = new URL("http://checkip.amazonaws.com/");
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            IP = br.readLine();
-        } catch (SocketException e) {
-            Log.w("Cant reach local IP [" + e + "]");
-        }
+        IP = InetAddress.getLocalHost().getHostAddress();
 
         //Create Server socket
         serverS = new ServerSocket(port);

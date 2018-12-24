@@ -82,16 +82,11 @@ public class EntityData {
     }
 
     private String getIP(){
-        //Find machine real IP address
-        String ip = null;
         try {
-            URL url = new URL("http://checkip.amazonaws.com/");
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-           ip = br.readLine();
-        } catch (IOException e) {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
             e.printStackTrace();
+            return "127.0.0.1";
         }
-
-        return ip;
     }
 }

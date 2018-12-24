@@ -103,7 +103,7 @@ public class LoginController implements Initializable {
     }
 
     private void updateServer() throws IOException {
-        serverInfo = ServerRESTRequest.getFirst(true);
+        serverInfo = ServerRESTRequest.getFirst(false);
         Context.setUser(new UserData());
         Context.setServer(new ServerData(serverInfo.getName(), serverInfo.getAddress(), serverInfo.getPort()));
         Context.setConnection(new Connection(Context.getServer()));
