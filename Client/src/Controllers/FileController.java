@@ -52,6 +52,7 @@ public class FileController implements Initializable {
         Thread fileTransferThread = new Thread(fileTransferManager);
         fileTransferThread.setDaemon(true);
         fileTransferThread.start();
+        Context.setFileTransferManager(fileTransferManager);
 
         ttvFiles.getStyleClass().add("noheader");
 

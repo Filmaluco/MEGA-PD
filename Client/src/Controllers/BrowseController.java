@@ -72,16 +72,14 @@ public class BrowseController implements Initializable{
 
     @FXML
     public void startDownload(ActionEvent event) {
-        Context.getUsersList().add("Ola");
         FileModel file = ttvBrowse.getSelectionModel().getSelectedItem().getValue();
         if (file == null) return;
 
-        //TODO: Send request to start download
+        Context.getFileTransferManager().getFile(file.getFilename(), selectedUser.getID());
     }
 
     @FXML
     public void selectUser(MouseEvent event) {
-        System.out.println("user selected");
         if(lvUsersList.getItems().isEmpty()) return;
 
         String selectedUsername = lvUsersList.getSelectionModel().getSelectedItem();

@@ -1,5 +1,6 @@
 package Core;
 
+import Modules.FileTransferManager;
 import Modules.FolderManager;
 import Modules.NotificationManager;
 import Modules.RemoteModules.Connection;
@@ -15,6 +16,7 @@ public final class Context {
     private static FileManager fileManager;
     private static NotificationManager notificationManager;
     private static FolderManager folderManager;
+    private static FileTransferManager fileTransferManager;
     private static ObservableList<String> usersList = FXCollections.observableArrayList();
 
     public static UserData getUser() {
@@ -28,6 +30,7 @@ public final class Context {
     public static FileManager getFileManager() { return fileManager; }
     public static FolderManager getFolderManager() { return folderManager; }
     public static ObservableList<String> getUsersList() { return usersList; }
+    public static FileTransferManager getFileTransferManager() { return fileTransferManager; }
 
     public static void setUser(UserData user) {
         Context.user = user;
@@ -41,4 +44,5 @@ public final class Context {
     public static void setNotificationManager(NotificationManager notificationManager) { Context.notificationManager = notificationManager; }
     public static void setFileManager(FileManager fileManager) { Context.fileManager = fileManager; }
     public static void setFolderManager(FolderManager folderManager) { Context.folderManager = folderManager; }
+    public static void setFileTransferManager(FileTransferManager fileTransferManager) { Context.fileTransferManager = fileTransferManager;}
 }

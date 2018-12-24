@@ -222,4 +222,8 @@ public class FolderManager extends Thread {
 
         throw new NoSuchFileException("fileName incorrect");
     }
+
+    public String getFolderPathName() {
+        return folderPathName;
+    }
 }

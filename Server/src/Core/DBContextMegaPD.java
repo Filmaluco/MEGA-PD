@@ -654,4 +654,58 @@ public final class DBContextMegaPD {
 
         return fileList;
     }
+
+    public int registerFileTransfer(int targetID, int ownerID, String fileName) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+        int requestID = -1;
+
+        try {
+            //Sql statement to create a new user
+            String sql = "INSERT INTO `filmaluc_PD`.`History` (`ID`, `OwnerID`, `TargetID`, `FileName`, `Date`, `Received`) VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, '0');";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setInt(1, ownerID);
+            preparedStatement.setInt(2, targetID);
+            preparedStatement.setString(3, fileName);
+            preparedStatement.executeUpdate();
+
+            //Retrieve GUEST USER ID
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if (rs.next()) {
+                requestID = rs.getInt(1);
+            }
+
+            return requestID;
+        }catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public void completeFileTransfer(int requestID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        try {
+            //Sql statement to create a new user
+            String sql = "UPDATE `filmaluc_PD`.`History` SET `Received` = '1' WHERE `history`.`ID` = ?;";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql);
+
+            preparedStatement.setInt(1, requestID);
+            preparedStatement.executeUpdate();
+
+            return;
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
+    }
 }

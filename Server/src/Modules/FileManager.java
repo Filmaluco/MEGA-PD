@@ -90,26 +90,33 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public int requestFile(String fileName, int userID) {
-        this.newException("Not yet implemented");
+    public int requestFile(String fileName, int userID) throws IOException {
+        int requestID = -1;
         try {
+            requestID = dbContext.registerFileTransfer(this.userID, userID, fileName);
+        }catch (Exception e){
+            this.newException("Request denied");
+            e.printStackTrace();
             sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            return -1;
         }
-        return 0;
+
+        sendData(requestID);
+        return requestID;
     }
 
     @Override
-    public void completeFileTransfer(int requestID) {
-        this.newException("Not yet implemented");
+    public void completeFileTransfer(int requestID) throws IOException {
         try {
+            dbContext.completeFileTransfer(requestID);
+        }catch (Exception e){
+            this.newException("Request denied");
+            e.printStackTrace();
             sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            return;
         }
+
+        sendData();
         return;
     }
 
