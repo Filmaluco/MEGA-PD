@@ -22,6 +22,7 @@ import java.util.List;
 public class NotificationManager extends Thread implements NotificationModule {
     private JFXButton btnNotifications;
     private List<String> notifications;
+    private List<String> messages;
 
     /**
      * Setups the log for the client notifications
@@ -30,6 +31,7 @@ public class NotificationManager extends Thread implements NotificationModule {
     public NotificationManager(JFXButton btnNotifications) {
         this.btnNotifications = btnNotifications;
         notifications = new ArrayList<>();
+        messages = new ArrayList<>();
     }
 
     /**
@@ -66,6 +68,10 @@ public class NotificationManager extends Thread implements NotificationModule {
         btnNotifications.getStyleClass().add("jfx-button");
     }
 
+    public List<String> getMessages() {
+        return messages;
+    }
+
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -78,6 +84,11 @@ public class NotificationManager extends Thread implements NotificationModule {
     @Override
     public void updateFiles(String s, int i) throws MegaPDRemoteException, IOException {
         this.addNotification(s);
+    }
+
+    @Override
+    public void globalMessage(String s, int i) throws MegaPDRemoteException, IOException {
+        messages.add(s);
     }
 
     @Override

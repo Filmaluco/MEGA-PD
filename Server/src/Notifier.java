@@ -34,69 +34,76 @@ public class Notifier implements Runnable, ModuleInterface.NotificationModule {
      * @param user to disconnect
      */
     public void disconnect(UserData user){
-        //TODO: sync
-        try {
-            this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) +" disconnected"), user.getID());
-            users.remove(user.getID());
-            user.closeConnectionSocket();
-            user.closeNotificationSocket();
-        } catch (MegaPDRemoteException | IOException e) {
-           // e.printStackTrace();
+        synchronized (users) {
+            try {
+                this.updateUsers(((user.getUsername() == null ? "<GuestUser>" : user.getUsername()) + " disconnected"), user.getID());
+                users.remove(user.getID());
+                user.closeConnectionSocket();
+                user.closeNotificationSocket();
+            } catch (MegaPDRemoteException | IOException e) {
+                // e.printStackTrace();
+            }
         }
     }
 
 
     public void serverOff() {
-        // TODO: 12/16/2018 implement
+        // NO NEED, new structure in place
         return;
     }
 
     @Override
     public void updateUsers(String s, int i) throws MegaPDRemoteException {
-        users.forEach((id, user) -> {
-            if(id == i) return; //equals a continue;
-            try {
-                if(user.getNotificationOut() == null){
-                    Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
-                    return;
+        synchronized (users) {
+            users.forEach((id, user) -> {
+                if (id == i) return; //equals a continue;
+                try {
+                    if (user.getNotificationOut() == null) {
+                        Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
+                        return;
+                    }
+                    user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
+                    user.getNotificationOut().writeObject(s);
+                } catch (IOException e) {
+                    Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+                    e.printStackTrace();
                 }
-                user.getNotificationOut().writeObject(NotificationRequest.updateUsers);
-                user.getNotificationOut().writeObject(s);
-            } catch (IOException e) {
-                Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
-                e.printStackTrace();
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void updateFiles(String s, int i) {
-        users.forEach((id, user) -> {
-            if(id == i) return; //equals a continue;
-            try {
-                user.getNotificationOut().writeObject(NotificationRequest.updateFiles);
-                user.getNotificationOut().writeObject(s);
-            } catch (IOException e) {
-                Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
-            }
-        });
+        synchronized (users) {
+            users.forEach((id, user) -> {
+                if (id == i) return; //equals a continue;
+                try {
+                    user.getNotificationOut().writeObject(NotificationRequest.updateFiles);
+                    user.getNotificationOut().writeObject(s);
+                } catch (IOException e) {
+                    Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+                }
+            });
+        }
     }
 
     @Override
-    public void sendGlobalMessage(String s, int i) throws MegaPDRemoteException {
-        users.forEach((id, user) -> {
-            if(id == i) return; //equals a continue;
-            try {
-                if(user.getNotificationOut() == null){
-                    Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
-                    return;
+    public void globalMessage(String s, int i) throws MegaPDRemoteException {
+        synchronized (users) {
+            users.forEach((id, user) -> {
+                if (id == i) return; //equals a continue;
+                try {
+                    if (user.getNotificationOut() == null) {
+                        Log.w("User " + (user.getUsername() == null ? user.getAddress() : user.getUsername()) + " is not listening to notifications");
+                        return;
+                    }
+                    user.getNotificationOut().writeObject(NotificationRequest.globalMessage);
+                    user.getNotificationOut().writeObject(s);
+                } catch (IOException e) {
+                    Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
+                    e.printStackTrace();
                 }
-                user.getNotificationOut().writeObject(NotificationRequest.globalMessage);
-                user.getNotificationOut().writeObject(s);
-            } catch (IOException e) {
-                Log.w("Failed to transmit notification to user " + (user.getUsername() == null ? user.getAddress() : user.getUsername()));
-                e.printStackTrace();
-            }
-        });
+            });
+        }
     }
 }

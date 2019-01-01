@@ -59,4 +59,9 @@ import java.util.Map;
         public UserInfo getUser(String s) throws MegaPDRemoteException, IOException {
             return (UserInfo) this.remoteMethod(ConnectionRequest.getUserByUsername, s);
         }
+
+        @Override
+        public void sendMessage(String s) throws MegaPDRemoteException, IOException {
+            this.remoteMethod(ConnectionRequest.sendMessage, s);
+        }
     }
