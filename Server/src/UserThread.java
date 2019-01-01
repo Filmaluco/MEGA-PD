@@ -110,7 +110,9 @@ public class UserThread implements Runnable{
                     break;
 
                 case sendMessage:
-                    notifier.
+                    notifier.globalMessage((String) user.getConnectionIn().readObject(), user.getID());
+                    connection.sendData();
+                    break;
 
                 default:
                     //Request not recognized (this should not happen unless the versions of the Core library are not the same)

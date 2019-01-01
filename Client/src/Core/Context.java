@@ -20,6 +20,7 @@ public final class Context {
     private static ObservableList<String> usersList = FXCollections.observableArrayList();
     private static String defaultFolderName = "/MegaPDFiles";
     private static Boolean devMode = false;
+    private static  ObservableList<String> messages;
 
     public static UserData getUser() {
         return user;
@@ -35,10 +36,9 @@ public final class Context {
     public static FileTransferManager getFileTransferManager() { return fileTransferManager; }
     public static String getDefaultFolderName() { return defaultFolderName; }
     public static boolean getDevMode() { return devMode;}
+    public static ObservableList<String> getMessages() { return messages;}
 
-    public static void setUser(UserData user) {
-        Context.user = user;
-    }
+    public static void setUser(UserData user) { Context.user = user; }
     public static void setServer(ServerData serverData) {
         Context.serverData = serverData;
     }
@@ -51,6 +51,7 @@ public final class Context {
     public static void setFileTransferManager(FileTransferManager fileTransferManager) { Context.fileTransferManager = fileTransferManager;}
     public static void setDefaultFolderName(String newFolderPath) { defaultFolderName= newFolderPath;}
     public static void setDevMode(){devMode = true;}
+    public static void setMessages(ObservableList<String> userMessages) { messages = userMessages; }
 
 
 

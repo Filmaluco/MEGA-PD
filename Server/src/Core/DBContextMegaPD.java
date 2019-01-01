@@ -128,6 +128,15 @@ public final class DBContextMegaPD {
         context = this;
     }
 
+    private void resetConnection() {
+        try {
+            connection.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Puts the servers status Offline and disconnects from the remote database
      */
@@ -197,6 +206,8 @@ public final class DBContextMegaPD {
                 generatedKeys.close();
                 return this.serverID;
             }
+        }finally {
+            this.resetConnection();
         }
 
         isRegistered = false;
@@ -216,6 +227,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }finally {
+            this.resetConnection();
         }
         return true;
     }
@@ -268,6 +281,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -336,6 +351,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("DB Query failed");
+        }finally {
+            this.resetConnection();
         }
 
         return userID;
@@ -368,6 +385,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to properly logoutUser");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -417,6 +436,8 @@ public final class DBContextMegaPD {
         }catch (SQLException e){
             e.printStackTrace();
             throw new UnableToConnectException("Failed to obtain user info");
+        }finally {
+            this.resetConnection();
         }
 
         return userInfo;
@@ -462,6 +483,8 @@ public final class DBContextMegaPD {
         }catch (SQLException e){
             e.printStackTrace();
             throw new UnableToConnectException("Failed to obtain user info");
+        }finally {
+            this.resetConnection();
         }
 
         return userInfo;
@@ -486,6 +509,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -509,6 +534,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -531,6 +558,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -564,6 +593,8 @@ public final class DBContextMegaPD {
             throw new UnableToConnectException("Failed to get server users");
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            this.resetConnection();
         }
 
         return usersOnline;
@@ -601,6 +632,8 @@ public final class DBContextMegaPD {
             throw new UnableToConnectException("Failed to get server users");
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            this.resetConnection();
         }
 
         return usersOnline;
@@ -620,8 +653,10 @@ public final class DBContextMegaPD {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed to register file (confirm fileSize and Name lenght)");
         }
+        this.resetConnection();
     }
 
     public void removeFile(int userID, String fileName){
@@ -637,8 +672,10 @@ public final class DBContextMegaPD {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed to remove file");
         }
+        this.resetConnection();
     }
 
     public List<MegaPDFile> getUserFiles(int userID) {
@@ -661,9 +698,10 @@ public final class DBContextMegaPD {
 
         }catch (SQLException e){
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
         }
-
+        this.resetConnection();
         return fileList;
     }
 
@@ -691,9 +729,10 @@ public final class DBContextMegaPD {
             if (rs.next()) {
                 requestID = rs.getInt(1);
             }
-
+            this.resetConnection();
             return requestID;
         }catch (Exception e){
+            this.resetConnection();
             e.printStackTrace();
             return -1;
         }
@@ -713,10 +752,11 @@ public final class DBContextMegaPD {
 
             preparedStatement.setInt(1, requestID);
             preparedStatement.executeUpdate();
-
+            this.resetConnection();
             return;
         }catch (Exception e){
             e.printStackTrace();
+            this.resetConnection();
             return;
         }
     }
@@ -746,9 +786,13 @@ public final class DBContextMegaPD {
 
         } catch (Exception e) {
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
         }
 
+        this.resetConnection();
         return fileList;
     }
+
+
 }

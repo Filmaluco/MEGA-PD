@@ -22,7 +22,6 @@ import java.util.List;
 public class NotificationManager extends Thread implements NotificationModule {
     private JFXButton btnNotifications;
     private List<String> notifications;
-    private List<String> messages;
 
     /**
      * Setups the log for the client notifications
@@ -31,7 +30,6 @@ public class NotificationManager extends Thread implements NotificationModule {
     public NotificationManager(JFXButton btnNotifications) {
         this.btnNotifications = btnNotifications;
         notifications = new ArrayList<>();
-        messages = new ArrayList<>();
     }
 
     /**
@@ -68,17 +66,16 @@ public class NotificationManager extends Thread implements NotificationModule {
         btnNotifications.getStyleClass().add("jfx-button");
     }
 
-    public List<String> getMessages() {
-        return messages;
-    }
+
 
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void updateUsers(String s, int i) throws MegaPDRemoteException, IOException {
         this.addNotification(s);
-        try{ Context.getUsersList().clear(); } catch (Exception ignored){}
+        try{ Context.getUsersList().clear();
         Context.getConnection().getUsersOnline().forEach((id, username)-> Context.getUsersList().add(username));
+        } catch (Exception ignored){}
     }
 
     @Override
@@ -88,7 +85,7 @@ public class NotificationManager extends Thread implements NotificationModule {
 
     @Override
     public void globalMessage(String s, int i) throws MegaPDRemoteException, IOException {
-        messages.add(s);
+        Context.getMessages().add(s);
     }
 
     @Override
@@ -107,6 +104,10 @@ public class NotificationManager extends Thread implements NotificationModule {
                         case updateFiles:
                             this.updateFiles(message, 0);
                             break;
+                        case globalMessage:
+                            this.globalMessage(message, 0);
+                            System.out.println("Received new message \n " + message);
+                            break;
                     }
                 }
 
@@ -123,4 +124,5 @@ public class NotificationManager extends Thread implements NotificationModule {
             }
         }
     }
+
 }
