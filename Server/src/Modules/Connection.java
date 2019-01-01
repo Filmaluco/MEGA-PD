@@ -140,6 +140,11 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
         return userInfo;
     }
 
+    @Override
+    public void sendMessage(String s) throws MegaPDRemoteException, IOException {
+        //so que nao
+    }
+
     public UserData getUserData() {
         return data;
     }

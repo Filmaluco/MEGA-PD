@@ -109,6 +109,9 @@ public class UserThread implements Runnable{
                     connection.getUsersOnline();
                     break;
 
+                case sendMessage:
+                    notifier.
+
                 default:
                     //Request not recognized (this should not happen unless the versions of the Core library are not the same)
                     user.getConnectionIn().reset();

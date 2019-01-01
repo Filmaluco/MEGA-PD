@@ -1,5 +1,6 @@
 package Helpers;
 
+import Core.Context;
 import Models.ServerInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -78,9 +79,9 @@ public final class ServerRESTRequest {
         }
     }
 
-    public static ServerInfo getFirst(boolean devMode) throws IOException {
+    public static ServerInfo getFirst() throws IOException {
         try {
-            return devMode ? jsonRequest(devActiveServers).get(0) : jsonRequest(activeServers).get(0);
+            return Context.getDevMode() ? jsonRequest(devActiveServers).get(0) : jsonRequest(activeServers).get(0);
         }catch (IOException | IllegalAccessException e){
             throw new IOException(e.getMessage());
         }

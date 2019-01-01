@@ -93,7 +93,6 @@ public class MessageController implements Initializable {
     public void sendMessageGlobally(ActionEvent event) {
         String text = tfUserText.getText();
         if (!text.isEmpty()){
-            //TODO: Send message globally and update server
             addUserMessage(currentUser, text);
             tfUserText.clear();
         }

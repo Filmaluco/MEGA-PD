@@ -23,7 +23,7 @@ public class FolderManager extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
 
-    private final String defaultFolderName = "/MegaPDFiles";
+    private String defaultFolderName;
     private String folderPathName;
     private final List<MegaPDFile> megaPDFiles = new ArrayList<>();
     private Path folderPath;
@@ -32,8 +32,10 @@ public class FolderManager extends Thread {
 
     private boolean initialLoad = true;
 
+
     public FolderManager(ObservableList<FileModel> fileModels) throws IOException {
         Context.setFolderManager(this);
+        defaultFolderName = Context.getDefaultFolderName();
         //-------------------------------------------------------------------------------------------------------------
         this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();

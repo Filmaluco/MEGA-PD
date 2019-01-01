@@ -284,6 +284,7 @@ public final class DBContextMegaPD {
 
         String sql;
         PreparedStatement preparedStatement;
+        ResultSet rs;
         int userID = -1;
 
         try {
@@ -294,13 +295,24 @@ public final class DBContextMegaPD {
         preparedStatement.execute();
 
         //Retrieve USER ID
-        ResultSet rs = preparedStatement.getResultSet();
+         rs = preparedStatement.getResultSet();
 
         if(rs.next()){
             userID = rs.getInt(1);
         }
 
         if(userID == -1) throw new Exception("User does not exists");
+
+        //See if user is already logged in
+        sql = "SELECT * FROM `Server_Users` WHERE `UserID`=? AND `Status`='1' LIMIT 1";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, userID);
+        preparedStatement.execute();
+        rs = preparedStatement.getResultSet();
+
+        if(rs.next()){
+            throw new Exception("User Already logged in");
+        }
 
         //Sql statement to check if password matches -------------------------------------------------------------------
         sql = "SELECT * FROM `User` WHERE `Username` = ? AND `Password` = ? LIMIT 1";
@@ -707,5 +719,36 @@ public final class DBContextMegaPD {
             e.printStackTrace();
             return;
         }
+    }
+
+    public List<MegaPDHistory> getUserFilesHistory(int userID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        List<MegaPDHistory> fileList = new ArrayList<>();
+        String sql;
+
+        try{
+            sql = "SELECT * FROM `History` WHERE `OwnerID` = ? OR `TargetID`=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(2, userID);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()){
+                fileList.add(new MegaPDHistory(result.getInt(1),
+                                               this.getUser(result.getInt(2)).getName(),
+                                               this.getUser(result.getInt(3)).getName(),
+                                               result.getString(4),
+                                               result.getDate(5),
+                                               result.getBoolean(6)));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
+        }
+
+        return fileList;
     }
 }

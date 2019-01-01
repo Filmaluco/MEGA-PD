@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 24-Dez-2018 às 03:35
+-- Generation Time: 01-Jan-2019 às 19:46
 -- Versão do servidor: 5.6.37
 -- PHP Version: 7.1.8
 
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `Files` (
   `Name` varchar(32) NOT NULL COMMENT 'File Name',
   `Directory` varchar(32) NOT NULL COMMENT 'File Directory',
   `Size` int(10) unsigned NOT NULL COMMENT 'File Size (MB)'
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=latin1 COMMENT='Files Information';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COMMENT='Files Information';
 
 -- --------------------------------------------------------
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `History` (
   `FileName` varchar(32) NOT NULL COMMENT 'File name at the moment of the transfer',
   `Date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'File sent on ...',
   `Received` tinyint(4) NOT NULL DEFAULT '0' COMMENT '[SUCESS] = 1'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Transfer of files History';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Transfer of files History';
 
 -- --------------------------------------------------------
 
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `Servers` (
   `IP` varchar(32) NOT NULL COMMENT 'Server IP',
   `Port` int(11) NOT NULL COMMENT 'TCP Port',
   `Status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '[ON] = 1'
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=latin1 COMMENT='Server Info';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COMMENT='Server Info';
 
 -- --------------------------------------------------------
 
@@ -94,15 +94,14 @@ CREATE TABLE IF NOT EXISTS `User` (
   `Username` varchar(32) DEFAULT NULL COMMENT 'User Username',
   `Password` varchar(255) DEFAULT NULL COMMENT 'User Passowrd',
   `Blocked` tinyint(4) NOT NULL DEFAULT '0' COMMENT '[BLOCKED] = 1'
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
 
 --
 -- Extraindo dados da tabela `User`
 --
 
 INSERT INTO `User` (`ID`, `IP_Address`, `ConnectionTCP_Port`, `NotificationTCP_Port`, `FileTransferTCP_Port`, `Ping_UDP_Port`, `Name`, `Username`, `Password`, `Blocked`) VALUES
-(23, '192.168.192.1', 0, 62316, 62314, NULL, 'FilipeA', 'user1', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0),
-(24, '192.168.192.1', 0, 62331, 62329, NULL, 'VascoA', 'user2', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0),
+(23, '192.168.192.1', 0, 51257, 51255, NULL, 'FilipeA', 'user1', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0),
 (25, '192.168.1.110', 0, 58946, 58944, NULL, 'RicardoS', 'user3', 'd1e6wrgP1s1ZKYjMP3PhUjCWsqFb6OKbmVQiwKnWZbs=', 0);
 
 --
@@ -152,22 +151,22 @@ ALTER TABLE `User`
 -- AUTO_INCREMENT for table `Files`
 --
 ALTER TABLE `Files`
-  MODIFY `ID` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'File ID',AUTO_INCREMENT=60;
+  MODIFY `ID` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'File ID',AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `History`
 --
 ALTER TABLE `History`
-  MODIFY `ID` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'HistoryID';
+  MODIFY `ID` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'HistoryID',AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `Servers`
 --
 ALTER TABLE `Servers`
-  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=72;
+  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `User`
 --
 ALTER TABLE `User`
-  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User ID',AUTO_INCREMENT=113;
+  MODIFY `ID` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'User ID',AUTO_INCREMENT=26;
 --
 -- Constraints for dumped tables
 --

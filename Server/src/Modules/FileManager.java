@@ -77,7 +77,7 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     public List<MegaPDFile> getUserFiles(int i) throws IOException {
         List<MegaPDFile> fileList;
         try {
-            fileList = dbContext.getUserFiles(userID);
+            fileList = dbContext.getUserFiles(i);
         } catch (Exception e) {
             this.newException(e.getMessage());
             e.printStackTrace();
@@ -121,14 +121,18 @@ public class FileManager extends MegaPDModule implements FileManagerModule {
     }
 
     @Override
-    public List<MegaPDHistory> getFileHistory() {
-        this.newException("Not yet implemented");
+    public List<MegaPDHistory> getFileHistory() throws IOException{
+        List<MegaPDHistory> fileList;
         try {
+            fileList = dbContext.getUserFilesHistory(userID);
+        } catch (Exception e) {
+            this.newException(e.getMessage());
+            e.printStackTrace();
             sendData();
-        } catch (IOException e) {
-            Log.w("Failed to transmit data to the user");
-            //e.printStackTrace();
+            return null;
         }
-        return null;
+
+        sendData(fileList);
+        return fileList;
     }
 }
