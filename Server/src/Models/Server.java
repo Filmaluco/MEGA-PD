@@ -5,6 +5,8 @@ import Core.Log;
 import Core.UserData;
 import Helpers.Constants;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.util.HashMap;
 
@@ -43,16 +45,7 @@ public class Server{
     public Server(String name, int port, HashMap<Integer, UserData> users) throws Exception {
 
         //Find machine real IP address
-        try(final DatagramSocket socket = new DatagramSocket()){
-            try {
-                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            } catch (UnknownHostException e) {
-                Log.w("Cant reach local IP [" + e + "]");
-            }
-            IP = socket.getLocalAddress().getHostAddress();
-        } catch (SocketException e) {
-            Log.w("Cant reach local IP [" + e + "]");
-        }
+        IP = InetAddress.getLocalHost().getHostAddress();
 
         //Create Server socket
         serverS = new ServerSocket(port);

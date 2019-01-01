@@ -81,7 +81,7 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public void registerFileTransferPort(int i) throws IOException {
-        dbContext.updateUserNotificationPort(data.getID(), i);
+        dbContext.updateUserFileTransferPort(data.getID(), i);
         sendData();
     }
 
@@ -98,7 +98,11 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
     @Override
     public Map<Integer, String> getUsersOnline() throws MegaPDRemoteException {
-        Map<Integer, String> usersOnline = dbContext.getServerUsers();
+        Map<Integer, String> usersOnline = dbContext.getServerAuthUsers();
+
+        //Remove myself
+        usersOnline.remove(this.data.getID());
+
 
         try {
             sendData(usersOnline);
@@ -120,6 +124,25 @@ public class Connection extends MegaPDModule implements ModuleInterface.Connecti
 
         sendData(userInfo);
         return userInfo;
+    }
+
+    @Override
+    public UserInfo getUser(String s) throws MegaPDRemoteException, IOException {
+        UserInfo userInfo = null;
+        try {
+            userInfo = dbContext.getUser(s);
+        } catch (Exception e) {
+            this.newException("Failed to retrieve user info: " + e.getClass().getName());
+            e.printStackTrace();
+        }
+
+        sendData(userInfo);
+        return userInfo;
+    }
+
+    @Override
+    public void sendMessage(String s) throws MegaPDRemoteException, IOException {
+        //so que nao
     }
 
     public UserData getUserData() {

@@ -7,6 +7,7 @@ import Models.View.FileModel;
 import javafx.collections.ObservableList;
 
 import javax.swing.filechooser.FileSystemView;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.text.DecimalFormat;
@@ -22,13 +23,20 @@ public class FolderManager extends Thread {
     private final WatchService watcher;
     private final Map<WatchKey, Path> keys;
 
-    private final String defaultFolderName = "/MegaPDFiles";
+    private String defaultFolderName;
     private String folderPathName;
     private final List<MegaPDFile> megaPDFiles = new ArrayList<>();
     private Path folderPath;
     private ObservableList<FileModel> fileModels;
 
+
+    private boolean initialLoad = true;
+
+
     public FolderManager(ObservableList<FileModel> fileModels) throws IOException {
+        Context.setFolderManager(this);
+        defaultFolderName = Context.getDefaultFolderName();
+        //-------------------------------------------------------------------------------------------------------------
         this.fileModels = fileModels;
         folderPathName = FileSystemView.getFileSystemView().getDefaultDirectory().getPath();
         folderPathName += defaultFolderName;
@@ -38,11 +46,11 @@ public class FolderManager extends Thread {
 
         //Send to the server my files
 
-
         this.watcher = FileSystems.getDefault().newWatchService();
         this.keys = new HashMap<WatchKey, Path>();
         WatchKey key = folderPath.register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
         keys.put(key, folderPath);
+        initialLoad = false;
     }
 
     private void initFolder(){
@@ -61,7 +69,7 @@ public class FolderManager extends Thread {
             for (Path entry : stream) {
                 addFile(entry);
             }
-        }catch (Exception e){}
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void processFolderFiles(){
@@ -148,11 +156,21 @@ public class FolderManager extends Thread {
         } catch (MegaPDRemoteException | IOException e) {
             path.toFile().delete();
             Context.getNotificationManager().addNotification(e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
             return;
         }
         fileModels.add(fileModel);
         megaPDFiles.add(file);
+    }
+
+    public void updateFile(Path path){
+        for (int i = 0; i < megaPDFiles.size(); i++) {
+            if(path.getFileName().toString().compareTo(megaPDFiles.get(i).getFileName()) == 0){
+                long fileSize = path.toFile().length();
+                megaPDFiles.get(i).setFileSize(fileSize);
+                fileModels.get(i).setSize(getStringSizeLengthFile(fileSize));
+            }
+        }
     }
 
 
@@ -194,5 +212,20 @@ public class FolderManager extends Thread {
     @Override
     public void run() {
         processFolderFiles();
+    }
+
+    public File getFile(String fileName) throws NoSuchFileException {
+
+        for (FileModel fileModel : fileModels){
+            if(fileName.compareTo(fileModel.getFilename()) == 0){
+                return new File(fileModel.getFilePath().toString());
+            }
+        }
+
+        throw new NoSuchFileException("fileName incorrect");
+    }
+
+    public String getFolderPathName() {
+        return folderPathName;
     }
 }

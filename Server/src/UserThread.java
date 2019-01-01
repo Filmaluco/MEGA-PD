@@ -97,12 +97,21 @@ public class UserThread implements Runnable{
                     connection.logout();
                     break;
 
-                case getUser:
+                case getUserByID:
                     connection.getUser((Integer) user.getConnectionIn().readObject());
+                    break;
+
+                case getUserByUsername:
+                    connection.getUser((String) user.getConnectionIn().readObject());
                     break;
 
                 case getUsersOnline:
                     connection.getUsersOnline();
+                    break;
+
+                case sendMessage:
+                    notifier.globalMessage((String) user.getConnectionIn().readObject(), user.getID());
+                    connection.sendData();
                     break;
 
                 default:

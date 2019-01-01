@@ -1,7 +1,10 @@
 package Controllers;
 
+import Core.Context;
 import Models.View.FileModel;
+import Modules.FileTransferManager;
 import Modules.FolderManager;
+import Modules.RemoteModules.FileManager;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -27,7 +30,9 @@ public class FileController implements Initializable {
     @FXML
     JFXButton btnAddFile;
 
-    FolderManager userFiles;
+    FolderManager folderManager;
+    FileTransferManager fileTransferManager;
+    FileManager fileManager;
 
     @FXML
     private JFXTreeTableView<FileModel> ttvFiles;
@@ -36,9 +41,18 @@ public class FileController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try { userFiles = new FolderManager(fileModels); } catch (IOException e) { }
-        userFiles.setDaemon(true);
-        userFiles.start();
+        fileManager = new FileManager(Context.getServer());
+        Context.setFileManager(fileManager);
+
+        try { folderManager = new FolderManager(fileModels); } catch (IOException e) { }
+        folderManager.setDaemon(true);
+        folderManager.start();
+
+        try { fileTransferManager = new FileTransferManager(); } catch (IOException e) { }
+        Thread fileTransferThread = new Thread(fileTransferManager);
+        fileTransferThread.setDaemon(true);
+        fileTransferThread.start();
+        Context.setFileTransferManager(fileTransferManager);
 
         ttvFiles.getStyleClass().add("noheader");
 
@@ -52,13 +66,14 @@ public class FileController implements Initializable {
         fileSize.setPrefWidth(400);
         fileSize.setCellValueFactory(param -> param.getValue().getValue().sizeProperty());
 
-        //Adding fileModels to observable array
-        //fileModels.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
+        //Adding userDownloads to observable array
+        //userDownloads.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
 
         final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(fileModels, RecursiveTreeObject::getChildren);
         ttvFiles.getColumns().setAll(filename, fileSize);
         ttvFiles.setRoot(root);
         ttvFiles.setShowRoot(false);
+
     }
 
     @FXML
@@ -67,10 +82,11 @@ public class FileController implements Initializable {
         fileChooser.setTitle("Choose the file to add to MegaPDFiles");
         final File file = fileChooser.showOpenDialog((Stage) ttvFiles.getScene().getWindow());
         if (file != null) {
-            File destFile = new File(userFiles.getFilesFolderPath() + "/" + file.toPath().getFileName());
+            File destFile = new File(folderManager.getFilesFolderPath() + "/" + file.toPath().getFileName());
             String originalName = destFile.getName();
             try {
                 Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                folderManager.updateFile(destFile.toPath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -79,6 +95,7 @@ public class FileController implements Initializable {
 
     @FXML
     public void removeFile(ActionEvent event) {
+
         FileModel selectedFile;
         try {
             selectedFile = ttvFiles.getSelectionModel().getSelectedItem().getValue();
@@ -91,5 +108,6 @@ public class FileController implements Initializable {
                 e.printStackTrace();
             }
         }
+
     }
 }

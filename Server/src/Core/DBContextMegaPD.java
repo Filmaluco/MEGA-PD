@@ -14,7 +14,7 @@ import java.util.*;
  *
  *
  * @author FilipeA
- * @version 0.1.0
+ * @version 1.0.0
  *
  */
 public final class DBContextMegaPD {
@@ -128,6 +128,15 @@ public final class DBContextMegaPD {
         context = this;
     }
 
+    private void resetConnection() {
+        try {
+            connection.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Puts the servers status Offline and disconnects from the remote database
      */
@@ -197,6 +206,8 @@ public final class DBContextMegaPD {
                 generatedKeys.close();
                 return this.serverID;
             }
+        }finally {
+            this.resetConnection();
         }
 
         isRegistered = false;
@@ -216,6 +227,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }finally {
+            this.resetConnection();
         }
         return true;
     }
@@ -268,6 +281,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -284,6 +299,7 @@ public final class DBContextMegaPD {
 
         String sql;
         PreparedStatement preparedStatement;
+        ResultSet rs;
         int userID = -1;
 
         try {
@@ -294,13 +310,24 @@ public final class DBContextMegaPD {
         preparedStatement.execute();
 
         //Retrieve USER ID
-        ResultSet rs = preparedStatement.getResultSet();
+         rs = preparedStatement.getResultSet();
 
         if(rs.next()){
             userID = rs.getInt(1);
         }
 
         if(userID == -1) throw new Exception("User does not exists");
+
+        //See if user is already logged in
+        sql = "SELECT * FROM `Server_Users` WHERE `UserID`=? AND `Status`='1' LIMIT 1";
+        preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, userID);
+        preparedStatement.execute();
+        rs = preparedStatement.getResultSet();
+
+        if(rs.next()){
+            throw new Exception("User Already logged in");
+        }
 
         //Sql statement to check if password matches -------------------------------------------------------------------
         sql = "SELECT * FROM `User` WHERE `Username` = ? AND `Password` = ? LIMIT 1";
@@ -324,6 +351,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new Exception("DB Query failed");
+        }finally {
+            this.resetConnection();
         }
 
         return userID;
@@ -356,6 +385,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to properly logoutUser");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -405,6 +436,55 @@ public final class DBContextMegaPD {
         }catch (SQLException e){
             e.printStackTrace();
             throw new UnableToConnectException("Failed to obtain user info");
+        }finally {
+            this.resetConnection();
+        }
+
+        return userInfo;
+    }
+
+    public UserInfo getUser(String uName) throws Exception {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        UserInfo userInfo = null;
+
+        String name, username, address;
+        int id, connectionPort, notificationPort, fileTransferPort, pingPort;
+
+        String sql;
+        PreparedStatement preparedStatement;
+
+        try {
+            //Sql statement to check if user Exists ------------------------------------------------------------------------
+            sql = "SELECT * FROM `User` WHERE `Username` = ? LIMIT 1";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, uName);
+            preparedStatement.execute();
+
+            //Retrieve USER ID
+            ResultSet rs = preparedStatement.getResultSet();
+
+            if (rs.next()) {
+                id = rs.getInt(1);
+                address = rs.getString(2);
+                connectionPort = rs.getInt(3);
+                notificationPort = rs.getInt(4);
+                fileTransferPort = rs.getInt(5);
+                pingPort = rs.getInt(6);
+                name = rs.getString(7);
+                username = rs.getString(8);
+
+                userInfo = new UserInfo(id, name, username, address, connectionPort, notificationPort, fileTransferPort, pingPort);
+            }
+
+            if(userInfo==null) throw new Exception("ID incorrect");
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to obtain user info");
+        }finally {
+            this.resetConnection();
         }
 
         return userInfo;
@@ -419,7 +499,7 @@ public final class DBContextMegaPD {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
-            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `user`.`ID` = ?; ";
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `NotificationTCP_Port` = ? WHERE `User`.`ID` = ?; ";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, port);
@@ -429,6 +509,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -442,7 +524,7 @@ public final class DBContextMegaPD {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
-            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `user`.`ID` = ?;";
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `FileTransferTCP_Port` = ? WHERE `User`.`ID` = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setInt(1, port);
@@ -452,6 +534,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -464,7 +548,7 @@ public final class DBContextMegaPD {
         if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
         this.connect();
         try {
-            String sql = "UPDATE `filmaluc_PD`.`User` SET `User`.`IP_Address` = ? WHERE `user`.`ID` = ?;";
+            String sql = "UPDATE `filmaluc_PD`.`User` SET `User`.`IP_Address` = ? WHERE `User`.`ID` = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setString(1, address);
@@ -474,6 +558,8 @@ public final class DBContextMegaPD {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new UnableToConnectException("Failed to register new user");
+        }finally {
+            this.resetConnection();
         }
     }
 
@@ -507,6 +593,47 @@ public final class DBContextMegaPD {
             throw new UnableToConnectException("Failed to get server users");
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            this.resetConnection();
+        }
+
+        return usersOnline;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Map<Integer, String> getServerAuthUsers(){
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        Map<Integer, String> usersOnline = new HashMap<>();
+        String sql;
+        PreparedStatement preparedStatement;
+        try {
+            sql = "SELECT * FROM `User` WHERE ID IN (SELECT UserID FROM Server_Users WHERE `ServerID` = ? AND `Status` = 1) AND `PASSWORD` IS NOT NULL ";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, serverID);
+            preparedStatement.execute();
+
+            ResultSet rs = preparedStatement.getResultSet();
+            int id;
+            String username;
+
+            while (rs.next()) {
+                id = rs.getInt(1);
+                username = rs.getString(8);
+                usersOnline.put(id, username);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new UnableToConnectException("Failed to get server users");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            this.resetConnection();
         }
 
         return usersOnline;
@@ -526,8 +653,10 @@ public final class DBContextMegaPD {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed to register file (confirm fileSize and Name lenght)");
         }
+        this.resetConnection();
     }
 
     public void removeFile(int userID, String fileName){
@@ -543,8 +672,10 @@ public final class DBContextMegaPD {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed to remove file");
         }
+        this.resetConnection();
     }
 
     public List<MegaPDFile> getUserFiles(int userID) {
@@ -567,9 +698,101 @@ public final class DBContextMegaPD {
 
         }catch (SQLException e){
             e.printStackTrace();
+            this.resetConnection();
+            throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
+        }
+        this.resetConnection();
+        return fileList;
+    }
+
+    public int registerFileTransfer(int targetID, int ownerID, String fileName) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+        int requestID = -1;
+
+        try {
+            //Sql statement to create a new user
+            String sql = "INSERT INTO `filmaluc_PD`.`History` (`ID`, `OwnerID`, `TargetID`, `FileName`, `Date`, `Received`) VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, '0');";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            preparedStatement.setInt(1, ownerID);
+            preparedStatement.setInt(2, targetID);
+            preparedStatement.setString(3, fileName);
+            preparedStatement.executeUpdate();
+
+            //Retrieve GUEST USER ID
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+
+            if (rs.next()) {
+                requestID = rs.getInt(1);
+            }
+            this.resetConnection();
+            return requestID;
+        }catch (Exception e){
+            this.resetConnection();
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public void completeFileTransfer(int requestID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        try {
+            //Sql statement to create a new user
+            String sql = "UPDATE `filmaluc_PD`.`History` SET `Received` = '1' WHERE `history`.`ID` = ?;";
+
+            //Create the GUEST USER
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement(sql);
+
+            preparedStatement.setInt(1, requestID);
+            preparedStatement.executeUpdate();
+            this.resetConnection();
+            return;
+        }catch (Exception e){
+            e.printStackTrace();
+            this.resetConnection();
+            return;
+        }
+    }
+
+    public List<MegaPDHistory> getUserFilesHistory(int userID) {
+        if(!isConnected && isRegistered) throw new IllegalStateException("There's no connection to DB");
+        this.connect();
+
+        List<MegaPDHistory> fileList = new ArrayList<>();
+        String sql;
+
+        try{
+            sql = "SELECT * FROM `History` WHERE `OwnerID` = ? OR `TargetID`=?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(2, userID);
+            ResultSet result = preparedStatement.executeQuery();
+
+            while (result.next()){
+                fileList.add(new MegaPDHistory(result.getInt(1),
+                                               this.getUser(result.getInt(2)).getName(),
+                                               this.getUser(result.getInt(3)).getName(),
+                                               result.getString(4),
+                                               result.getDate(5),
+                                               result.getBoolean(6)));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.resetConnection();
             throw new IllegalArgumentException("Failed retrieve user files (check if the user is still connected)");
         }
 
+        this.resetConnection();
         return fileList;
     }
+
+
 }

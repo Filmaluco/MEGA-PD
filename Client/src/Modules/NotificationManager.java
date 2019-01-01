@@ -19,7 +19,7 @@ import java.util.List;
  * @version 1.0
  */
 
-public class NotificationManager implements Runnable, NotificationModule {
+public class NotificationManager extends Thread implements NotificationModule {
     private JFXButton btnNotifications;
     private List<String> notifications;
 
@@ -66,16 +66,26 @@ public class NotificationManager implements Runnable, NotificationModule {
         btnNotifications.getStyleClass().add("jfx-button");
     }
 
+
+
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public void updateUsers(String s, int i) throws MegaPDRemoteException, IOException {
         this.addNotification(s);
+        try{ Context.getUsersList().clear();
+        Context.getConnection().getUsersOnline().forEach((id, username)-> Context.getUsersList().add(username));
+        } catch (Exception ignored){}
     }
 
     @Override
     public void updateFiles(String s, int i) throws MegaPDRemoteException, IOException {
         this.addNotification(s);
+    }
+
+    @Override
+    public void globalMessage(String s, int i) throws MegaPDRemoteException, IOException {
+        Context.getMessages().add(s);
     }
 
     @Override
@@ -94,6 +104,10 @@ public class NotificationManager implements Runnable, NotificationModule {
                         case updateFiles:
                             this.updateFiles(message, 0);
                             break;
+                        case globalMessage:
+                            this.globalMessage(message, 0);
+                            System.out.println("Received new message \n " + message);
+                            break;
                     }
                 }
 
@@ -110,4 +124,5 @@ public class NotificationManager implements Runnable, NotificationModule {
             }
         }
     }
+
 }

@@ -1,8 +1,11 @@
 package Core;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class MegaPDHistory {
+public class MegaPDHistory implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     int ID;
     String ownerNanme;

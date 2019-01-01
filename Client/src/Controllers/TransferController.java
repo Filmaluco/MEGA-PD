@@ -1,5 +1,7 @@
 package Controllers;
 
+import Core.Context;
+import Core.MegaPDHistory;
 import Models.View.FileModel;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -15,6 +17,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.util.Callback;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class TransferController implements Initializable {
@@ -27,6 +30,15 @@ public class TransferController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ttvTransfers.getStyleClass().add("noheader");
+
+        try {
+            ArrayList<MegaPDHistory> fileHistory = (ArrayList<MegaPDHistory>) Context.getFileManager().getFileHistory();
+            fileHistory.forEach( (file) ->  {
+                transfers.add(new FileModel(null, file.getFileName(), "", file.getOwnerNanme(), file.getDate().toString()));
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         //Setting up columns
         JFXTreeTableColumn<FileModel, String> filename = new JFXTreeTableColumn<>("Filename");
@@ -51,7 +63,7 @@ public class TransferController implements Initializable {
         downloadedDate.setPrefWidth(170);
         downloadedDate.setCellValueFactory(param -> param.getValue().getValue().downloadDateProperty());
 
-        //Adding fileModels to observable array
+        //Adding userDownloads to observable array
         //transfers.add(new FileModel("Test","1GB", "JohnDoe", "21/11/2018"));
 
         final TreeItem<FileModel> root = new RecursiveTreeItem<FileModel>(transfers, RecursiveTreeObject::getChildren);

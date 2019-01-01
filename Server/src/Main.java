@@ -21,6 +21,11 @@ public class Main {
 
     public static void main(String[] args) {
 
+        if(args.length != 4){
+            System.out.println("Invalid arguments - hostAddress dbName username password");
+            System.exit(-1);
+        }
+
         //--------------------------------------------------------------------------------------------------------------
         // Variables
         //--------------------------------------------------------------------------------------------------------------
@@ -93,9 +98,9 @@ public class Main {
                 break;
                 case ADD:
                     String name, username, password;
-                    name = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
-                    username = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
                     password = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
+                    username = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
+                    name = commandInterpreter.hasArguments() ? commandInterpreter.nextArgument() : null;
                     if(username == null && password == null){ System.out.println("Invalid params check help command") ;continue;}
                     System.out.println(  DBContextMegaPD.getDBContext().registerUser(name, username, PasswordHasher.generateSecurePassword(password)) ? "Registered new user <"+username+">" : "Failed to register new user");
                 break;

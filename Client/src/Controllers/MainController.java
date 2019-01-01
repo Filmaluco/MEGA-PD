@@ -33,10 +33,14 @@ public class MainController implements Initializable {
             e.printStackTrace();
             System.exit(-1);
         }
-        fileManager = new FileManager(Context.getServer());
-        notificationManager = new NotificationManager(btnNotifications);
 
-        Context.setFileManager(fileManager);
+        //InitialUserList
+        Context.getUsersList().clear();
+        try { Context.getConnection().getUsersOnline().forEach((id, username)-> Context.getUsersList().add(username)); } catch (MegaPDRemoteException | IOException e) {
+            e.printStackTrace();
+        }
+
+        notificationManager = new NotificationManager(btnNotifications);
         Context.setNotificationManager(notificationManager);
       
         Thread t = new Thread(notificationManager);

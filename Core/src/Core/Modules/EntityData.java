@@ -1,8 +1,6 @@
 package Core.Modules;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.*;
 
 public class EntityData {
@@ -84,19 +82,11 @@ public class EntityData {
     }
 
     private String getIP(){
-        String ip = UNDEFINED;
-        //Find machine real IP address
-        try(final DatagramSocket socket = new DatagramSocket()){
-            try {
-                socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            } catch (UnknownHostException e) {
-                //TODO Log.w("Cant reach local IP [" + e + "]");
-            }
-            ip = socket.getLocalAddress().getHostAddress();
-        } catch (SocketException e) {
-            //TODO Log.w("Cant reach local IP [" + e + "]");
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "127.0.0.1";
         }
-
-        return ip;
     }
 }

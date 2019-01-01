@@ -27,6 +27,11 @@ public class FileModel extends RecursiveTreeObject<FileModel> {
         this.size = new SimpleStringProperty(size);
     }
 
+    public FileModel(String filename, String size) {
+        this.filename = new SimpleStringProperty(filename);
+        this.size = new SimpleStringProperty(size);
+    }
+
 
     public String getFilename() {
         return filename.get();
