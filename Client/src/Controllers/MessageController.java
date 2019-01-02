@@ -48,7 +48,6 @@ public class MessageController implements Initializable {
     }
 
 
-
     @FXML
     public void sendMessageGlobally(ActionEvent event) {
         String text = tfUserText.getText();

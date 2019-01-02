@@ -34,7 +34,7 @@ public class Main extends Application {
         //Log.initLog();
 
 
-        Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Views/Layouts/login.fxml"));
         //Parent root = FXMLLoader.load(getClass().getResource("Views/Layouts/main.fxml"));
 
         Scene login = new Scene(root);
