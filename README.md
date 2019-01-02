@@ -15,15 +15,6 @@ MEGA-PD takes inspiration in the popular MEGA.NZ software, and is an attempt to 
 MEGA-PD is free to use and licensed under the MIT License
 
 
-Changes
-=======
-
-Version 0.0 (09-11-2018)
-* Added wiki page templates
-* Added labels
-* Added Issue Templates
-* Added base structure
-
 =======
 [More-Info](https://github.com/Filmaluco/MEGA-PD/wiki)
  
