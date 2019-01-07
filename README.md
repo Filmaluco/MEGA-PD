@@ -15,6 +15,17 @@ MEGA-PD takes inspiration in the popular MEGA.NZ software, and is an attempt to 
 MEGA-PD is free to use and licensed under the MIT License
 
 
-=======
+Client-Screenshots:
+------
+*Login:*
+
+![megapd-login](https://user-images.githubusercontent.com/20781703/50764808-d3756e80-126b-11e9-9ec3-e6064c3bb65a.png)
+
+*MyFiles:*
+
+![megapd-myfiles](https://user-images.githubusercontent.com/20781703/50764810-d5d7c880-126b-11e9-9292-e9e3975df5df.PNG)
+
+
+***
 [More-Info](https://github.com/Filmaluco/MEGA-PD/wiki)
  
